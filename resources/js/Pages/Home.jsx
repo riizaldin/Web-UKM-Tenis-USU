@@ -1,6 +1,6 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
+import AppLayout from '@/Layouts/AppLayout';
 
 const FeatureCard = ({ title, description, icon, link }) => (
     <Link href={link} className="p-6 bg-[#F5F7F8] rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#379777]">
@@ -19,8 +19,8 @@ const FeatureCard = ({ title, description, icon, link }) => (
 export default function Home() {
     const features = [
         {
-            title: 'Manajemen Anggota',
-            description: 'Registrasi, login, dan pengelolaan profil anggota',
+            title: 'Heregistrasi Anggota',
+            description: 'Pendataan ulang anggota UKM Tenis USU',
             icon: <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>,
             link: '/members'
         },
@@ -63,33 +63,186 @@ export default function Home() {
     ];
 
     return (
-        <>
-            <Head title="Home" />
-            <div className="min-h-screen bg-[#F5F7F8]">
-                {/* Hero Section */}
-                <div className="bg-[#379777] text-white py-16">
-                    <div className="container mx-auto px-4">
-                        <h1 className="text-4xl font-bold mb-4">UKM Tenis USU</h1>
-                        <p className="text-xl">Portal Manajemen UKM Tenis Universitas Sumatera Utara</p>
-                    </div>
+        <AppLayout title="Home">
+            {/* Hero Section */}
+            <div className="bg-gradient-to-t from-prismarine to-emerald-500 text-white py-16">
+                <div className="container mx-auto px-4">
+                    <h1 className="text-4xl font-bold mb-4">UKM Tenis USU</h1>
+                    <p className="text-xl">Portal Manajemen UKM Tenis Universitas Sumatera Utara</p>
                 </div>
-
-                {/* Features Grid */}
-                <div className="container mx-auto px-4 py-12">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {features.map((feature, index) => (
-                            <FeatureCard key={index} {...feature} />
-                        ))}
-                    </div>
-                </div>
-
-                {/* Footer */}
-                <footer className="bg-[#45474B] text-white py-8">
-                    <div className="container mx-auto px-4 text-center">
-                        <p>© 2025 UKM Tenis USU. All rights reserved.</p>
-                    </div>
-                </footer>
             </div>
-        </>
+
+            {/* Training Schedule and Calendar Section */}
+            <div className="bg-white py-12">
+                <div className="container mx-auto px-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                        {/* Left: Training Schedule */}
+                        <div className="order-1 lg:order-1">
+                            <h2 className="text-2xl font-bold text-darkgray mb-6">Jadwal Latihan</h2>
+
+                            {/* Today's Schedule */}
+                            <div className="bg-cream rounded-lg p-6 shadow-md mb-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-lg font-semibold text-darkgray">Hari Ini</h3>
+                                    <span className="text-sm text-gray-500">3 Oktober 2025</span>
+                                </div>
+                                <div className="flex items-center space-x-4">
+                                    <div className="w-16 h-16 bg-prismarine rounded-full flex items-center justify-center">
+                                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 className="text-lg font-semibold text-darkgray">Latihan Rutin</h4>
+                                        <p className="text-gray-600">15:00 - 17:00 WIB</p>
+                                        <p className="text-gray-600">Lapangan Tenis USU</p>
+                                    </div>
+                                    <div className="ml-auto">
+                                        <span className="px-4 py-2 bg-[#F4CE14] text-darkgray rounded-full text-sm font-semibold">
+                                            Aktif
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Upcoming Schedule */}
+                            <h3 className="text-lg font-semibold text-darkgray mb-4">Jadwal Mendatang</h3>
+                            <div className="space-y-4">
+                                {/* Schedule Item 1 */}
+                                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="text-center">
+                                                <div className="text-sm font-semibold text-gray-500">SAB</div>
+                                                <div className="text-xl font-bold text-darkgray">5</div>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-semibold text-darkgray">Latihan Rutin</h4>
+                                                <p className="text-sm text-gray-600">15:00 - 17:00 WIB</p>
+                                            </div>
+                                        </div>
+                                        <span className="text-sm text-gray-500">Lapangan Tenis USU</span>
+                                    </div>
+                                </div>
+
+                                {/* Schedule Item 2 */}
+                                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="text-center">
+                                                <div className="text-sm font-semibold text-gray-500">MIN</div>
+                                                <div className="text-xl font-bold text-darkgray">6</div>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-semibold text-darkgray">Sparing Partner</h4>
+                                                <p className="text-sm text-gray-600">08:00 - 11:00 WIB</p>
+                                            </div>
+                                        </div>
+                                        <span className="text-sm text-gray-500">Lapangan Tenis USU</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* View All Link */}
+                            <div className="mt-6 text-center">
+                                <Link
+                                    href="/schedules"
+                                    className="inline-flex items-center text-prismarine hover:text-prismarine/80 font-semibold"
+                                >
+                                    Lihat Semua Jadwal
+                                    <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Right: Calendar */}
+                        <div className="order-2 lg:order-2">
+                            <h2 className="text-2xl font-bold text-darkgray mb-6">Kalender Kegiatan</h2>
+                            <div className="bg-cream rounded-lg p-6 shadow-md">
+
+                                {/* Calendar Header */}
+                                <div className="flex items-center justify-between mb-4">
+                                    <button className="p-2 hover:bg-gray-200 rounded-full">
+                                        <svg className="w-5 h-5 text-darkgray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                                        </svg>
+                                    </button>
+                                    <h3 className="text-lg font-semibold text-darkgray">Oktober 2025</h3>
+                                    <button className="p-2 hover:bg-gray-200 rounded-full">
+                                        <svg className="w-5 h-5 text-darkgray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                {/* Calendar Grid */}
+                                <div className="mb-4">
+                                    {/* Days of week */}
+                                    <div className="grid grid-cols-7 gap-2 mb-2">
+                                        {['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'].map((day) => (
+                                            <div key={day} className="text-center text-sm font-semibold text-gray-600">
+                                                {day}
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Calendar dates */}
+                                    <div className="grid grid-cols-7 gap-2">
+                                        {/* Previous month dates */}
+                                        {[28, 29, 30].map((date) => (
+                                            <div key={date} className="text-center py-2 text-gray-400">
+                                                {date}
+                                            </div>
+                                        ))}
+
+                                        {/* Current month dates */}
+                                        {Array.from({ length: 31 }, (_, i) => i + 1).map((date) => (
+                                            <div
+                                                key={date}
+                                                className={`text-center py-2 rounded-full cursor-pointer hover:bg-prismarine hover:text-white transition-colors
+                    ${date === 3 ? 'bg-prismarine text-white' : ''}
+                    ${[5, 6, 12, 13, 19, 20, 26, 27].includes(date) ? 'border-2 border-prismarine' : ''}
+                  `}
+                                            >
+                                                {date}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Legend */}
+                                <div className="border-t border-gray-200 pt-4">
+                                    <div className="flex items-center space-x-4">
+                                        <div className="flex items-center">
+                                            <div className="w-3 h-3 bg-prismarine rounded-full mr-2"></div>
+                                            <span className="text-sm text-gray-600">Hari Ini</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <div className="w-3 h-3 border-2 border-prismarine rounded-full mr-2"></div>
+                                            <span className="text-sm text-gray-600">Jadwal Latihan</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            {/* Features Grid */}
+            <div className="container mx-auto px-4 py-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {features.map((feature, index) => (
+                        <FeatureCard key={index} {...feature} />
+                    ))}
+                </div>
+            </div>
+        </AppLayout>
     );
 }
