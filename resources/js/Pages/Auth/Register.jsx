@@ -20,32 +20,71 @@ export default function Register() {
 
     return (
         <AuthenticationLayout title='Daftar'>
-            <div className=' bg-white border border-darkgray rounded-md p-4'>
+            <div className="bg-white rounded-lg shadow-xl p-8">
                 <form onSubmit={submit} noValidate>
-                    <FormHeader text="Daftar"/>
-                    <div className='mt-14'>
-                        <div className="mb-3">
-                            <TextInput id="email" name="email" type="email" placeholder='Email' error={errors.email} value={data.email} onChange={(e)=>setData('email', e.target.value)} required />
+                    <div className="space-y-4">
+                        <div>
+                            <TextInput
+                                className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-prismarine focus:ring-prismarine"
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="Email"
+                                error={errors.email}
+                                value={data.email}
+                                onChange={(e) => setData('email', e.target.value)}
+                                required
+                            />
                             {errors.email && <InputError message={errors.email}/>}
                         </div>
-                        <div className="mb-3">
-                            <TextInput id="name" name="name" type="text" placeholder='Nama Lengkap' error={errors.name} value={data.name} onChange={(e) => setData('name', e.target.value)} required />
-                            {errors.name && <InputError message={errors.name} />}
-                        </div>
-                        <div className="mb-3">
-                            <TextInput id="password" name="password" type="password" placeholder='Kata Sandi' error={errors.password} value={data.password} onChange={(e) => setData('password', e.target.value)} required />
-                            {errors.password && <InputError message={errors.password} />}
+
+                        <div>
+                            <TextInput
+                                className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-prismarine focus:ring-prismarine"
+                                id="name"
+                                name="name"
+                                type="text"
+                                placeholder="Nama Lengkap"
+                                error={errors.name}
+                                value={data.name}
+                                onChange={(e) => setData('name', e.target.value)}
+                                required
+                            />
+                            {errors.name && <InputError message={errors.name}/>}
                         </div>
 
+                        <div>
+                            <TextInput
+                                className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-prismarine focus:ring-prismarine"
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="Kata Sandi"
+                                error={errors.password}
+                                value={data.password}
+                                onChange={(e) => setData('password', e.target.value)}
+                                required
+                            />
+                            {errors.password && <InputError message={errors.password}/>}
+                        </div>
+
+                        <PrimaryButton
+                            className="w-full mt-2 bg-prismarine hover:bg-prismarine/90 text-white font-bold py-3 rounded-lg transition-colors duration-200"
+                            disabled={processing}
+                        >
+                            Daftar
+                        </PrimaryButton>
                     </div>
-                    <PrimaryButton className='mb-4' disabled={processing}>
-                        Daftar
-                    </PrimaryButton>
                 </form>
-            </div>
 
-            <div className=' bg-white mt-6 text-center border border-darkgray rounded-md p-4 text-darkgray lg:text-lg text-md'>
-                Sudah punya akun? <Link href={route('login')} className='text-link_blue font-bold'>Masuk</Link>
+                <div className="mt-6 text-center">
+                    <p className="text-sm text-gray-600">
+                        Sudah punya akun?{' '}
+                        <Link href={route('login')} className="text-prismarine hover:underline font-semibold">
+                            Masuk disini
+                        </Link>
+                    </p>
+                </div>
             </div>
         </AuthenticationLayout>
     );

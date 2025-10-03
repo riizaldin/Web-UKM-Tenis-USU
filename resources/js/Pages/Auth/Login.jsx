@@ -24,45 +24,78 @@ export default function Login(){
 
     return (
         <AuthenticationLayout title='Login'>
-            <div className=' bg-white border border-darkgray rounded-md p-4'>
+            <div className="bg-white rounded-lg shadow-xl p-8">
                 <form onSubmit={submit} noValidate>
-                    <FormHeader text="Masuk"/>
-                    <div className='mt-14'>
-                        { errors.auth &&
-                            <div className='bg-red-200 text-black mb-3 py-2 flex items-center justify-between relative rounded' ref={divRef}>
-                                <div className='pl-4 text-sm lg:text-base flex-1'>
-                                    {errors.auth}
-                                </div> 
-                                <div>
-                                    <div onClick={close} className='border border-transparent focus:outline-none hover:border hover:border-darkgray border-rounded p-1 cursor-pointer me-1 rounded'>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="20px" height="20px">
-                                            <path d="M 9.15625 6.3125 L 6.3125 9.15625 L 22.15625 25 L 6.21875 40.96875 L 9.03125 43.78125 L 25 27.84375 L 40.9375 43.78125 L 43.78125 40.9375 L 27.84375 25 L 43.6875 9.15625 L 40.84375 6.3125 L 25 22.15625 Z" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        <div className='mb-3'>
-                            <TextInput error={errors.email}  value={data.email} onChange={(e) => setData('email', e.target.value)} id="email" name="email" type="text" placeholder='Email' required/>
+                    {errors.auth && (
+                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" ref={divRef}>
+                            <span className="block sm:inline">{errors.auth}</span>
+                            <button onClick={close} className="absolute top-0 bottom-0 right-0 px-4 py-3">
+                                <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <title>Close</title>
+                                    <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    )}
+                    
+                    <div className="space-y-4">
+                        <div>
+                            <TextInput
+                                className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-prismarine focus:ring-prismarine"
+                                error={errors.email}
+                                value={data.email}
+                                onChange={(e) => setData('email', e.target.value)}
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="Email"
+                                required
+                            />
                             {errors.email && <InputError message={errors.email}/>}
                         </div>
+
                         <div>
-                            <TextInput error={errors.password} value={data.password} onChange={(e) => setData('password', e.target.value)} id="password" name="password" type="password" placeholder='Kata Sandi' required/>
+                            <TextInput
+                                className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-prismarine focus:ring-prismarine"
+                                error={errors.password}
+                                value={data.password}
+                                onChange={(e) => setData('password', e.target.value)}
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="Kata Sandi"
+                                required
+                            />
                             {errors.password && <InputError message={errors.password}/>}
                         </div>
+
+                        <div className="flex items-center justify-between">
+                            <label className="flex items-center">
+                                <input type="checkbox" className="form-checkbox text-prismarine"/>
+                                <span className="ml-2 text-sm text-gray-600">Ingat saya</span>
+                            </label>
+                            <Link href={route('password.request')} className="text-sm text-prismarine hover:underline">
+                                Lupa kata sandi?
+                            </Link>
+                        </div>
                     </div>
-                    
-                    <PrimaryButton disabled={processing}>
+
+                    <PrimaryButton
+                        className="w-full mt-6 bg-prismarine hover:bg-prismarine/90 text-white font-bold py-3 rounded-lg transition-colors duration-200"
+                        disabled={processing}
+                    >
                         Masuk
                     </PrimaryButton>
-                    <div className='text-center mt-5 mb-2 text-darkgray lg:text-lg text-md'>
-                        Lupa kata sandi? <Link href={route('password.request')} className='text-link_blue font-bold'>Klik disini</Link>
-                    </div>
                 </form>
-            </div>
 
-            <div className=' bg-white mt-6 text-center border border-darkgray rounded-md p-4 text-darkgray lg:text-lg text-md'>
-                Belum punya akun? <Link href={route('register')} className='text-link_blue font-bold'>Daftar</Link>
+                <div className="mt-6 text-center">
+                    <p className="text-sm text-gray-600">
+                        Belum punya akun?{' '}
+                        <Link href={route('register')} className="text-prismarine hover:underline font-semibold">
+                            Daftar disini
+                        </Link>
+                    </p>
+                </div>
             </div>
         </AuthenticationLayout>
     )
