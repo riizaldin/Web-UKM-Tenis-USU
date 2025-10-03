@@ -22,7 +22,7 @@ export default function Register() {
         <AuthenticationLayout title='Daftar'>
             <div className=' bg-white border border-darkgray rounded-md p-4'>
                 <form onSubmit={submit} noValidate>
-                    <FormHeader text="Daftar" />
+                    <FormHeader text="Daftar"/>
                     <div className='mt-14'>
                         <div className="mb-3">
                             <TextInput id="email" name="email" type="email" placeholder='Email' error={errors.email} value={data.email} onChange={(e)=>setData('email', e.target.value)} required />
