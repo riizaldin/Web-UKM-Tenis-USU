@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\ProfileCompleted;
 use Inertia\Inertia;
 
+// Landing Page (publik, default)
+Route::get('/landing', function () {
+    return Inertia::render('LandingPage');
+})->name('landing');
+
 Route::get('/', function () {
     return Inertia::render('Home', [
         'auth' => [
