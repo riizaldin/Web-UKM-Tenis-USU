@@ -7,21 +7,17 @@ use App\Http\Middleware\ProfileCompleted;
 use Inertia\Inertia;
 
 // Landing Page (publik, default)
-Route::get('/landing', function () {
+Route::get('/', function () {
     return Inertia::render('LandingPage');
 })->name('landing');
 
-Route::get('/', function () {
+Route::get('/home', function () {
     return Inertia::render('Home', [
         'auth' => [
             'user' => Auth::user(),
         ],
     ]);
-});
-
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified', ProfileCompleted::class])->name('dashboard');
+})->middleware(['auth', 'verified', ProfileCompleted::class])->name('home');
 
 Route::get('/complete-profile', function () {
     return Inertia::render('Auth/CompleteProfile');

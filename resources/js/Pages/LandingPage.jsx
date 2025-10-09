@@ -122,7 +122,7 @@ export default function LandingPage() {
     return (
         <AppLayout title="Landing Page UKM Tenis USU">
             {/* Hero Section */}
-            <section className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white py-12">
+            <section className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white py-12 lg:py-20">
                 <div className="container mx-auto px-6 flex flex-col lg:flex-row items-center">
                     {/* Left content */}
                     <div className="flex-1 space-y-6 text-center lg:text-left">
@@ -188,7 +188,7 @@ export default function LandingPage() {
             </section>
 
             {/* About Section */}
-            <section className="py-18 lg:py-20 bg-white">
+            <section className="py-2 lg:py-20 bg-white">
                 <div className="container mx-auto px-6">
                     <div className="flex flex-col lg:flex-row items-center gap-12">
                         {/* Left Side - Image */}
@@ -260,37 +260,27 @@ export default function LandingPage() {
                                 </div>
                             </div>
 
-                            <div className="pt-4">
-                                <Link
-                                    href="/about"
-                                    className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                                >
-                                    <span>Selengkapnya</span>
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
-                                </Link>
-                            </div>
+                           
                         </div>
                     </div>
                 <div className="container mx-auto px-4 mt-12">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                         <StatCard
-                            number="50+"
+                            number="150+"
                             label="Anggota Aktif"
                             icon={<svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>}
                         />
                         <StatCard
-                            number="15+"
+                            number="20+"
                             label="Prestasi"
                             icon={<svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                             </svg>}
                         />
                         <StatCard
-                            number="8+"
+                            number="20+"
                             label="Tahun Berdiri"
                             icon={<svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -309,10 +299,10 @@ export default function LandingPage() {
             </section>
 
              {/* Training Schedule Section */}
-            <section className="py-20 bg-gradient-to-br from-[#F5F7F8] to-white">
+            <section className="py-6 lg:py-20 bg-gradient-to-br from-[#F5F7F8] to-white">
                 <div className="container mx-auto px-6">
                     <div className="text-center mb-12">
-                        <h2 className="text-4xl font-bold text-[#45474B] mb-4">Bergabung dengan UKM Tenis Lapangan USU</h2>
+                        <h2 className="text-4xl font-bold text-[#45474B] mb-4">Jadwal Latihan Rutin UKM Tenis Lapangan USU</h2>
                         <p className="text-gray-600 max-w-2xl mx-auto">Latihan rutin untuk mengasah kemampuan dan membangun kekompakan tim</p>
                     </div>
 
@@ -466,13 +456,16 @@ export default function LandingPage() {
             </section>
 
             {/* Gallery Preview */}
-            <section className="py-20 bg-gradient-to-br from-[#F5F7F8] to-white">
+            <section className="py-8 lg:py-20 bg-gradient-to-br from-[#F5F7F8] to-white">
                 <div className="container mx-auto px-4">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-darkgray mb-4">Galeri Kegiatan</h2>
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl font-bold text-darkgray mb-2">Galeri Kegiatan</h2>
                         <p className="text-gray-600 max-w-2xl mx-auto">Dokumentasi kegiatan dan prestasi UKM Tenis USU</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <GalleryImage src="/images/LatihanRutin.jpg" alt="Latihan Rutin" />
+                        <GalleryImage src="/images/TurnamenInternal.jpg" alt="Turnamen Internal" />
+                        <GalleryImage src="/images/TennisVisit.jpg" alt="Tennis Visit" />
                         <GalleryImage src="/images/LatihanRutin.jpg" alt="Latihan Rutin" />
                         <GalleryImage src="/images/TurnamenInternal.jpg" alt="Turnamen Internal" />
                         <GalleryImage src="/images/TennisVisit.jpg" alt="Tennis Visit" />
@@ -490,13 +483,31 @@ export default function LandingPage() {
            
 
             {/* Testimonials Section */}
-            <section className="py-16 bg-gray-50">
+            <section className="py-8 bg-gray-50">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl font-bold text-darkgray mb-4">Apa Kata Mereka?</h2>
                         <p className="text-gray-600 max-w-2xl mx-auto">Dengarkan pengalaman dari anggota UKM Tenis USU</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <TestimonialCard
+                            name="Rizaldi Febriansyah"
+                            role="Ketua UKM Periode 2024/2025"
+                            image="/images/rizaldi.jpg"
+                            quote="UKM Tenis memberikan wadah bagi mahasiswa untuk mengembangkan passion dalam tenis."
+                        />
+                        <TestimonialCard
+                            name="Sarah Nabila"
+                            role="Anggota Aktif"
+                            image="/images/testimonial-2.jpg"
+                            quote="Selain berlatih tenis, kita juga belajar berorganisasi dan menjalin persaudaraan."
+                        />
+                        <TestimonialCard
+                            name="Michael Sembiring"
+                            role="Alumni"
+                            image="/images/testimonial-3.jpg"
+                            quote="Pengalaman berharga yang tak terlupakan selama bergabung dengan UKM Tenis USU."
+                        />
                         <TestimonialCard
                             name="Rizaldi Febriansyah"
                             role="Ketua UKM Periode 2024/2025"

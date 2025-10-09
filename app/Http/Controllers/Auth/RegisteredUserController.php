@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Rules\AspectRatio;
 
 class RegisteredUserController extends Controller
 {
@@ -63,7 +62,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('home', absolute: false));
     }
 
     public function completeProfile(Request $request){
@@ -73,7 +72,7 @@ class RegisteredUserController extends Controller
             'jurusan' => ['required', 'max: 255', 'string'],
             'angkatan' => ['required', 'numeric'],
             'no_whatsapp' => ['required', 'numeric'],
-            'pasfoto' => ['bail' ,'required', 'mimes:jpeg,png,jpg', 'max:2048', new AspectRatio],
+            'pasfoto' => ['bail' ,'required', 'mimes:jpeg,png,jpg', 'max:2048'],
             'ktm' => ['bail', 'required', 'mimes:jpeg,png,jpg', 'max:2048'],
         ],
          [
@@ -100,7 +99,7 @@ class RegisteredUserController extends Controller
         $user = Auth::user();
         $user->update($fields);
 
-        return redirect(route('dashboard'));
+        return redirect(route('home'));
 
     }
 }
