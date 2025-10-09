@@ -138,7 +138,7 @@ export default function Home({ auth }) {
         <AppLayout title="Home" auth={auth}>
             
             {/* Hero Section - Enhanced */}
-            <div className="relative bg-gradient-to-br from-[#43CEA2] via-[#2E8B9E] to-[#185A9D] text-white py-12 overflow-hidden">
+            <div className="relative bg-gradient-to-r from-[#43CEA2] via-[#2E8B9E] to-[#185A9D] text-white py-12 overflow-hidden">
                 {/* Decorative Elements */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
@@ -146,7 +146,7 @@ export default function Home({ auth }) {
                 <div className="container mx-auto px-4 relative z-10">
                     <div className="flex justify-center">
                         {/* Member Profile Card - Enhanced */}
-                        <div className="bg-white text-darkgray p-8 rounded-2xl shadow-2xl w-full max-w-4xl backdrop-blur-lg border border-gray-100 hover:shadow-3xl transition-shadow duration-300">
+                        <div className="bg-white text-darkgray p-8 rounded-2xl shadow-2xl w-full max-w-8xl backdrop-blur-lg border border-gray-100 hover:shadow-3xl transition-shadow duration-300">
                             <div className="flex items-start space-x-6">
                                 <div className="flex-shrink-0">
                                     <div className="w-20 h-20 bg-gradient-to-br from-prismarine to-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg hover:scale-105 transition-transform duration-300">
@@ -257,7 +257,7 @@ export default function Home({ auth }) {
                     {/* Enhanced Header Section */}
                     <div className="text-center">
                         {/* Badge with Icon */}
-                        <div className="inline-flex items-center space-x-2 mb-6 px-5 py-2.5 bg-gradient-to-r from-prismarine/10 via-teal-500/10 to-blue-500/10 border border-prismarine/20 rounded-full shadow-lg backdrop-blur-sm">
+                        <div className="inline-flex items-center space-x-2 mb-10 px-5 py-2.5 bg-gradient-to-r from-prismarine/10 via-teal-500/10 to-blue-500/10 border border-prismarine/20 rounded-full shadow-lg backdrop-blur-sm">
                             <span className="text-prismarine font-bold text-sm tracking-wide uppercase">Pilihan Menu Untuk Anda</span>
                  
                         </div>

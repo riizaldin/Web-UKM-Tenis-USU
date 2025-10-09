@@ -3,12 +3,7 @@ import { Link } from '@inertiajs/react';
 
 export default function Footer() {
     const navigation = {
-        main: [
-            { name: 'Tentang Kami', href: '/about' },
-            { name: 'Kontak', href: '/contact' },
-            { name: 'Privasi', href: '/privacy' },
-            { name: 'Syarat & Ketentuan', href: '/terms' },
-        ],
+        
         social: [
             {
                 name: 'Instagram',
@@ -40,63 +35,128 @@ export default function Footer() {
     };
 
     return (
-        <footer className="bg-white">
-            <div className="mx-auto max-w-7xl overflow-hidden px-6 py-10 sm:py-12 lg:px-8">
-                <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-                    {/* About Section */}
-                    <div>
-                        <h3 className="text-sm font-semibold leading-6 text-gray-900">UKM Tenis USU</h3>
-                        <p className="mt-2 text-sm leading-6 text-gray-600">
-                            Unit Kegiatan Mahasiswa Tenis Meja Universitas Sumatera Utara yang berdedikasi untuk mengembangkan bakat dan minat mahasiswa dalam olahraga tenis.
+        <footer className="relative bg-gradient-to-br from-prismarine via-teal-600 to-blue-700 text-white overflow-hidden">
+            {/* Decorative Background Elements */}
+            <div className="absolute inset-0">
+                <div className="absolute top-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+                <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+                <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-teal-400/5 rounded-full blur-3xl"></div>
+            </div>
+
+            {/* Pattern Overlay */}
+            <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+
+            <div className="relative mx-auto max-w-7xl px-6 py-12 sm:py-16 lg:px-8">
+                <div className="grid grid-cols-1 gap-12 md:grid-cols-3 mb-12">
+                    {/* Kolom 1: About/Logo Section */}
+                    <div className="space-y-6">
+                        <div className="flex items-center space-x-3">
+                            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+                                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <h3 className="text-2xl font-bold text-white">UKM Tenis USU</h3>
+                        </div>
+                        <p className="text-sm leading-relaxed text-white/80">
+                            Unit Kegiatan Mahasiswa Universitas Sumatera Utara yang berkomitmen mengembangkan talenta mahasiswa dalam olahraga tenis melalui latihan rutin dan kompetisi.
                         </p>
+                        <div className="flex items-center space-x-2 text-sm text-white/70">
+                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            <span className="font-semibold">Berdiri sejak 2010</span>
+                        </div>
                     </div>
 
-                    {/* Contact Section */}
-                    <div>
-                        <h3 className="text-sm font-semibold leading-6 text-gray-900">Kontak</h3>
-                        <ul className="mt-2 space-y-2">
-                            <li className="text-sm leading-6 text-gray-600">
-                                <span className="font-semibold">Email:</span> ukmtenis@usu.ac.id
+                    {/* Kolom 2: Contact Section */}
+                    <div className="space-y-6">
+                        <h3 className="text-xl font-bold text-white flex items-center space-x-2">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <span>Hubungi Kami</span>
+                        </h3>
+                        <ul className="space-y-4">
+                            <li className="flex items-start space-x-3 text-sm text-white/80 hover:text-white transition-colors group">
+                                <svg className="w-6 h-6 mt-0.5 flex-shrink-0 text-white/60 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                <div>
+                                    <div className="text-xs text-white/60 mb-1">Email</div>
+                                    <a href="mailto:ukmtenis@usu.ac.id" className="font-semibold">ukmtenis@usu.ac.id</a>
+                                </div>
                             </li>
-                            <li className="text-sm leading-6 text-gray-600">
-                                <span className="font-semibold">Telepon:</span> +62 61 8219641
+                            <li className="flex items-start space-x-3 text-sm text-white/80 hover:text-white transition-colors group">
+                                <svg className="w-6 h-6 mt-0.5 flex-shrink-0 text-white/60 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                </svg>
+                                <div>
+                                    <div className="text-xs text-white/60 mb-1">Telepon</div>
+                                    <a href="tel:+62618219641" className="font-semibold">+62 61 8219641</a>
+                                </div>
                             </li>
-                            <li className="text-sm leading-6 text-gray-600">
-                                <span className="font-semibold">Alamat:</span> Gedung UKM USU, Kampus USU, Medan
+                            <li className="flex items-start space-x-3 text-sm text-white/80 hover:text-white transition-colors group">
+                                <svg className="w-6 h-6 mt-0.5 flex-shrink-0 text-white/60 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <div>
+                                    <div className="text-xs text-white/60 mb-1">Alamat</div>
+                                    <span className="font-semibold">Gedung UKM USU<br/>Kampus USU, Medan</span>
+                                </div>
                             </li>
                         </ul>
                     </div>
 
-                    {/* Quick Links */}
-                    <div>
-                        <h3 className="text-sm font-semibold leading-6 text-gray-900">Tautan</h3>
-                        <ul role="list" className="mt-2 space-y-2">
-                            {navigation.main.map((item) => (
-                                <li key={item.name}>
-                                    <Link href={item.href} className="text-sm leading-6 text-gray-600 hover:text-prismarine">
-                                        {item.name}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Social Links */}
-                    <div>
-                        <h3 className="text-sm font-semibold leading-6 text-gray-900">Sosial Media</h3>
-                        <div className="mt-2 flex space-x-6">
+                    {/* Kolom 3: Social Media Section */}
+                    <div className="space-y-6">
+                        <h3 className="text-xl font-bold text-white flex items-center space-x-2">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                            </svg>
+                            <span>Ikuti Kami</span>
+                        </h3>
+                        <p className="text-sm text-white/80">
+                            Tetap terhubung dengan kami melalui media sosial untuk mendapatkan update terbaru tentang kegiatan dan prestasi UKM.
+                        </p>
+                        <div className="flex flex-wrap gap-3">
                             {navigation.social.map((item) => (
-                                <a key={item.name} href={item.href} className="text-gray-400 hover:text-prismarine">
+                                <a 
+                                    key={item.name} 
+                                    href={item.href} 
+                                    className="group relative w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl"
+                                >
                                     <span className="sr-only">{item.name}</span>
-                                    <item.icon className="h-6 w-6" aria-hidden="true" />
+                                    <item.icon className="h-6 w-6 group-hover:scale-110 transition-transform" aria-hidden="true" />
+                                    {/* Tooltip */}
+                                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-white text-prismarine px-3 py-1.5 rounded-lg text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg">
+                                        {item.name}
+                                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-white"></div>
+                                    </div>
                                 </a>
                             ))}
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-8 border-t border-gray-900/10 pt-8">
-                    <p className="text-xs leading-5 text-gray-500">&copy; {new Date().getFullYear()} UKM Tenis USU. All rights reserved.</p>
+                {/* Bottom Section */}
+                <div className="border-t border-white/20 pt-8">
+                    <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+                        <p className="text-sm text-white/70">
+                            &copy; {new Date().getFullYear()} <span className="font-semibold text-white">UKM Tenis USU</span>. All rights reserved.
+                        </p>
+                        <div className="flex items-center space-x-6 text-sm text-white/70">
+                            <span className="flex items-center space-x-2">
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                                </svg>
+                                <span>Made with love by @handari.co</span>
+                            </span>
+                            <span className="hidden md:inline">•</span>
+                            <span>Powered by Laravel & React</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </footer>
