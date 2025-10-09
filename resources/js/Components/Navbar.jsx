@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
+import ApplicationLogo from '@/Components/ApplicationLogo';
 
 export default function Navbar({ auth }) {
     const [isOpen, setIsOpen] = useState(false);
+    const { url } = usePage();
 
     const navigation = [
-        { name: 'Beranda', href: '/' },
-        { name: 'Jadwal', href: '/schedules' },
-        { name: 'Absensi', href: '/attendance' },
-        { name: 'Keuangan', href: '/finance' },
-        { name: 'Laporan', href: '/reports' },
-        { name: 'Galeri', href: '/gallery' },
+        { name: 'Beranda', href: '/home', pattern: /^\/(home)?$/ },
+        { name: 'Jadwal', href: '/schedules', pattern: /^\/schedules/ },
+        { name: 'Absensi', href: '/attendance', pattern: /^\/attendance/ },
+        { name: 'Keuangan', href: '/finance', pattern: /^\/finance/ },
+        { name: 'Laporan', href: '/reports', pattern: /^\/reports/ },
+        { name: 'Galeri', href: '/gallery', pattern: /^\/gallery/ },
     ];
+
+    const isActive = (pattern) => {
+        return pattern.test(url);
+    };
 
     return (
         <nav className="bg-white shadow-lg">
@@ -21,8 +27,9 @@ export default function Navbar({ auth }) {
                     <div className="flex">
                         {/* Logo */}
                         <div className="flex-shrink-0 flex items-center">
-                            <Link href="/">
-                                <span className="text-xl font-bold text-prismarine">UKM Tenis USU</span>
+                            <ApplicationLogo className="h-9 w-auto mr-4" />
+                            <Link href="/home">
+                                <span className="text-xl font-bold text-prismarine mr-12">Tennis USU </span>
                             </Link>
                         </div>
 
@@ -32,7 +39,11 @@ export default function Navbar({ auth }) {
                                 <Link
                                     key={item.name}
                                     href={item.href}
-                                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-prismarine border-b-2 border-transparent hover:border-prismarine"
+                                    className={`inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 transition-colors duration-200 ${
+                                        isActive(item.pattern)
+                                            ? 'text-prismarine border-prismarine'
+                                            : 'text-gray-500 border-transparent hover:text-prismarine hover:border-prismarine'
+                                    }`}
                                 >
                                     {item.name}
                                 </Link>
@@ -106,7 +117,11 @@ export default function Navbar({ auth }) {
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                className="block pl-3 pr-4 py-2 text-base font-medium text-gray-500 hover:text-prismarine hover:bg-gray-50"
+                                className={`block pl-3 pr-4 py-2 text-base font-medium ${
+                                    isActive(item.pattern)
+                                        ? 'text-prismarine bg-teal-50 border-l-4 border-prismarine'
+                                        : 'text-gray-500 hover:text-prismarine hover:bg-gray-50'
+                                }`}
                             >
                                 {item.name}
                             </Link>

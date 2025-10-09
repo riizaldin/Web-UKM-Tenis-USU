@@ -70,6 +70,7 @@ export default function Home() {
 
     return (
         <AppLayout title="Home">
+            
             {/* Hero Section */}
             <div className="bg-gradient-to-r from-[#43CEA280]/100 to-[#185A9DB2]/100 text-white py-10">
                 <div className="container mx-auto px-4">
@@ -324,6 +325,281 @@ export default function Home() {
                     </div>
                 </div>
             </div>
+            {/* Statistics Cards */}
+            <div className="bg-gray-50 py-8">
+                <div className="container mx-auto px-4">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        {/* Total Anggota */}
+                        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-gray-600 text-sm font-medium">Total Anggota</p>
+                                    <p className="text-3xl font-bold text-gray-800 mt-2">156</p>
+                                    <p className="text-green-600 text-sm mt-1">↑ 12 dari bulan lalu</p>
+                                </div>
+                                <div className="bg-blue-100 p-3 rounded-full">
+                                    <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Latihan Bulan Ini */}
+                        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-gray-600 text-sm font-medium">Latihan Bulan Ini</p>
+                                    <p className="text-3xl font-bold text-gray-800 mt-2">18</p>
+                                    <p className="text-gray-600 text-sm mt-1">8 sudah terlaksana</p>
+                                </div>
+                                <div className="bg-green-100 p-3 rounded-full">
+                                    <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Tingkat Kehadiran */}
+                        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-gray-600 text-sm font-medium">Tingkat Kehadiran</p>
+                                    <p className="text-3xl font-bold text-gray-800 mt-2">87%</p>
+                                    <p className="text-gray-600 text-sm mt-1">Rata-rata bulan ini</p>
+                                </div>
+                                <div className="bg-yellow-100 p-3 rounded-full">
+                                    <svg className="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Turnamen Aktif */}
+                        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-gray-600 text-sm font-medium">Turnamen Aktif</p>
+                                    <p className="text-3xl font-bold text-gray-800 mt-2">3</p>
+                                    <p className="text-gray-600 text-sm mt-1">2 internal, 1 eksternal</p>
+                                </div>
+                                <div className="bg-purple-100 p-3 rounded-full">
+                                    <svg className="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Announcements and Recent Activities */}
+            <div className="bg-white py-12">
+                <div className="container mx-auto px-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        
+                        {/* Announcements - Takes 2 columns */}
+                        <div className="lg:col-span-2">
+                            <div className="flex items-center justify-between mb-6">
+                                <h2 className="text-2xl font-bold text-darkgray">Pengumuman Terbaru</h2>
+                                <Link href="/announcements" className="text-prismarine hover:text-prismarine/80 text-sm font-semibold">
+                                    Lihat Semua
+                                </Link>
+                            </div>
+
+                            <div className="space-y-4">
+                                {/* Announcement 1 */}
+                                <div className="bg-gradient-to-r from-prismarine/10 to-transparent border-l-4 border-prismarine rounded-lg p-6 hover:shadow-md transition-shadow">
+                                    <div className="flex items-start space-x-4">
+                                        <div className="bg-prismarine p-3 rounded-full flex-shrink-0">
+                                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                                            </svg>
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <h3 className="text-lg font-semibold text-darkgray">Pendaftaran Turnamen Internal 2025</h3>
+                                                <span className="text-xs text-gray-500">2 hari lalu</span>
+                                            </div>
+                                            <p className="text-gray-600 mb-3">
+                                                Pendaftaran turnamen internal UKM Tenis USU telah dibuka! Segera daftarkan diri Anda sebelum 15 Oktober 2025. Hadiah menarik menanti para pemenang.
+                                            </p>
+                                            <div className="flex items-center space-x-4">
+                                                <span className="px-3 py-1 bg-red-100 text-red-600 text-xs font-semibold rounded-full">Penting</span>
+                                                <Link href="/tournaments/register" className="text-prismarine hover:text-prismarine/80 text-sm font-semibold">
+                                                    Daftar Sekarang →
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Announcement 2 */}
+                                <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                                    <div className="flex items-start space-x-4">
+                                        <div className="bg-blue-500 p-3 rounded-full flex-shrink-0">
+                                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <h3 className="text-lg font-semibold text-darkgray">Perubahan Jadwal Latihan</h3>
+                                                <span className="text-xs text-gray-500">5 hari lalu</span>
+                                            </div>
+                                            <p className="text-gray-600 mb-3">
+                                                Latihan hari Sabtu, 12 Oktober 2025 dimajukan menjadi pukul 07:00 - 10:00 WIB. Mohon perhatiannya!
+                                            </p>
+                                            <span className="px-3 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded-full">Informasi</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Announcement 3 */}
+                                <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                                    <div className="flex items-start space-x-4">
+                                        <div className="bg-green-500 p-3 rounded-full flex-shrink-0">
+                                            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <h3 className="text-lg font-semibold text-darkgray">Pembayaran Iuran Bulanan</h3>
+                                                <span className="text-xs text-gray-500">1 minggu lalu</span>
+                                            </div>
+                                            <p className="text-gray-600 mb-3">
+                                                Pengingat: Pembayaran iuran bulanan Oktober 2025 dapat dilakukan melalui sistem keuangan online. Batas akhir pembayaran 20 Oktober 2025.
+                                            </p>
+                                            <div className="flex items-center space-x-4">
+                                                <span className="px-3 py-1 bg-yellow-100 text-yellow-600 text-xs font-semibold rounded-full">Pengingat</span>
+                                                <Link href="/finance/payment" className="text-prismarine hover:text-prismarine/80 text-sm font-semibold">
+                                                    Bayar Sekarang →
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Recent Activities - Takes 1 column */}
+                        <div>
+                            <h2 className="text-2xl font-bold text-darkgray mb-6">Aktivitas Terkini</h2>
+                            
+                            <div className="bg-cream rounded-lg p-6 shadow-md">
+                                <div className="space-y-6">
+                                    {/* Activity 1 */}
+                                    <div className="flex items-start space-x-3">
+                                        <div className="w-2 h-2 bg-prismarine rounded-full mt-2 flex-shrink-0"></div>
+                                        <div className="flex-1">
+                                            <p className="text-sm text-gray-800">
+                                                <span className="font-semibold">Ahmad Zaki</span> melakukan absensi latihan
+                                            </p>
+                                            <p className="text-xs text-gray-500 mt-1">5 menit lalu</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Activity 2 */}
+                                    <div className="flex items-start space-x-3">
+                                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                                        <div className="flex-1">
+                                            <p className="text-sm text-gray-800">
+                                                <span className="font-semibold">Sarah Putri</span> mendaftar turnamen internal
+                                            </p>
+                                            <p className="text-xs text-gray-500 mt-1">15 menit lalu</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Activity 3 */}
+                                    <div className="flex items-start space-x-3">
+                                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                                        <div className="flex-1">
+                                            <p className="text-sm text-gray-800">
+                                                <span className="font-semibold">Budi Santoso</span> mengunggah foto galeri
+                                            </p>
+                                            <p className="text-xs text-gray-500 mt-1">1 jam lalu</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Activity 4 */}
+                                    <div className="flex items-start space-x-3">
+                                        <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2 flex-shrink-0"></div>
+                                        <div className="flex-1">
+                                            <p className="text-sm text-gray-800">
+                                                <span className="font-semibold">Admin</span> membuat jadwal latihan baru
+                                            </p>
+                                            <p className="text-xs text-gray-500 mt-1">2 jam lalu</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Activity 5 */}
+                                    <div className="flex items-start space-x-3">
+                                        <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                                        <div className="flex-1">
+                                            <p className="text-sm text-gray-800">
+                                                <span className="font-semibold">Rina Andini</span> melakukan pembayaran iuran
+                                            </p>
+                                            <p className="text-xs text-gray-500 mt-1">3 jam lalu</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Activity 6 */}
+                                    <div className="flex items-start space-x-3">
+                                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                                        <div className="flex-1">
+                                            <p className="text-sm text-gray-800">
+                                                <span className="font-semibold">Dimas Prasetyo</span> menyelesaikan profil
+                                            </p>
+                                            <p className="text-xs text-gray-500 mt-1">5 jam lalu</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="mt-6 pt-4 border-t border-gray-200">
+                                    <Link href="/activities" className="text-prismarine hover:text-prismarine/80 text-sm font-semibold flex items-center justify-center">
+                                        Lihat Semua Aktivitas
+                                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </Link>
+                                </div>
+                            </div>
+
+                            {/* Quick Links */}
+                            <div className="mt-6 bg-gradient-to-br from-prismarine to-blue-600 rounded-lg p-6 text-white shadow-lg">
+                                <h3 className="text-lg font-bold mb-4">Akses Cepat</h3>
+                                <div className="space-y-3">
+                                    <Link href="/attendance/scan" className="flex items-center space-x-3 p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                                        </svg>
+                                        <span className="text-sm font-medium">Scan QR Absensi</span>
+                                    </Link>
+                                    <Link href="/finance/payment" className="flex items-center space-x-3 p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        </svg>
+                                        <span className="text-sm font-medium">Bayar Iuran</span>
+                                    </Link>
+                                    <Link href="/profile/edit" className="flex items-center space-x-3 p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                        <span className="text-sm font-medium">Edit Profil</span>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            
 
 
             {/* Features Grid */}
