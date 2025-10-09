@@ -20,6 +20,7 @@ export default function Navbar({ auth }) {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+    
 
     const navigation = [
         { name: 'Beranda', href: '/home', pattern: /^\/(home)?$/ },
@@ -56,24 +57,27 @@ export default function Navbar({ auth }) {
                     {/* Logo and primary nav */}
                     <div className="flex">
                         {/* Logo */}
-                        <div className="flex-shrink-0 flex items-center">
-                            <ApplicationLogo className="h-9 w-auto mr-4" />
-                            <Link href="/home">
-                                <span className="text-xl font-bold text-prismarine mr-12">Tennis USU </span>
-                            </Link>
-                        </div>
+                        <button
+                            onClick={() => router.visit('/home')}
+                            className="flex items-center hover:opacity-80 transition-opacity cursor-pointer"
+                        >
+                            <ApplicationLogo className="h-10 w-auto mr-4" />
+                            <div className="text-left">
+                                <div className="text-xl font-bold text-prismarine">UKM Tenis USU</div>
+                                <div className="text-xs text-gray-600">Universitas Sumatera Utara</div>
+                            </div>
+                        </button>
 
                         {/* Primary Nav */}
-                        <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <div className="hidden sm:ml-16 sm:flex sm:space-x-8">
                             {navigation.map((item) => (
                                 <Link
                                     key={item.name}
                                     href={item.href}
-                                    className={`inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 transition-colors duration-200 ${
-                                        isActive(item.pattern)
+                                    className={`inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 transition-colors duration-200 ${isActive(item.pattern)
                                             ? 'text-prismarine border-prismarine'
                                             : 'text-gray-500 border-transparent hover:text-prismarine hover:border-prismarine'
-                                    }`}
+                                        }`}
                                 >
                                     {item.name}
                                 </Link>
@@ -99,10 +103,10 @@ export default function Navbar({ auth }) {
                                         <div className="text-xs text-gray-500">Anggota</div>
                                     </div>
                                     {/* Dropdown Arrow */}
-                                    <svg 
-                                        className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${showDropdown ? 'rotate-180' : ''}`} 
-                                        fill="none" 
-                                        stroke="currentColor" 
+                                    <svg
+                                        className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${showDropdown ? 'rotate-180' : ''}`}
+                                        fill="none"
+                                        stroke="currentColor"
                                         viewBox="0 0 24 24"
                                     >
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
@@ -140,7 +144,7 @@ export default function Navbar({ auth }) {
                                                     <div className="text-xs text-gray-500">Kelola informasi akun</div>
                                                 </div>
                                             </Link>
-                                            
+
                                             <button
                                                 onClick={() => {
                                                     setShowDropdown(false);
@@ -207,11 +211,10 @@ export default function Navbar({ auth }) {
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                className={`block pl-3 pr-4 py-2 text-base font-medium ${
-                                    isActive(item.pattern)
+                                className={`block pl-3 pr-4 py-2 text-base font-medium ${isActive(item.pattern)
                                         ? 'text-prismarine bg-teal-50 border-l-4 border-prismarine'
                                         : 'text-gray-500 hover:text-prismarine hover:bg-gray-50'
-                                }`}
+                                    }`}
                             >
                                 {item.name}
                             </Link>
@@ -293,7 +296,7 @@ export default function Navbar({ auth }) {
                         <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
                             Yakin ingin keluar?
                         </h3>
-                        
+
                         {/* Message */}
                         <p className="text-gray-600 text-center mb-6">
                             Anda akan keluar dari akun dan perlu login kembali untuk mengakses aplikasi.

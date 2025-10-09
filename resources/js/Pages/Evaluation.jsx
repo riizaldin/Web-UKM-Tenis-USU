@@ -165,7 +165,7 @@ export default function Evaluation({ auth }) {
     };
 
     return (
-        <AppLayout title="Penilaian Pengurus">
+            <AppLayout title="Absensi" auth={auth}>
             {/* Header Section */}
             <div className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white py-12">
                 <div className="container mx-auto px-4">
