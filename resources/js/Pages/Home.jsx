@@ -70,7 +70,7 @@ export default function Home({ auth }) {
 
     return (
         <AppLayout title="Home" auth={auth}>
-            
+
             {/* Hero Section */}
             <div className="bg-gradient-to-r from-[#43CEA280]/100 to-[#185A9DB2]/100 text-white py-10">
                 <div className="container mx-auto px-4">
@@ -88,7 +88,7 @@ export default function Home({ auth }) {
                                         <h3 className="text-xl font-bold">RIZALDI FEBRIANSYAH</h3>
                                         <div className="flex items-center space-x-2">
                                             <span className="px-3 py-1 bg-prismarine text-white text-sm rounded-full">KETUA</span>
-                                            
+
                                             {/* Logout Dropdown */}
                                             <div className="relative">
                                                 <button
@@ -100,7 +100,7 @@ export default function Home({ auth }) {
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                                                     </svg>
                                                 </button>
-                                                
+
                                                 {showDropdown && (
                                                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
                                                         <div className="py-2">
@@ -163,8 +163,7 @@ export default function Home({ auth }) {
                     </div>
                 </div>
             </div>
-            
-             
+
             {/* Training Schedule and Calendar Section */}
             <div className="bg-white py-12">
                 <div className="container mx-auto px-4">
@@ -401,7 +400,7 @@ export default function Home({ auth }) {
             <div className="bg-white py-12">
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        
+
                         {/* Announcements - Takes 2 columns */}
                         <div className="lg:col-span-2">
                             <div className="flex items-center justify-between mb-6">
@@ -490,7 +489,7 @@ export default function Home({ auth }) {
                         {/* Recent Activities - Takes 1 column */}
                         <div>
                             <h2 className="text-2xl font-bold text-darkgray mb-8">Aktivitas Terkini</h2>
-                            
+
                             <div className="bg-cream rounded-lg p-6 shadow-md">
                                 <div className="space-y-6">
                                     {/* Activity 1 */}
@@ -764,12 +763,12 @@ export default function Home({ auth }) {
                 </div>
             </div>
 
-           
-
-            
 
 
-            
+
+
+
+
         </AppLayout>
     );
 }
