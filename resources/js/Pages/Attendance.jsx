@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 
-export default function Attendance() {
+export default function Attendance({ auth }) {
     const [activeTab, setActiveTab] = useState('scan'); // scan, history
     const [scanStatus, setScanStatus] = useState(null); // null, scanning, success, error
     const [attendanceCode, setAttendanceCode] = useState('');
@@ -126,7 +126,7 @@ export default function Attendance() {
     };
 
     return (
-        <AppLayout title="Absensi">
+        <AppLayout title="Absensi" auth={auth}>
             {/* Header Section */}
             <div className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white py-12">
                 <div className="container mx-auto px-4">

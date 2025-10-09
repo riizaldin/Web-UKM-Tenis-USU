@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 
-export default function Finance() {
+export default function Finance({ auth }) {
     const [activeTab, setActiveTab] = useState('payment'); // payment, history, report
     const [paymentAmount, setPaymentAmount] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
@@ -181,7 +181,7 @@ export default function Finance() {
     };
 
     return (
-        <AppLayout title="Keuangan">
+        <AppLayout title="Keuangan" auth={auth}>
             {/* Header Section */}
             <div className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white py-12">
                 <div className="container mx-auto px-4">

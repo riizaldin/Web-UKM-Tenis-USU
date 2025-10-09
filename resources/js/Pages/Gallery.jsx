@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 
-export default function Gallery() {
+export default function Gallery({ auth }) {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [selectedImage, setSelectedImage] = useState(null);
     const [viewMode, setViewMode] = useState('grid'); // grid or list
@@ -200,7 +200,7 @@ export default function Gallery() {
     };
 
     return (
-        <AppLayout title="Galeri Foto">
+        <AppLayout title="Galeri Foto" auth={auth}>
             {/* Header Section */}
             <div className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white py-12">
                 <div className="container mx-auto px-4">

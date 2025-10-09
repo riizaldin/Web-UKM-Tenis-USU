@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 
-export default function Reports() {
+export default function Reports({ auth }) {
     const [selectedReport, setSelectedReport] = useState(null);
     const [filterPeriod, setFilterPeriod] = useState('monthly'); // monthly, quarterly, yearly
     const [filterMonth, setFilterMonth] = useState('10');
@@ -187,7 +187,7 @@ export default function Reports() {
     };
 
     return (
-        <AppLayout title="Laporan">
+        <AppLayout title="Laporan" auth={auth}>
             {/* Header Section */}
             <div className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white py-12">
                 <div className="container mx-auto px-4">

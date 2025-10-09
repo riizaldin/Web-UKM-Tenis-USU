@@ -16,7 +16,7 @@ const FeatureCard = ({ title, description, icon, link }) => (
     </Link>
 );
 
-export default function Home() {
+export default function Home({ auth }) {
     const [showDropdown, setShowDropdown] = useState(false);
 
     const handleLogout = () => {
@@ -69,7 +69,7 @@ export default function Home() {
     ];
 
     return (
-        <AppLayout title="Home">
+        <AppLayout title="Home" auth={auth}>
             
             {/* Hero Section */}
             <div className="bg-gradient-to-r from-[#43CEA280]/100 to-[#185A9DB2]/100 text-white py-10">
@@ -163,7 +163,8 @@ export default function Home() {
                     </div>
                 </div>
             </div>
-
+            
+             
             {/* Training Schedule and Calendar Section */}
             <div className="bg-white py-12">
                 <div className="container mx-auto px-4">
@@ -488,7 +489,7 @@ export default function Home() {
 
                         {/* Recent Activities - Takes 1 column */}
                         <div>
-                            <h2 className="text-2xl font-bold text-darkgray mb-6">Aktivitas Terkini</h2>
+                            <h2 className="text-2xl font-bold text-darkgray mb-8">Aktivitas Terkini</h2>
                             
                             <div className="bg-cream rounded-lg p-6 shadow-md">
                                 <div className="space-y-6">
@@ -559,37 +560,12 @@ export default function Home() {
                                     </div>
                                 </div>
 
-                                <div className="mt-6 pt-4 border-t border-gray-200">
+                                <div className="mt-6 pt-4 border-t border-gray-200 pb-16">
                                     <Link href="/activities" className="text-prismarine hover:text-prismarine/80 text-sm font-semibold flex items-center justify-center">
                                         Lihat Semua Aktivitas
                                         <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                                         </svg>
-                                    </Link>
-                                </div>
-                            </div>
-
-                            {/* Quick Links */}
-                            <div className="mt-6 bg-gradient-to-br from-prismarine to-blue-600 rounded-lg p-6 text-white shadow-lg">
-                                <h3 className="text-lg font-bold mb-4">Akses Cepat</h3>
-                                <div className="space-y-3">
-                                    <Link href="/attendance/scan" className="flex items-center space-x-3 p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                                        </svg>
-                                        <span className="text-sm font-medium">Scan QR Absensi</span>
-                                    </Link>
-                                    <Link href="/finance/payment" className="flex items-center space-x-3 p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                                        </svg>
-                                        <span className="text-sm font-medium">Bayar Iuran</span>
-                                    </Link>
-                                    <Link href="/profile/edit" className="flex items-center space-x-3 p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                        </svg>
-                                        <span className="text-sm font-medium">Edit Profil</span>
                                     </Link>
                                 </div>
                             </div>
@@ -599,17 +575,201 @@ export default function Home() {
                 </div>
             </div>
 
+            {/* Feature Cards Section - Akses ke Semua Halaman */}
+            <div className="bg-gray-50 py-12">
+                <div className="container mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <h2 className="text-3xl font-bold text-darkgray mb-3">Akses cepat ke semua fitur sistem UKM Tenis Lapangan USU</h2>
+                        <p className="text-gray-600">Beberapa pilihan menu untuk anda</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {/* Jadwal Card */}
+                        <Link href="/schedules" className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+                            <div className="bg-gradient-to-r from-green-500 to-green-600 p-6">
+                                <div className="flex items-center justify-between">
+                                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <svg className="w-6 h-6 text-white/70 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div className="p-6">
+                                <h3 className="text-xl font-bold text-darkgray mb-2">Jadwal Latihan</h3>
+                                <p className="text-gray-600 text-sm mb-4">Lihat dan kelola jadwal latihan, turnamen, dan event UKM</p>
+                                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                                    <span className="flex items-center">
+                                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                                        </svg>
+                                        18 jadwal
+                                    </span>
+                                    <span>•</span>
+                                    <span>8 bulan ini</span>
+                                </div>
+                            </div>
+                        </Link>
+
+                        {/* Absensi Card */}
+                        <Link href="/attendance" className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+                            <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6">
+                                <div className="flex items-center justify-between">
+                                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                        </svg>
+                                    </div>
+                                    <svg className="w-6 h-6 text-white/70 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div className="p-6">
+                                <h3 className="text-xl font-bold text-darkgray mb-2">Absensi</h3>
+                                <p className="text-gray-600 text-sm mb-4">Catat kehadiran dengan scan QR atau input manual</p>
+                                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                                    <span className="flex items-center">
+                                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                        </svg>
+                                        87% kehadiran
+                                    </span>
+                                    <span>•</span>
+                                    <span>8/10 hadir</span>
+                                </div>
+                            </div>
+                        </Link>
+
+                        {/* Keuangan Card */}
+                        <Link href="/finance" className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+                            <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 p-6">
+                                <div className="flex items-center justify-between">
+                                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <svg className="w-6 h-6 text-white/70 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div className="p-6">
+                                <h3 className="text-xl font-bold text-darkgray mb-2">Keuangan</h3>
+                                <p className="text-gray-600 text-sm mb-4">Bayar iuran kas dan lihat riwayat transaksi</p>
+                                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                                    <span className="flex items-center">
+                                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
+                                        </svg>
+                                        Rp 50K tunggakan
+                                    </span>
+                                </div>
+                            </div>
+                        </Link>
+
+                        {/* Penilaian Card */}
+                        <Link href="/evaluation" className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+                            <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-6">
+                                <div className="flex items-center justify-between">
+                                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                        </svg>
+                                    </div>
+                                    <svg className="w-6 h-6 text-white/70 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div className="p-6">
+                                <h3 className="text-xl font-bold text-darkgray mb-2">Penilaian Pengurus</h3>
+                                <p className="text-gray-600 text-sm mb-4">Berikan penilaian untuk kinerja pengurus UKM</p>
+                                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                                    <span className="flex items-center">
+                                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                                        </svg>
+                                        6 pengurus
+                                    </span>
+                                    <span>•</span>
+                                    <span>Anonim</span>
+                                </div>
+                            </div>
+                        </Link>
+
+                        {/* Laporan Card */}
+                        <Link href="/reports" className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+                            <div className="bg-gradient-to-r from-red-500 to-red-600 p-6">
+                                <div className="flex items-center justify-between">
+                                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </div>
+                                    <svg className="w-6 h-6 text-white/70 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div className="p-6">
+                                <h3 className="text-xl font-bold text-darkgray mb-2">Laporan</h3>
+                                <p className="text-gray-600 text-sm mb-4">Lihat berbagai laporan kas, kehadiran, dan statistik</p>
+                                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                                    <span className="flex items-center">
+                                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+                                        </svg>
+                                        13 jenis laporan
+                                    </span>
+                                </div>
+                            </div>
+                        </Link>
+
+                        {/* Galeri Card */}
+                        <Link href="/gallery" className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+                            <div className="bg-gradient-to-r from-pink-500 to-pink-600 p-6">
+                                <div className="flex items-center justify-between">
+                                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <svg className="w-6 h-6 text-white/70 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div className="p-6">
+                                <h3 className="text-xl font-bold text-darkgray mb-2">Galeri Foto</h3>
+                                <p className="text-gray-600 text-sm mb-4">Upload dan lihat dokumentasi kegiatan UKM</p>
+                                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                                    <span className="flex items-center">
+                                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                                        </svg>
+                                        48 foto
+                                    </span>
+                                    <span>•</span>
+                                    <span>12 album</span>
+                                </div>
+                            </div>
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
+           
+
             
 
 
-            {/* Features Grid */}
-            <div className="container mx-auto px-4 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {features.map((feature, index) => (
-                        <FeatureCard key={index} {...feature} />
-                    ))}
-                </div>
-            </div>
+            
         </AppLayout>
     );
 }

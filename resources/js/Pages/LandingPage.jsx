@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
-import AppLayout from '@/Layouts/AppLayout';
+import LandingNavbar from '@/Components/LandingNavbar';
+import { Head } from '@inertiajs/react';
 
 const StatCard = ({ number, label, icon }) => (
     <div className="bg-white rounded-lg p-6 shadow-lg transform hover:-translate-y-1 transition-all duration-300">
@@ -120,9 +121,15 @@ export default function LandingPage() {
     ];
 
     return (
-        <AppLayout title="Landing Page UKM Tenis USU">
+        <>
+            <Head title="UKM Tenis USU - Universitas Sumatera Utara" />
+            <LandingNavbar />
+            
+            {/* Spacing for fixed navbar */}
+            <div className="h-20"></div>
+
             {/* Hero Section */}
-            <section className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white py-12 lg:py-20">
+            <section id='home' className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white py-12 lg:py-20">
                 <div className="container mx-auto px-6 flex flex-col lg:flex-row items-center">
                     {/* Left content */}
                     <div className="flex-1 space-y-6 text-center lg:text-left">
@@ -140,12 +147,7 @@ export default function LandingPage() {
                             >
                                 Gabung Sekarang
                             </Link>
-                            <Link
-                                href="/about"
-                                className="px-6 py-3 border border-white rounded-lg font-semibold hover:bg-white/10 transition"
-                            >
-                                Pelajari Lebih Lanjut
-                            </Link>
+                           
                         </div>
                     </div>
 
@@ -188,12 +190,12 @@ export default function LandingPage() {
             </section>
 
             {/* About Section */}
-            <section className="py-2 lg:py-20 bg-white">
+            <section id="about" className="py-2 lg:py-20 bg-white">
                 <div className="container mx-auto px-6">
                     <div className="flex flex-col lg:flex-row items-center gap-12">
                         {/* Left Side - Image */}
                         <div className="flex-1">
-                            <div className="relative">
+                            <div className="relative ">
                                 <img 
                                     src="/images/ACTOR.png" 
                                     alt="Logo UKM Tenis USU" 
@@ -299,7 +301,7 @@ export default function LandingPage() {
             </section>
 
              {/* Training Schedule Section */}
-            <section className="py-6 lg:py-20 bg-gradient-to-br from-[#F5F7F8] to-white">
+            <section id="schedule" className="py-6 lg:py-12 bg-gradient-to-br from-[#F5F7F8] to-white">
                 <div className="container mx-auto px-6">
                     <div className="text-center mb-12">
                         <h2 className="text-4xl font-bold text-[#45474B] mb-4">Jadwal Latihan Rutin UKM Tenis Lapangan USU</h2>
@@ -456,10 +458,10 @@ export default function LandingPage() {
             </section>
 
             {/* Gallery Preview */}
-            <section className="py-8 lg:py-20 bg-gradient-to-br from-[#F5F7F8] to-white">
-                <div className="container mx-auto px-4">
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-darkgray mb-2">Galeri Kegiatan</h2>
+            <section  className="py-8 lg:py-20 bg-gradient-to-br from-[#F5F7F8] to-white">
+                <div className="container mx-auto px-4" id="gallery">
+                    <div className="text-center mb-8" >
+                        <h2 className="text-3xl font-bold text-darkgray mb-2" >Galeri Kegiatan</h2>
                         <p className="text-gray-600 max-w-2xl mx-auto">Dokumentasi kegiatan dan prestasi UKM Tenis USU</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -483,7 +485,7 @@ export default function LandingPage() {
            
 
             {/* Testimonials Section */}
-            <section className="py-8 bg-gray-50">
+            <section id="testimonials" className="py-8 bg-gray-50">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl font-bold text-darkgray mb-4">Apa Kata Mereka?</h2>
@@ -557,6 +559,6 @@ export default function LandingPage() {
                     </div>
                 </div>
             </section>
-        </AppLayout>
+        </>
     );
 }

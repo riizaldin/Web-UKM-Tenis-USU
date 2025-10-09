@@ -49,6 +49,19 @@ Route::get('/finance', function () {
     return Inertia::render('Finance');
 })->middleware(['auth', 'verified', ProfileCompleted::class])->name('finance');
 
+Route::get('/evaluation', function () {
+    return Inertia::render('Evaluation', [
+        'auth' => [
+            'user' => Auth::user(),
+        ],
+    ]);
+})->middleware(['auth', 'verified', ProfileCompleted::class])->name('evaluation');
+
+Route::post('/evaluation/store', function () {
+    // Backend implementation untuk menyimpan penilaian
+    return redirect()->route('evaluation')->with('success', 'Penilaian berhasil dikirim!');
+})->middleware(['auth', 'verified', ProfileCompleted::class])->name('evaluation.store');
+
 Route::get('/reports', function () {
     return Inertia::render('Reports');
 })->middleware(['auth', 'verified', ProfileCompleted::class])->name('reports');

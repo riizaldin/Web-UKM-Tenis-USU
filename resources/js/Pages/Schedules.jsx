@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 
-export default function Schedules() {
+export default function Schedules({ auth }) {
     const [currentMonth, setCurrentMonth] = useState(9); // October (0-indexed)
     const [currentYear, setCurrentYear] = useState(2025);
     const [selectedDate, setSelectedDate] = useState(null);
@@ -204,7 +204,7 @@ export default function Schedules() {
     const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
 
     return (
-        <AppLayout title="Jadwal Kegiatan">
+        <AppLayout title="Jadwal Kegiatan" auth={auth}>
             {/* Header Section */}
             <div className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white py-12">
                 <div className="container mx-auto px-4">
