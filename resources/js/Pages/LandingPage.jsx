@@ -421,7 +421,7 @@ export default function LandingPage() {
                                 </div>
                                 <div className="p-4 bg-gray-50">
                                     <a 
-                                        href="https://goo.gl/maps/your-location-link" 
+                                        href="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.0890565046057!2d98.65374829999999!3d3.5669767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312fe476083541%3A0xc18875c43ac9b677!2sLapangan%20Tenis%20USU!5e0!3m2!1sid!2sid!4v1760004803139!5m2!1sid!2sid" 
                                         target="_blank" 
                                         rel="noopener noreferrer"
                                         className="flex items-center justify-center space-x-2 text-[#185A9D] hover:text-[#43CEA2] font-medium transition-colors"
