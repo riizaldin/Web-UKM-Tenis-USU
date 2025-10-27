@@ -1,0 +1,74 @@
+.react-calendar {
+  width: 100%;
+  max-width: 280px;
+  border: none;
+  background: transparent;
+  font-family: "Inter", sans-serif;
+}
+
+.react-calendar__navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.react-calendar__navigation button {
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.react-calendar__navigation button:hover {
+  background: #f3f4f6;
+}
+
+.react-calendar__month-view__weekdays {
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.react-calendar__tile {
+  border-radius: 12px;
+  padding: 0.6rem 0;
+  transition: 0.25s ease;
+  color: #374151;
+  font-weight: 500;
+}
+
+.react-calendar__tile:hover {
+  background: #f3f4f6;
+}
+
+.react-calendar__tile--now {
+  background: #45cece;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+}
+
+.react-calendar__tile.selected-date {
+  background: #6366f1 !important;
+  color: white !important;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.react-calendar__month-view__days__day--weekend {
+  color: #ef4444;
+}
+
+.custom-calendar .react-calendar__tile--hasEvent {  /* Atau .event-day kalau pakai itu */
+  border: 2px solid #cf4141 !important;
+  border-radius: 8px !important;  /* Biar nggak terlalu bulat */
+  height: fit-content;
+  position: relative;
+  /* background-color: rgb(119, 197, 30);  Subtle bg merah */
+}
