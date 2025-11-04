@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import QRCode from 'qrcode';
+import { sha256 } from 'js-sha256';
 
 export default function useQRCode() {
   const [qrCodeUrl, setQrCodeUrl] = useState('');
@@ -9,16 +10,10 @@ export default function useQRCode() {
   const generateQR = async (attendance) => {
     setSelectedAttendance(attendance);
     setIsLoading(true);
-    
-    const qrData = JSON.stringify({
-      attendance_id: attendance.id,
-      description: attendance.description,
-      date: attendance.date,
-      start_time: attendance.start_time,
-      end_time: attendance.end_time,
-      location: attendance.location,
-      url: `${window.location.origin}/attendance/${attendance.id}/scan`
-    });
+
+    const toHash = `${attendance.id + attendance.kode_absensi + attendance.tanggal + attendance.waktu_mulai + attendance.waktu_selesai}`;
+    const hash = sha256(toHash);
+    const qrData = `${window.location.origin}/attendance/set?id=${hash}`;
 
     try {
       const qrUrl = await QRCode.toDataURL(qrData, {
@@ -41,11 +36,17 @@ export default function useQRCode() {
 
   const downloadQR = () => {
     if (!qrCodeUrl || !selectedAttendance) return;
-    
+
+    const date = selectedAttendance.tanggal || 'unknown-date';
+    const event_name = selectedAttendance.nama_event || 'unknown-event';
+    const filename = `QR-absensi-${event_name}-${date}.png`;
+
     const link = document.createElement('a');
-    link.download = `QR-${selectedAttendance.description.replace(/\s+/g, '-')}.png`;
     link.href = qrCodeUrl;
+    link.download = filename;
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
   };
 
   const resetQR = () => {

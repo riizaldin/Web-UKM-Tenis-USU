@@ -4,15 +4,15 @@ import Button from './Button';
 import Alert from './Alert';
 import FormInput from './FormInput';
 import FormTextarea from './FormTextarea';
-import FormCheckbox from './FormCheckbox';
-import { Calendar, Clock, MapPin, FileText, CheckCircle, Plus, Timer, QrCode } from 'lucide-react';
+import { Calendar, Clock, MapPin, FileText, CheckCircle, Plus, Timer, QrCode,  ALargeSmall, SquareChartGantt, User, Trophy } from 'lucide-react';
 
 export default function AttendanceFormModal({ 
   isOpen, 
   onClose, 
   formData, 
   onInputChange, 
-  onSubmit 
+  onSubmit,
+  errors = {},
 }) {
   return (
     <Modal
@@ -29,6 +29,7 @@ export default function AttendanceFormModal({
           name="date"
           value={formData.date}
           onChange={onInputChange}
+          error={errors.date}
           required
         />
 
@@ -40,6 +41,7 @@ export default function AttendanceFormModal({
             name="start_time"
             value={formData.start_time}
             onChange={onInputChange}
+            error={errors.start_time}
             required
           />
 
@@ -51,6 +53,7 @@ export default function AttendanceFormModal({
             value={formData.end_time}
             onChange={onInputChange}
             placeholder="Opsional"
+            error={errors.end_time}
           />
         </div>
 
@@ -64,6 +67,61 @@ export default function AttendanceFormModal({
         </Alert>
 
         <FormInput
+          label="Nama Kegiatan"
+          icon={<ALargeSmall className="w-4 h-4" />}
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={onInputChange}
+          placeholder="Misal: Latihan Rutin"
+          error={errors.name}
+          required
+        />
+
+        <FormInput
+          label="Tipe Kegiatan"
+          icon={<SquareChartGantt className="w-4 h-4" />}
+          type="select"
+          name="type"
+          value={formData.type}
+          onChange={onInputChange}
+          options={[
+            { value: '', label: 'Pilih tipe kegiatan', disabled: true },
+            { value: 'latihan', label: 'Latihan' },
+            { value: 'turnamen', label: 'Turnamen' },
+            { value: 'lainnya', label: 'Lainnya' },
+          ]}
+          error={errors.type}
+          required
+        />
+
+        {formData.type === 'latihan' && (
+          <FormInput
+            label="Coach"
+            icon={<User className="w-4 h-4" />}
+            type="text"
+            name="pelatih"
+            value={formData.pelatih ?? ''}
+            onChange={onInputChange}
+            error={errors.pelatih}
+            placeholder="Nama pelatih (opsional)"
+          />
+        )}
+
+        {formData.type === 'turnamen' && (
+          <FormInput
+            label="Hadiah"
+            icon={<Trophy className="w-4 h-4" />}
+            type="text"
+            name="hadiah"
+            value={formData.hadiah ?? ''}
+            onChange={onInputChange}
+            error={errors.hadiah}
+            placeholder="Hadiah turnamen (opsional)"
+          />
+        )}
+
+        <FormInput
           label="Lokasi"
           icon={<MapPin className="w-4 h-4" />}
           type="text"
@@ -71,6 +129,7 @@ export default function AttendanceFormModal({
           value={formData.location}
           onChange={onInputChange}
           placeholder="Misal: Ruang A101"
+          error={errors.location}
           required
         />
 
@@ -83,17 +142,10 @@ export default function AttendanceFormModal({
           placeholder="Deskripsi kegiatan absensi"
           rows={3}
           required
+          error={errors.description}
         />
 
-        <Alert variant="info">
-          <FormCheckbox
-            label="Mode QR Code Only"
-            description="Jika diaktifkan, anggota hanya bisa absen dengan scan QR code. Jika tidak, absen bisa dilakukan secara umum tanpa QR."
-            name="qr_only"
-            checked={formData.qr_only}
-            onChange={onInputChange}
-          />
-        </Alert>
+     
 
         <Alert variant="gray" icon={<QrCode className="w-4 h-4" />}>
           QR Code dapat di-generate kapan saja setelah absensi dibuat. 

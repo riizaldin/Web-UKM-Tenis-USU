@@ -23,22 +23,22 @@ export default function QRCodeModal({
       <div className="space-y-4">
         {/* Info Absensi */}
         <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-4">
-          <h4 className="font-semibold text-gray-900 mb-2">{attendance.description}</h4>
+          <h4 className="font-semibold text-gray-900 mb-2">{attendance.nama_event}</h4>
           <div className="space-y-1 text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
-              {new Date(attendance.date).toLocaleDateString('id-ID', { 
+              {new Date(attendance.tanggal).toLocaleDateString('id-ID', { 
                 day: 'numeric', month: 'long', year: 'numeric'
               })}
             </div>
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
-              {attendance.start_time}
-              {attendance.end_time && ` - ${attendance.end_time}`}
+              {attendance.waktu_mulai.slice(0, 5)}
+              {attendance.waktu_selesai && ` - ${attendance.waktu_selesai.slice(0,5)}`}
             </div>
             <div className="flex items-center gap-2">
               <MapPin className="w-4 h-4" />
-              {attendance.location}
+              {attendance.lokasi}
             </div>
           </div>
         </div>

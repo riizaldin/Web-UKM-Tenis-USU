@@ -3,6 +3,7 @@ import Navbar from '@/Components/Navbar';
 import Footer from '@/Components/Footer';
 import { Head } from '@inertiajs/react';
 
+
 export default function AppLayout({ children, title, auth }) {
     return (
         <>

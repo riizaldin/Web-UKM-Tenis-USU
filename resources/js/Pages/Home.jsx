@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
-
+import { titleCase, getFirstLettersFromName } from '@/utils/helpers';
 const FeatureCard = ({ title, description, icon, link, color = "blue" }) => {
     const colorClasses = {
         blue: {
@@ -52,7 +52,7 @@ const FeatureCard = ({ title, description, icon, link, color = "blue" }) => {
             <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             
             {/* Content Container */}
-            <div className="relative z-10">
+            <div className="relative z-10"> 
                 {/* Icon Container with Glow Effect */}
                 <div className={`inline-flex p-5 rounded-2xl bg-gradient-to-br ${colors.gradient} ${colors.hover} shadow-xl ${colors.glow} mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
                     {icon}
@@ -136,7 +136,6 @@ export default function Home({ auth }) {
 
     return (
         <AppLayout title="Home" auth={auth}>
-            
             {/* Hero Section - Enhanced */}
             <div className="relative bg-gradient-to-r from-[#43CEA2] via-[#2E8B9E] to-[#185A9D] text-white py-12 overflow-hidden">
                 {/* Decorative Elements */}
@@ -150,12 +149,12 @@ export default function Home({ auth }) {
                             <div className="flex items-start space-x-6">
                                 <div className="flex-shrink-0">
                                     <div className="w-20 h-20 bg-gradient-to-br from-prismarine to-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg hover:scale-105 transition-transform duration-300">
-                                        RF
+                                        {getFirstLettersFromName(auth.user.name)}
                                     </div>
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex items-center justify-between mb-3">
-                                        <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">RIZALDI FEBRIANSYAH</h3>
+                                        <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">{titleCase(auth.user.name)}</h3>
                                         <div className="flex items-center space-x-2">
                                             <span className="px-4 py-1.5 bg-gradient-to-r from-prismarine to-teal-600 text-white text-sm rounded-full font-semibold shadow-md">KETUA</span>
 
@@ -216,7 +215,7 @@ export default function Home({ auth }) {
                                             </svg>
                                             <div>
                                                 <div className="text-xs text-gray-500 font-medium">NIM</div>
-                                                <div className="font-bold text-gray-800">221402126</div>
+                                                <div className="font-bold text-gray-800">{auth.user.nim}</div>
                                             </div>
                                         </div>
                                         <div className="flex items-center space-x-2">
@@ -225,7 +224,7 @@ export default function Home({ auth }) {
                                             </svg>
                                             <div>
                                                 <div className="text-xs text-gray-500 font-medium">Fakultas</div>
-                                                <div className="font-bold text-gray-800">Ilmu Komputer dan Teknologi Informasi</div>
+                                                <div className="font-bold text-gray-800">{titleCase(auth.user.fakultas)}</div>
                                             </div>
                                         </div>
                                         <div className="pt-3 flex items-center space-x-3">

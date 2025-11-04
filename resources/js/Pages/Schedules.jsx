@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 
-export default function Schedules({ auth }) {
+export default function Schedules({ auth, schedules }) {
     const [currentMonth, setCurrentMonth] = useState(9); // October (0-indexed)
     const [currentYear, setCurrentYear] = useState(2025);
     const [selectedDate, setSelectedDate] = useState(null);
@@ -16,110 +16,110 @@ export default function Schedules({ auth }) {
     const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 
     // Sample schedule data
-    const schedules = [
-        {
-            id: 1,
-            title: 'Latihan Rutin',
-            type: 'training',
-            date: '2025-10-10',
-            startTime: '15:00',
-            endTime: '17:00',
-            location: 'Lapangan Tenis USU - Pintu 4',
-            description: 'Latihan rutin mingguan untuk semua anggota',
-            instructor: 'Coach Budi Santoso',
-            status: 'scheduled',
-            participants: 45
-        },
-        {
-            id: 2,
-            title: 'Turnamen Internal',
-            type: 'tournament',
-            date: '2025-10-15',
-            startTime: '08:00',
-            endTime: '16:00',
-            location: 'Lapangan Tenis USU',
-            description: 'Turnamen internal kategori singles dan doubles',
-            prize: 'Trophy + Uang Pembinaan',
-            status: 'registration',
-            participants: 32
-        },
-        {
-            id: 3,
-            title: 'Latihan Rutin',
-            type: 'training',
-            date: '2025-10-12',
-            startTime: '15:00',
-            endTime: '17:00',
-            location: 'Lapangan Tenis USU - Pintu 4',
-            description: 'Latihan rutin mingguan untuk semua anggota',
-            instructor: 'Coach Budi Santoso',
-            status: 'scheduled',
-            participants: 42
-        },
-        {
-            id: 4,
-            title: 'Rapat Pengurus',
-            type: 'event',
-            date: '2025-10-14',
-            startTime: '18:00',
-            endTime: '20:00',
-            location: 'Sekretariat UKM Tenis',
-            description: 'Rapat koordinasi pengurus bulanan',
-            status: 'scheduled',
-            participants: 15
-        },
-        {
-            id: 5,
-            title: 'Sparing Partner',
-            type: 'training',
-            date: '2025-10-13',
-            startTime: '08:00',
-            endTime: '11:00',
-            location: 'Lapangan Tenis USU',
-            description: 'Latihan sparing dengan UKM Tenis dari universitas lain',
-            instructor: 'Coach Budi Santoso',
-            status: 'scheduled',
-            participants: 24
-        },
-        {
-            id: 6,
-            title: 'Workshop Teknik Serve',
-            type: 'event',
-            date: '2025-10-20',
-            startTime: '09:00',
-            endTime: '12:00',
-            location: 'Lapangan Tenis USU',
-            description: 'Workshop khusus teknik serve dengan pelatih nasional',
-            instructor: 'Coach Profesional',
-            status: 'scheduled',
-            participants: 30
-        },
-        {
-            id: 7,
-            title: 'Latihan Rutin',
-            type: 'training',
-            date: '2025-10-17',
-            startTime: '15:00',
-            endTime: '17:00',
-            location: 'Lapangan Tenis USU - Pintu 4',
-            description: 'Latihan rutin mingguan untuk semua anggota',
-            instructor: 'Coach Budi Santoso',
-            status: 'scheduled',
-            participants: 48
-        },
-        {
-            id: 8,
-            title: 'Bakti Sosial',
-            type: 'event',
-            date: '2025-10-25',
-            startTime: '07:00',
-            endTime: '12:00',
-            location: 'Desa Binaan USU',
-            description: 'Kegiatan bakti sosial tahunan UKM Tenis',
-            status: 'scheduled',
-            participants: 60
-        }
-    ];
+    // const schedules = [
+    //     {
+    //         id: 1,
+    //         title: 'Latihan Rutin',
+    //         type: 'training',
+    //         date: '2025-10-10',
+    //         startTime: '15:00',
+    //         endTime: '17:00',
+    //         location: 'Lapangan Tenis USU - Pintu 4',
+    //         description: 'Latihan rutin mingguan untuk semua anggota',
+    //         instructor: 'Coach Budi Santoso',
+    //         status: 'scheduled',
+    //         participants: 45
+    //     },
+    //     {
+    //         id: 2,
+    //         title: 'Turnamen Internal',
+    //         type: 'tournament',
+    //         date: '2025-10-15',
+    //         startTime: '08:00',
+    //         endTime: '16:00',
+    //         location: 'Lapangan Tenis USU',
+    //         description: 'Turnamen internal kategori singles dan doubles',
+    //         prize: 'Trophy + Uang Pembinaan',
+    //         status: 'registration',
+    //         participants: 32
+    //     },
+    //     {
+    //         id: 3,
+    //         title: 'Latihan Rutin',
+    //         type: 'training',
+    //         date: '2025-10-12',
+    //         startTime: '15:00',
+    //         endTime: '17:00',
+    //         location: 'Lapangan Tenis USU - Pintu 4',
+    //         description: 'Latihan rutin mingguan untuk semua anggota',
+    //         instructor: 'Coach Budi Santoso',
+    //         status: 'scheduled',
+    //         participants: 42
+    //     },
+    //     {
+    //         id: 4,
+    //         title: 'Rapat Pengurus',
+    //         type: 'event',
+    //         date: '2025-10-14',
+    //         startTime: '18:00',
+    //         endTime: '20:00',
+    //         location: 'Sekretariat UKM Tenis',
+    //         description: 'Rapat koordinasi pengurus bulanan',
+    //         status: 'scheduled',
+    //         participants: 15
+    //     },
+    //     {
+    //         id: 5,
+    //         title: 'Sparing Partner',
+    //         type: 'training',
+    //         date: '2025-10-13',
+    //         startTime: '08:00',
+    //         endTime: '11:00',
+    //         location: 'Lapangan Tenis USU',
+    //         description: 'Latihan sparing dengan UKM Tenis dari universitas lain',
+    //         instructor: 'Coach Budi Santoso',
+    //         status: 'scheduled',
+    //         participants: 24
+    //     },
+    //     {
+    //         id: 6,
+    //         title: 'Workshop Teknik Serve',
+    //         type: 'event',
+    //         date: '2025-10-20',
+    //         startTime: '09:00',
+    //         endTime: '12:00',
+    //         location: 'Lapangan Tenis USU',
+    //         description: 'Workshop khusus teknik serve dengan pelatih nasional',
+    //         instructor: 'Coach Profesional',
+    //         status: 'scheduled',
+    //         participants: 30
+    //     },
+    //     {
+    //         id: 7,
+    //         title: 'Latihan Rutin',
+    //         type: 'training',
+    //         date: '2025-10-17',
+    //         startTime: '15:00',
+    //         endTime: '17:00',
+    //         location: 'Lapangan Tenis USU - Pintu 4',
+    //         description: 'Latihan rutin mingguan untuk semua anggota',
+    //         instructor: 'Coach Budi Santoso',
+    //         status: 'scheduled',
+    //         participants: 48
+    //     },
+    //     {
+    //         id: 8,
+    //         title: 'Bakti Sosial',
+    //         type: 'event',
+    //         date: '2025-10-25',
+    //         startTime: '07:00',
+    //         endTime: '12:00',
+    //         location: 'Desa Binaan USU',
+    //         description: 'Kegiatan bakti sosial tahunan UKM Tenis',
+    //         status: 'scheduled',
+    //         participants: 60
+    //     }
+    // ];
 
     const getDaysInMonth = (month, year) => {
         return new Date(year, month + 1, 0).getDate();
@@ -149,7 +149,7 @@ export default function Schedules({ auth }) {
 
     const getSchedulesForDate = (date) => {
         const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
-        return schedules.filter(schedule => schedule.date === dateStr);
+        return schedules.filter(schedule => schedule.tanggal === dateStr);
     };
 
     const hasSchedule = (date) => {
@@ -158,38 +158,38 @@ export default function Schedules({ auth }) {
 
     const getScheduleTypeColor = (type) => {
         switch (type) {
-            case 'training':
+            case 'latihan':
                 return 'bg-green-500';
-            case 'tournament':
+            case 'turnamen':
                 return 'bg-purple-500';
-            case 'event':
+            case 'lainnya':
                 return 'bg-blue-500';
             default:
-                return 'bg-gray-500';
+                return 'bg-blue-500';
         }
     };
 
     const getScheduleTypeBadge = (type) => {
         switch (type) {
-            case 'training':
+            case 'latihan':
                 return 'bg-green-100 text-green-700';
-            case 'tournament':
+            case 'turnamen':
                 return 'bg-purple-100 text-purple-700';
-            case 'event':
+            case 'lainnya':
                 return 'bg-blue-100 text-blue-700';
             default:
-                return 'bg-gray-100 text-gray-700';
+                return 'bg-blue-100 text-blue-700';
         }
     };
 
     const getScheduleTypeLabel = (type) => {
         switch (type) {
-            case 'training':
+            case 'latihan':
                 return 'Latihan';
-            case 'tournament':
+            case 'turnamen':
                 return 'Turnamen';
-            case 'event':
-                return 'Event';
+            case 'lainnya':
+                return 'Lainnya';
             default:
                 return 'Lainnya';
         }
@@ -197,12 +197,11 @@ export default function Schedules({ auth }) {
 
     const filteredSchedules = schedules.filter(schedule => {
         if (viewMode === 'all') return true;
-        return schedule.type === viewMode;
-    }).sort((a, b) => new Date(a.date) - new Date(b.date));
+        return schedule.tipe === viewMode;
+    }).sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
 
     const daysInMonth = getDaysInMonth(currentMonth, currentYear);
     const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
-
     return (
         <AppLayout title="Jadwal Kegiatan" auth={auth}>
             {/* Header Section */}
@@ -230,9 +229,9 @@ export default function Schedules({ auth }) {
                             Semua Jadwal
                         </button>
                         <button
-                            onClick={() => setViewMode('training')}
+                            onClick={() => setViewMode('latihan')}
                             className={`px-6 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap ${
-                                viewMode === 'training'
+                                viewMode === 'latihan'
                                     ? 'bg-green-500 text-white'
                                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                             }`}
@@ -240,9 +239,9 @@ export default function Schedules({ auth }) {
                             Latihan
                         </button>
                         <button
-                            onClick={() => setViewMode('tournament')}
+                            onClick={() => setViewMode('turnamen')}
                             className={`px-6 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap ${
-                                viewMode === 'tournament'
+                                viewMode === 'turnamen'
                                     ? 'bg-purple-500 text-white'
                                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                             }`}
@@ -250,9 +249,9 @@ export default function Schedules({ auth }) {
                             Turnamen
                         </button>
                         <button
-                            onClick={() => setViewMode('event')}
+                            onClick={() => setViewMode('lainnya')}
                             className={`px-6 py-2 rounded-lg font-semibold transition-colors whitespace-nowrap ${
-                                viewMode === 'event'
+                                viewMode === 'lainnya'
                                     ? 'bg-blue-500 text-white'
                                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                             }`}
@@ -333,10 +332,10 @@ export default function Schedules({ auth }) {
                                                     </div>
                                                     {dateSchedules.length > 0 && (
                                                         <div className="flex justify-center mt-1 space-x-1">
-                                                            {dateSchedules.slice(0, 3).map((schedule, idx) => (
+                                                            {dateSchedules.slice(0, 5).map((schedule, idx) => (
                                                                 <div
                                                                     key={idx}
-                                                                    className={`w-1.5 h-1.5 rounded-full ${getScheduleTypeColor(schedule.type)}`}
+                                                                    className={`w-1.5 h-1.5 rounded-full ${getScheduleTypeColor(schedule.tipe)}`}
                                                                 ></div>
                                                             ))}
                                                         </div>
@@ -384,13 +383,13 @@ export default function Schedules({ auth }) {
                                                     key={schedule.id}
                                                     className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg"
                                                 >
-                                                    <div className={`w-3 h-3 ${getScheduleTypeColor(schedule.type)} rounded-full mt-1.5`}></div>
+                                                    <div className={`w-3 h-3 ${getScheduleTypeColor(schedule.tipe)} rounded-full mt-1.5`}></div>
                                                     <div className="flex-1">
-                                                        <h4 className="font-semibold text-gray-800">{schedule.title}</h4>
+                                                        <h4 className="font-semibold text-gray-800">{schedule.nama_event}</h4>
                                                         <p className="text-sm text-gray-600">
-                                                            {schedule.startTime} - {schedule.endTime} WIB
+                                                            {schedule.waktu_mulai.slice(0,5)} - {schedule.waktu_selesai.slice(0,5)} WIB
                                                         </p>
-                                                        <p className="text-sm text-gray-600">{schedule.location}</p>
+                                                        <p className="text-sm text-gray-600">{schedule.lokasi}</p>
                                                     </div>
                                                 </div>
                                             ))}
@@ -408,46 +407,50 @@ export default function Schedules({ auth }) {
                         <div className="bg-white rounded-lg shadow-lg p-6 sticky top-24">
                             <h2 className="text-xl font-bold text-gray-800 mb-4">Jadwal Mendatang</h2>
                             <div className="space-y-4 max-h-[600px] overflow-y-auto">
-                                {filteredSchedules.slice(0, 10).map((schedule) => (
+                                {filteredSchedules.length > 0 ? (filteredSchedules.slice(0, 10).map((schedule) => (
                                     <div
                                         key={schedule.id}
                                         className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                                     >
                                         <div className="flex items-start justify-between mb-2">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getScheduleTypeBadge(schedule.type)}`}>
-                                                {getScheduleTypeLabel(schedule.type)}
+                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getScheduleTypeBadge(schedule.tipe)}`}>
+                                                {getScheduleTypeLabel(schedule.tipe)}
                                             </span>
                                             <span className="text-xs text-gray-500">
-                                                {new Date(schedule.date).toLocaleDateString('id-ID', {
+                                                {new Date(schedule.tanggal).toLocaleDateString('id-ID', {
                                                     day: 'numeric',
                                                     month: 'short'
                                                 })}
                                             </span>
                                         </div>
-                                        <h3 className="font-semibold text-gray-800 mb-2">{schedule.title}</h3>
+                                        <h3 className="font-semibold text-gray-800 mb-2">{schedule.nama_event}</h3>
                                         <div className="space-y-1 text-sm text-gray-600">
                                             <div className="flex items-center space-x-2">
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
-                                                <span>{schedule.startTime} - {schedule.endTime} WIB</span>
+                                                <span>{schedule.waktu_mulai.slice(0, 5)} - {schedule.waktu_selesai.slice(0, 5)} WIB</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                 </svg>
-                                                <span className="text-xs">{schedule.location}</span>
+                                                <span className="text-xs">{schedule.lokasi}</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                                 </svg>
-                                                <span>{schedule.participants} peserta</span>
+                                                <span>{schedule.attendance_count} peserta</span>
                                             </div>
                                         </div>
                                     </div>
-                                ))}
+
+                                    
+                                ))): (
+                                    <div className="text-gray-500 text-center py-4">Tidak ada jadwal mendatang</div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -458,7 +461,7 @@ export default function Schedules({ auth }) {
                     <div className="bg-white rounded-lg shadow-lg p-6">
                         <h2 className="text-2xl font-bold text-gray-800 mb-6">Detail Jadwal</h2>
                         <div className="space-y-6">
-                            {filteredSchedules.map((schedule) => (
+                            {filteredSchedules.length > 0 ? (filteredSchedules.map((schedule) => (
                                 <div
                                     key={schedule.id}
                                     className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
@@ -466,8 +469,8 @@ export default function Schedules({ auth }) {
                                     <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
                                         <div className="flex-1">
                                             <div className="flex items-center space-x-3 mb-2">
-                                                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getScheduleTypeBadge(schedule.type)}`}>
-                                                    {getScheduleTypeLabel(schedule.type)}
+                                                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getScheduleTypeBadge(schedule.tipe)}`}>
+                                                    {getScheduleTypeLabel(schedule.tipe)}
                                                 </span>
                                                 {schedule.status === 'registration' && (
                                                     <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-semibold">
@@ -475,17 +478,17 @@ export default function Schedules({ auth }) {
                                                     </span>
                                                 )}
                                             </div>
-                                            <h3 className="text-xl font-bold text-gray-800 mb-2">{schedule.title}</h3>
-                                            <p className="text-gray-600">{schedule.description}</p>
+                                            <h3 className="text-xl font-bold text-gray-800 mb-2">{schedule.nama_event}</h3>
+                                            <p className="text-gray-600">{schedule.deskripsi}</p>
                                         </div>
                                         <div className="mt-4 md:mt-0 md:ml-6 text-right">
                                             <div className="text-2xl font-bold text-prismarine">
-                                                {new Date(schedule.date).toLocaleDateString('id-ID', {
+                                                {new Date(schedule.tanggal).toLocaleDateString('id-ID', {
                                                     day: 'numeric'
                                                 })}
                                             </div>
                                             <div className="text-sm text-gray-600">
-                                                {new Date(schedule.date).toLocaleDateString('id-ID', {
+                                                {new Date(schedule.tanggal).toLocaleDateString('id-ID', {
                                                     month: 'long',
                                                     year: 'numeric'
                                                 })}
@@ -503,7 +506,7 @@ export default function Schedules({ auth }) {
                                             <div>
                                                 <div className="text-xs text-gray-500">Waktu</div>
                                                 <div className="font-semibold text-gray-800">
-                                                    {schedule.startTime} - {schedule.endTime}
+                                                    {schedule.waktu_mulai.slice(0,5)} - {schedule.waktu_selesai.slice(0, 5)} WIB
                                                 </div>
                                             </div>
                                         </div>
@@ -517,7 +520,7 @@ export default function Schedules({ auth }) {
                                             </div>
                                             <div>
                                                 <div className="text-xs text-gray-500">Lokasi</div>
-                                                <div className="font-semibold text-gray-800">{schedule.location}</div>
+                                                <div className="font-semibold text-gray-800">{schedule.lokasi}</div>
                                             </div>
                                         </div>
 
@@ -529,26 +532,26 @@ export default function Schedules({ auth }) {
                                             </div>
                                             <div>
                                                 <div className="text-xs text-gray-500">Peserta</div>
-                                                <div className="font-semibold text-gray-800">{schedule.participants} orang</div>
+                                                <div className="font-semibold text-gray-800">{schedule.attendance_count} orang</div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {schedule.instructor && (
+                                    {schedule.pelatih && (
                                         <div className="mb-4 flex items-center space-x-2 text-sm text-gray-600">
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
-                                            <span>Pelatih: <strong>{schedule.instructor}</strong></span>
+                                            <span>Pelatih: <strong>{schedule.pelatih}</strong></span>
                                         </div>
                                     )}
 
-                                    {schedule.prize && (
+                                    {schedule.hadiah && (
                                         <div className="mb-4 flex items-center space-x-2 text-sm text-gray-600">
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                                             </svg>
-                                            <span>Hadiah: <strong>{schedule.prize}</strong></span>
+                                            <span>Hadiah: <strong>{schedule.hadiah}</strong></span>
                                         </div>
                                     )}
 
@@ -574,7 +577,9 @@ export default function Schedules({ auth }) {
                                         )}
                                     </div>
                                 </div>
-                            ))}
+                            ))):(
+                                <div className="text-gray-500 text-center py-4">Tidak ada jadwal mendatang</div>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, usePage } from 'react';
 import { Link } from '@inertiajs/react';
 import LandingNavbar from '@/Components/LandingNavbar';
 import { Head } from '@inertiajs/react';
+import Navbar from '@/Components/Navbar';
 
 const StatCard = ({ number, label, icon }) => (
     <div className="bg-white rounded-lg p-6 shadow-lg transform hover:-translate-y-1 transition-all duration-300">
@@ -56,7 +57,8 @@ const FeatureCard = ({ title, description, icon, link }) => (
     </Link>
 );
 
-export default function LandingPage() {
+export default function LandingPage({auth}) {
+    
     const [currentSlide, setCurrentSlide] = useState(0);
     
     const heroImages = [
@@ -123,10 +125,13 @@ export default function LandingPage() {
     return (
         <>
             <Head title="UKM Tenis USU - Universitas Sumatera Utara" />
-            <LandingNavbar />
+            { auth.user ? <Navbar auth={auth} /> : 
+                <>
+                    <LandingNavbar /> 
+                    <div className="h-20"></div>
+                </>
+            }
             
-            {/* Spacing for fixed navbar */}
-            <div className="h-20"></div>
 
             {/* Hero Section */}
             <section id='home' className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white py-12 lg:py-20">

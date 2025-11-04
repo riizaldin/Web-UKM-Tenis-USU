@@ -1,17 +1,34 @@
 <?php
 
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\KasController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
+use App\Http\Middleware\ProfileCompleted;
+use League\CommonMark\Node\Block\Document;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\MemberController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Middleware\ProfileCompleted;
-use Inertia\Inertia;
+use App\Http\Controllers\User\ScheduleController;
 
 // Landing Page (publik, default)
 Route::get('/', function () {
-    return Inertia::render('LandingPage');
+    return Inertia::render('LandingPage', [
+        'auth' => [
+            'user' => Auth::user(),
+        ],
+    ]);
 })->name('landing');
+
+// Route::get('/home', function () {
+//     return Inertia::render('Home', [
+//         'auth' => [
+//             'user' => Auth::user(),
+//         ],
+//     ]);
+// })->middleware(['auth', 'verified', ProfileCompleted::class])->name('home');
 
 Route::get('/home', function () {
     return Inertia::render('Home', [
@@ -19,11 +36,14 @@ Route::get('/home', function () {
             'user' => Auth::user(),
         ],
     ]);
-})->middleware(['auth', 'verified', ProfileCompleted::class])->name('home');
+})->middleware('auth')->name('home');
 
-Route::get('/schedules', function () {
-    return Inertia::render('Schedules');
-})->middleware(['auth', 'verified', ProfileCompleted::class])->name('schedules');
+
+Route::get('/schedules', [UserController::class, 'schedules'])->name('schedules');
+
+Route::get('/attendance', [UserController::class, 'attendance'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('attendance');
+
+Route::post('/attendance/set', [UserController::class, 'setAttendance'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('set-attendance');
 
 Route::get('/gallery', function () {
     return Inertia::render('Gallery');
@@ -42,9 +62,6 @@ Route::post('/gallery/store', function () {
     return redirect()->route('gallery')->with('success', 'Foto berhasil diupload!');
 })->middleware(['auth', 'verified', ProfileCompleted::class])->name('gallery.store');
 
-Route::get('/attendance', function () {
-    return Inertia::render('Attendance');
-})->middleware(['auth', 'verified', ProfileCompleted::class])->name('attendance');
 
 Route::get('/finance', function () {
     return Inertia::render('Finance');
@@ -71,86 +88,17 @@ Route::get('/complete-profile', function () {
     return Inertia::render('Auth/CompleteProfile');
 })->middleware(['auth', 'verified'])->name('complete-profile');
 
-Route::get('/admin', function () {
-    return Inertia::render('AdminPage');
-})->name('admin');
+Route::get('/admin', [AdminController::class, 'index'])->name('admin');
 
-Route::get('/admin/members', function () {;
-    return Inertia::render('Admin/Members');
-})->name('admin.members');
+Route::get('/admin/members', [AdminController::class, 'member'])->name('admin.members');
 
-Route::get('/admin/members/{id}', [MemberController::class, 'show'])
-    ->name('admin.members.detail');
+Route::get('/admin/members/{id}', [AdminController::class, 'showMembers'])->name('admin.members.detail');
 
-use App\Models\User;  // Opsional, kalau query real dari users
+Route::get('/admin/attendance', [AdminController::class, 'attendance'])->name('admin.attendance');
 
-Route::get('/admin/attendance', function () {
-    $attendances = [  // Dummy untuk test
-        ['id' => 1, 'date' => '2025-10-20', 'time' => '14:00', 'location' => 'Ruang A101', 'description' => 'Rapat', 'qr_only' => false, 'attendance_count' => 45],
-        ['id' => 2, 'date' => '2025-10-21', 'time' => '10:30', 'location' => 'Lapangan', 'description' => 'Olahraga', 'qr_only' => true, 'attendance_count' => 32],
-    ];
-    return Inertia::render('Admin/Absensi', [  // Match nama file JSX kamu
-        'attendances' => $attendances,
-        'auth' => auth()->user(),
-    ]);
-})->name('admin.attendance');
+Route::post('/admin/attendance', [AdminController::class, 'storeAttendance'])->name('admin.attendance.store');
 
-Route::get('/admin/kas', function () {
-    $transactions = [
-        [
-            'id' => 1,
-            'date' => '2025-10-20',
-            'description' => 'Iuran bulanan Ade',
-            'amount' => 50000,
-            'type' => 'income',
-            'category' => 'Iuran Anggota',
-            'status' => 'approved',
-            'proof_url' => null,  // Gak ada untuk income
-        ],
-        [
-            'id' => 2,
-            'date' => '2025-10-19',
-            'description' => 'Biaya cetak banner rapat',
-            'amount' => 150000,
-            'type' => 'expense',
-            'category' => 'Biaya Kegiatan',
-            'status' => 'approved',
-            'proof_url' => '/storage/proof/banner-kwitansi.jpg',  // Dummy URL bukti
-        ],
-        [
-            'id' => 3,
-            'date' => '2025-10-15',
-            'description' => 'Donasi sponsor event',
-            'amount' => 200000,
-            'type' => 'income',
-            'category' => 'Sponsor',
-            'status' => 'pending',
-            'proof_url' => null,
-        ],
-        [
-            'id' => 4,
-            'date' => '2025-10-18',
-            'description' => 'Beli alat olahraga',
-            'amount' => 300000,
-            'type' => 'expense',
-            'category' => 'Alat & Perlengkapan',
-            'status' => 'approved',
-            'proof_url' => '/storage/proof/alat-struk.pdf',
-        ],
-    ];
-
-    $totalIncome = collect($transactions)->where('type', 'income')->sum('amount');
-    $totalExpense = collect($transactions)->where('type', 'expense')->sum('amount');
-    $totalKas = $totalIncome - $totalExpense;
-
-    return Inertia::render('Admin/Kas', [
-        'transactions' => $transactions,
-        'total_kas' => $totalKas,
-        'total_income' => $totalIncome,
-        'total_expense' => $totalExpense,
-        'auth' => auth()->user(),
-    ]);
-})->name('admin.kas');
+Route::get('/admin/kas', [KasController::class, 'index'])->name('admin.kas');
 
 // Route Admin: View & Upload Dokumen (tanpa middleware, asumsi auth di level lain)
 Route::get('/admin/documentation', function () {

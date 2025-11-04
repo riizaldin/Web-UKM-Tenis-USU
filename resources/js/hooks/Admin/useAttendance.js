@@ -1,64 +1,84 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { useForm } from '@inertiajs/react';
+
 
 export default function useAttendance() {
-  const [formData, setFormData] = useState({
+  const { data, setData, post, processing, errors } = useForm({
     date: new Date().toISOString().split('T')[0],
     start_time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }),
     end_time: '',
+    name: '',
+    type: 'latihan',
     location: '',
     description: '',
-    qr_only: false,
+    pelatih: '',
+    hadiah: '',
   });
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
   const resetForm = () => {
-    setFormData({
+    setData({
       date: new Date().toISOString().split('T')[0],
       start_time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }),
       end_time: '',
+      name: '',
+      type: 'latihan',
       location: '',
       description: '',
-      qr_only: false,
+      pelatih: '',
+      hadiah: '',
     });
   };
 
   const validateForm = () => {
-    if (formData.end_time && formData.start_time >= formData.end_time) {
-      alert('Waktu selesai harus lebih besar dari waktu mulai!');
+    if (data.end_time && data.start_time >= data.end_time) {
+      toast.error('Waktu selesai harus lebih besar dari waktu mulai!');
       return false;
     }
     return true;
   };
 
-  const isAttendanceActive = (attendance) => {
+  const getAttendanceStatus = (attendance) => {
     const now = new Date();
-    const attendanceDate = new Date(attendance.date);
-    const startDateTime = new Date(`${attendance.date}T${attendance.start_time}`);
-    const endDateTime = attendance.end_time ? new Date(`${attendance.date}T${attendance.end_time}`) : null;
 
-    if (now.toDateString() !== attendanceDate.toDateString()) {
-      return false;
+    const eventDate = new Date(attendance.tanggal || attendance.date);
+    const start = new Date(`${attendance.tanggal || attendance.date}T${attendance.waktu_mulai || attendance.start_time}`);
+    const end = attendance.waktu_selesai || attendance.end_time
+      ? new Date(`${attendance.tanggal || attendance.date}T${attendance.waktu_selesai || attendance.end_time}`)
+      : null;
+
+    if (now < start && now.toDateString() !== eventDate.toDateString()) {
+      return "upcoming";
     }
 
-    if (endDateTime) {
-      return now >= startDateTime && now <= endDateTime;
+    if (end) {
+      if (now < start) return "upcoming";
+      if (now >= start && now <= end) return "active";
+      if (now > end) return "selesai";
+    } else {
+      if (now < start) return "upcoming";
+      if (now >= start && now.toDateString() === eventDate.toDateString()) return "active";
+      if (now > start) return "selesai";
     }
 
-    return now >= startDateTime;
+    return "upcoming";
   };
 
+
   return {
-    formData,
+    data,
     handleInputChange,
     resetForm,
     validateForm,
-    isAttendanceActive,
+    getAttendanceStatus,
+    errors
   };
 }

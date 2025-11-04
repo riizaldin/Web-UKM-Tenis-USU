@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('pasfoto')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('role', ['admin', 'anggota'])->default('anggota');
             $table->rememberToken();
             $table->timestamps();
         });

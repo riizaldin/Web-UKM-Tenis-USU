@@ -6,9 +6,11 @@ import EmptyState from "@/Components/Admin/Absensi/EmptyState";
 import AttendanceTable from "@/Components/Admin/Absensi/AttendanceTable";
 import AttendanceFormModal from "@/Components/Admin/Absensi/AttendanceFormModal";
 import QRCodeModal from "@/Components/Admin/Absensi/QRCodeModal";
+import { router, usePage } from '@inertiajs/react';
 import useAttendance from "@/hooks/Admin/useAttendance";
 import useQRCode from "@/hooks/Admin/useQRCode";
 import { Calendar, Plus, ArrowLeft } from "lucide-react";
+import { ToastContainer, toast } from 'react-toastify';
 
 const formatDate = (date) => {
   return new Intl.DateTimeFormat('id-ID', {
@@ -23,12 +25,14 @@ export default function Absensi({ auth, attendances }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [qrModalOpen, setQrModalOpen] = useState(false);
   
+  const [errors, setErrors] = useState({});
+
   const { 
-    formData, 
+    data, 
     handleInputChange, 
     resetForm, 
     validateForm, 
-    isAttendanceActive 
+    getAttendanceStatus ,
   } = useAttendance();
   
   const { 
@@ -44,10 +48,19 @@ export default function Absensi({ auth, attendances }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
-    console.log('Buat absensi baru:', formData);
-    setIsModalOpen(false);
-    resetForm();
+
+    router.post(route('admin.attendance.store'), data, {
+      onSuccess: (page) => {
+        toast.success(page.props?.flash?.message ?? 'Absensi berhasil dibuat!');
+        setIsModalOpen(false);
+        resetForm();
+        setErrors({});
+      },
+      onError: (errors) => {
+        setErrors(errors);
+        toast.error('Error membuat absensi! Silakan periksa input.');
+      },
+    });
   };
 
   const handleGenerateQR = async (attendance) => {
@@ -62,9 +75,11 @@ export default function Absensi({ auth, attendances }) {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
+
       <Sidebar />
 
       <div className="flex-1 p-6">
+        <ToastContainer position="top-center" autoClose={1000} />
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-4">
@@ -98,7 +113,7 @@ export default function Absensi({ auth, attendances }) {
             <AttendanceTable
               attendances={attendances}
               onGenerateQR={handleGenerateQR}
-              isAttendanceActive={isAttendanceActive}
+              getAttendanceStatus={getAttendanceStatus}
             />
           ) : (
             <EmptyState
@@ -113,9 +128,10 @@ export default function Absensi({ auth, attendances }) {
         <AttendanceFormModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          formData={formData}
+          formData={data}
           onInputChange={handleInputChange}
           onSubmit={handleSubmit}
+          errors={errors}
         />
 
         <QRCodeModal

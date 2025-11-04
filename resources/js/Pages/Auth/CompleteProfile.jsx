@@ -38,7 +38,7 @@ export default function CompleteProfile(){
                             </svg>
                         </div>
                         <h1 className="text-3xl md:text-4xl font-extrabold mb-2">
-                            Halo, {firstName}! 👋
+                            Halo, {firstName.charAt(0).toUpperCase() + firstName.slice(1)}! 👋
                         </h1>
                         <p className="text-lg md:text-xl text-white/90">
                             Sebelum memulai, lengkapi data diri kamu terlebih dahulu

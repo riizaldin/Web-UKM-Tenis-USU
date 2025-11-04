@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
+import { toast, ToastContainer } from 'react-toastify';
 
-export default function Attendance({ auth }) {
-    const [activeTab, setActiveTab] = useState('scan'); // scan, history
-    const [scanStatus, setScanStatus] = useState(null); // null, scanning, success, error
+export default function Attendance({ auth, attendance, event_count }) {
+    const [activeTab, setActiveTab] = useState('scan');
+    const [scanStatus, setScanStatus] = useState(null);
     const [attendanceCode, setAttendanceCode] = useState('');
 
     // Sample user data (akan diganti dengan data real dari backend)
@@ -14,100 +15,46 @@ export default function Attendance({ auth }) {
         role: 'KETUA'
     };
 
-    // Sample attendance history
-    const attendanceHistory = [
-        {
-            id: 1,
-            date: '2025-10-09',
-            activity: 'Latihan Rutin',
-            checkIn: '15:05',
-            checkOut: '17:00',
-            status: 'Hadir',
-            location: 'Lapangan Tenis USU'
-        },
-        {
-            id: 2,
-            date: '2025-10-05',
-            activity: 'Latihan Rutin',
-            checkIn: '15:10',
-            checkOut: '16:55',
-            status: 'Hadir',
-            location: 'Lapangan Tenis USU'
-        },
-        {
-            id: 3,
-            date: '2025-10-03',
-            activity: 'Sparing Partner',
-            checkIn: '08:15',
-            checkOut: '10:50',
-            status: 'Hadir',
-            location: 'Lapangan Tenis USU'
-        },
-        {
-            id: 4,
-            date: '2025-09-28',
-            activity: 'Latihan Rutin',
-            checkIn: '15:00',
-            checkOut: null,
-            status: 'Terlambat',
-            location: 'Lapangan Tenis USU'
-        },
-        {
-            id: 5,
-            date: '2025-09-26',
-            activity: 'Rapat Pengurus',
-            checkIn: null,
-            checkOut: null,
-            status: 'Izin',
-            location: 'Sekretariat UKM'
-        },
-        {
-            id: 6,
-            date: '2025-09-21',
-            activity: 'Latihan Rutin',
-            checkIn: null,
-            checkOut: null,
-            status: 'Alpa',
-            location: 'Lapangan Tenis USU'
-        }
-    ];
-
-    // Sample attendance statistics
-    const stats = {
-        totalKegiatan: 24,
-        hadir: 18,
-        izin: 3,
-        terlambat: 2,
-        alpa: 1,
-        persentase: 87.5
-    };
-
     const handleScanQR = () => {
         setScanStatus('scanning');
-        // Simulasi scanning QR Code
-        setTimeout(() => {
-            setScanStatus('success');
-            setTimeout(() => {
-                setScanStatus(null);
-            }, 3000);
-        }, 2000);
+
+      
+        // // Simulasi scanning QR Code
+        // setTimeout(() => {
+        //     setScanStatus('success');
+        //     setTimeout(() => {
+        //         setScanStatus(null);
+        //     }, 3000);
+        // }, 2000);
     };
 
     const handleManualAttendance = () => {
         if (attendanceCode.trim() === '') {
-            alert('Masukkan kode absensi terlebih dahulu!');
+            toast.error('Masukkan kode absensi terlebih dahulu!');
             return;
         }
-
-        // Simulasi submit kode absensi
         setScanStatus('scanning');
-        setTimeout(() => {
-            setScanStatus('success');
-            setAttendanceCode('');
-            setTimeout(() => {
+        router.post(route('set-attendance'), { attendanceCode }, {
+            onSuccess: (page) => {
+                if (page.props.flash?.error) {
+                    setScanStatus('error');
+                    toast.error(page.props.flash.error);
+                } else if (page.props.flash?.success) {
+                    setScanStatus('success');
+                    console.log('berhasil')
+                    toast.success(page.props.flash.success);
+                }else{
+                    console.log(page.props)
+                    console.log('hallo')
+                }
                 setScanStatus(null);
-            }, 3000);
-        }, 1500);
+            },
+            onError: (error) => {
+                setScanStatus(null);
+                console.log(error);
+                toast.error('Gagal melakukan absensi. Silahkan coba lagi.');
+            }
+        });
     };
 
     const getStatusColor = (status) => {
@@ -125,8 +72,12 @@ export default function Attendance({ auth }) {
         }
     };
 
+    const totalHadir = attendance.filter(a => a.status === 'hadir').length;
+    const totalIzin = attendance.filter(a => a.status === 'izin').length;
+    const totalAlpa = attendance.filter(a => a.status === 'alpa').length;
     return (
         <AppLayout title="Absensi" auth={auth}>
+            <ToastContainer position='top-center' autoClose={1300}></ToastContainer>
             {/* Header Section */}
             <div className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white py-12">
                 <div className="container mx-auto px-4">
@@ -141,29 +92,25 @@ export default function Attendance({ auth }) {
             <div className="bg-white border-b border-gray-200">
                 <div className="container mx-auto px-4 py-8">
                     <h2 className="text-xl font-bold text-gray-800 mb-4">Statistik Kehadiran Anda</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                         <div className="text-center p-4 bg-gray-50 rounded-lg">
-                            <div className="text-2xl font-bold text-prismarine">{stats.totalKegiatan}</div>
+                            <div className="text-2xl font-bold text-prismarine">{event_count}</div>
                             <div className="text-sm text-gray-600 mt-1">Total Kegiatan</div>
                         </div>
                         <div className="text-center p-4 bg-green-50 rounded-lg">
-                            <div className="text-2xl font-bold text-green-600">{stats.hadir}</div>
+                            <div className="text-2xl font-bold text-green-600">{totalHadir}</div>
                             <div className="text-sm text-gray-600 mt-1">Hadir</div>
                         </div>
                         <div className="text-center p-4 bg-blue-50 rounded-lg">
-                            <div className="text-2xl font-bold text-blue-600">{stats.izin}</div>
+                            <div className="text-2xl font-bold text-blue-600">{totalIzin}</div>
                             <div className="text-sm text-gray-600 mt-1">Izin</div>
                         </div>
-                        <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                            <div className="text-2xl font-bold text-yellow-600">{stats.terlambat}</div>
-                            <div className="text-sm text-gray-600 mt-1">Terlambat</div>
-                        </div>
                         <div className="text-center p-4 bg-red-50 rounded-lg">
-                            <div className="text-2xl font-bold text-red-600">{stats.alpa}</div>
+                            <div className="text-2xl font-bold text-red-600">{totalAlpa}</div>
                             <div className="text-sm text-gray-600 mt-1">Alpa</div>
                         </div>
                         <div className="text-center p-4 bg-prismarine/10 rounded-lg border-2 border-prismarine">
-                            <div className="text-2xl font-bold text-prismarine">{stats.persentase}%</div>
+                            <div className="text-2xl font-bold text-prismarine">{totalHadir || event_count ? (totalHadir / event_count * 100).toFixed(2) : '0'} %</div>
                             <div className="text-sm text-gray-600 mt-1">Persentase</div>
                         </div>
                     </div>
@@ -288,7 +235,7 @@ export default function Attendance({ auth }) {
                                     onChange={(e) => setAttendanceCode(e.target.value.toUpperCase())}
                                     placeholder="Contoh: ABSEN2025"
                                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-prismarine focus:outline-none text-lg font-mono text-center tracking-wider"
-                                    maxLength={12}
+                                    maxLength={10}
                                 />
                                 <p className="text-xs text-gray-500 mt-2">Masukkan kode yang diberikan oleh pengurus</p>
                             </div>
@@ -301,7 +248,7 @@ export default function Attendance({ auth }) {
                                 Submit Absensi
                             </button>
 
-                            <div className="mt-6 border-t border-gray-200 pt-6">
+                            {/* <div className="mt-6 border-t border-gray-200 pt-6">
                                 <h3 className="font-semibold text-gray-800 mb-4">Kegiatan Hari Ini</h3>
                                 <div className="space-y-3">
                                     <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -332,7 +279,7 @@ export default function Attendance({ auth }) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
                                 <div className="flex items-start space-x-3">
@@ -378,70 +325,74 @@ export default function Attendance({ auth }) {
                                                 Lokasi
                                             </th>
                                             <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                Check In
-                                            </th>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                Check Out
+                                                Waktu Absensi
                                             </th>
                                             <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                                 Status
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
-                                        {attendanceHistory.map((record) => (
-                                            <tr key={record.id} className="hover:bg-gray-50 transition-colors">
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm font-semibold text-gray-800">
-                                                        {new Date(record.date).toLocaleDateString('id-ID', {
-                                                            day: 'numeric',
-                                                            month: 'short',
-                                                            year: 'numeric'
-                                                        })}
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="text-sm font-semibold text-gray-800">{record.activity}</div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="text-sm text-gray-600">{record.location}</div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm text-gray-800">
-                                                        {record.checkIn ? (
-                                                            <span className="font-mono">{record.checkIn}</span>
-                                                        ) : (
-                                                            <span className="text-gray-400">-</span>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm text-gray-800">
-                                                        {record.checkOut ? (
-                                                            <span className="font-mono">{record.checkOut}</span>
-                                                        ) : (
-                                                            <span className="text-gray-400">-</span>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(record.status)}`}>
-                                                        {record.status}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
+                                        <tbody className="bg-white divide-y divide-gray-200">
+                                            {attendance.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                                                        Tidak ada data kehadiran
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                attendance.map((record) => (
+                                                    <tr key={record.id} className="hover:bg-gray-50 transition-colors">
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            <div className="text-sm font-semibold text-gray-800">
+                                                                {new Date(record.date).toLocaleDateString('id-ID', {
+                                                                day: 'numeric',
+                                                                month: 'short',
+                                                                year: 'numeric'
+                                                            })}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <div className="text-sm font-semibold text-gray-800">{record.activity}</div>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <div className="text-sm text-gray-600">{record.location}</div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="text-sm text-gray-800">
+                                                            {record.checkIn ? (
+                                                                <span className="font-mono">{record.checkIn}</span>
+                                                            ) : (
+                                                                <span className="text-gray-400">-</span>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="text-sm text-gray-800">
+                                                            {record.checkOut ? (
+                                                                <span className="font-mono">{record.checkOut}</span>
+                                                            ) : (
+                                                                <span className="text-gray-400">-</span>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(record.status)}`}>
+                                                            {record.status}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            )))}
+                                        </tbody>
                                 </table>
                             </div>
 
                             {/* Mobile Card View */}
                             <div className="md:hidden divide-y divide-gray-200">
-                                {attendanceHistory.map((record) => (
+                                {attendance.map((record) => (
                                     <div key={record.id} className="p-4 hover:bg-gray-50 transition-colors">
                                         <div className="flex items-start justify-between mb-3">
                                             <div>
-                                                <h3 className="font-semibold text-gray-800">{record.activity}</h3>
+                                                <h3 className="font-semibold text-gray-800">{record.nama_event}</h3>
                                                 <p className="text-sm text-gray-600 mt-1">
                                                     {new Date(record.date).toLocaleDateString('id-ID', {
                                                         day: 'numeric',
@@ -460,7 +411,7 @@ export default function Attendance({ auth }) {
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                 </svg>
-                                                <span>{record.location}</span>
+                                                <span>{record.lokasi}</span>
                                             </div>
                                             <div className="flex items-center space-x-4">
                                                 <div className="flex items-center space-x-2">
@@ -488,8 +439,8 @@ export default function Attendance({ auth }) {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm opacity-90 mb-1">Kehadiran Terbaik</p>
-                                        <p className="text-3xl font-bold">{stats.persentase}%</p>
-                                        <p className="text-sm opacity-90 mt-2">{stats.hadir} dari {stats.totalKegiatan} kegiatan</p>
+                                        <p className="text-3xl font-bold">{totalHadir || event_count ? (totalHadir / event_count * 100).toFixed(2) : '0'}%</p>
+                                        <p className="text-sm opacity-90 mt-2">{totalHadir} dari {event_count} kegiatan</p>
                                     </div>
                                     <div className="bg-white/20 p-3 rounded-full">
                                         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
