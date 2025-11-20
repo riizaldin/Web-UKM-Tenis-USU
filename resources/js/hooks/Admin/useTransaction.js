@@ -5,9 +5,6 @@ export default function useTransaction(type = 'expense') {
     date: new Date().toISOString().split('T')[0],
     description: '',
     amount: '',
-    category: type === 'expense' ? 'Biaya Kegiatan' : 'Iuran Anggota',
-    status: type === 'expense' ? 'pending' : 'approved',
-    payment_method: type === 'income' ? 'cash' : undefined,
   });
   const [proofFile, setProofFile] = useState(null);
   const [proofPreview, setProofPreview] = useState(null);
@@ -34,9 +31,6 @@ export default function useTransaction(type = 'expense') {
       date: new Date().toISOString().split('T')[0],
       description: '',
       amount: '',
-      category: type === 'expense' ? 'Biaya Kegiatan' : 'Iuran Anggota',
-      status: type === 'expense' ? 'pending' : 'approved',
-      payment_method: type === 'income' ? 'cash' : undefined,
     });
     setProofFile(null);
     setProofPreview(null);

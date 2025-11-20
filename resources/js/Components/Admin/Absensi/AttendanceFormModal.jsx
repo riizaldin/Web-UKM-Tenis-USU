@@ -13,6 +13,7 @@ export default function AttendanceFormModal({
   onInputChange, 
   onSubmit,
   errors = {},
+  isLoading
 }) {
   return (
     <Modal
@@ -157,6 +158,7 @@ export default function AttendanceFormModal({
           variant="primary"
           icon={<CheckCircle className="w-4 h-4" />}
           className="w-full"
+          disabled={isLoading}
         >
           Buat Absen
         </Button>

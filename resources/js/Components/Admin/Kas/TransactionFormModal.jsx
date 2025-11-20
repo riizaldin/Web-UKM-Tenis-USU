@@ -14,7 +14,6 @@ export default function TransactionFormModal({
   proofPreview,
   onFileChange,
   onSubmit,
-  categories 
 }) {
   const isIncome = type === 'income';
   const color = isIncome ? 'green' : 'red';
@@ -54,48 +53,6 @@ export default function TransactionFormModal({
           placeholder={isIncome ? '50000' : '150000'}
           required
         />
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-          <select
-            name="category"
-            value={formData.category}
-            onChange={onInputChange}
-            className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-${color}-500`}
-          >
-            {categories.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-        </div>
-
-        {isIncome && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Metode Pembayaran</label>
-            <select
-              name="payment_method"
-              value={formData.payment_method}
-              onChange={onInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              <option value="cash">Cash</option>
-              <option value="transfer">Transfer</option>
-            </select>
-          </div>
-        )}
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-          <select
-            name="status"
-            value={formData.status}
-            onChange={onInputChange}
-            className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-${color}-500`}
-          >
-            <option value="approved">Disetujui</option>
-            <option value="pending">Pending</option>
-          </select>
-        </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1 items-center gap-2">

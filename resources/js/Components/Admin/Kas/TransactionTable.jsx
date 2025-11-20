@@ -4,7 +4,6 @@ import { Eye } from 'lucide-react';
 import Badge from '@/Components/Admin/Absensi/Badge';
 
 export default function TransactionTable({ transactions, type = 'income' }) {
-  const isIncome = type === 'income';
 
   return (
     <div className="overflow-x-auto max-h-96 overflow-y-auto">
@@ -17,19 +16,8 @@ export default function TransactionTable({ transactions, type = 'income' }) {
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Deskripsi
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Kategori
-            </th>
-            {isIncome && (
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Metode
-              </th>
-            )}
             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
               Jumlah
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Status
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Bukti
@@ -45,40 +33,20 @@ export default function TransactionTable({ transactions, type = 'income' }) {
               <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
                 {tx.description}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {tx.category}
-              </td>
-              {isIncome && (
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <Badge 
-                    variant={tx.payment_method === 'cash' ? 'info' : 'purple'}
-                  >
-                    {tx.payment_method === 'cash' ? 'Cash' : 'Transfer'}
-                  </Badge>
-                </td>
-              )}
-              <td className={`px-6 py-4 whitespace-nowrap text-right text-sm font-medium ${
-                isIncome ? 'text-green-600' : 'text-red-600'
-              }`}>
-                {isIncome ? '+' : '-'}Rp {tx.amount.toLocaleString('id-ID')}
+              <td className={`px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-red-600`}>
+                - Rp {Number(tx.amount).toLocaleString('id-ID')}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm">
-                <Badge 
-                  variant={tx.status === 'approved' ? 'success' : 'warning'}
-                >
-                  {tx.status === 'approved' ? 'Disetujui' : 'Pending'}
-                </Badge>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm">
-                {tx.proof_url ? (
-                  <Link 
-                    href={tx.proof_url} 
-                    target="_blank" 
+                {tx.proof_image ? (
+                  <a
+                    href={`/admin/kas/expense/proof/${tx.proof_image}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-blue-600 hover:underline flex items-center gap-1"
                   >
                     <Eye className="w-4 h-4" />
                     Lihat
-                  </Link>
+                  </a>
                 ) : (
                   <span className="text-gray-400">Tidak ada</span>
                 )}

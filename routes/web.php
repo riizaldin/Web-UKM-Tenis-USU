@@ -4,7 +4,6 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
-use App\Http\Controllers\KasController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Middleware\ProfileCompleted;
@@ -38,13 +37,17 @@ Route::get('/home', function () {
     ]);
 })->middleware('auth')->name('home');
 
-
+// Schedules
 Route::get('/schedules', [UserController::class, 'schedules'])->name('schedules');
 
+// Attendance
 Route::get('/attendance', [UserController::class, 'attendance'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('attendance');
+
+Route::get('/attendance/set', [UserController::class, 'routeAttendance'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('set-attendance.form');
 
 Route::post('/attendance/set', [UserController::class, 'setAttendance'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('set-attendance');
 
+// Gallery
 Route::get('/gallery', function () {
     return Inertia::render('Gallery');
 })->middleware(['auth', 'verified', ProfileCompleted::class])->name('gallery');
@@ -63,9 +66,18 @@ Route::post('/gallery/store', function () {
 })->middleware(['auth', 'verified', ProfileCompleted::class])->name('gallery.store');
 
 
-Route::get('/finance', function () {
-    return Inertia::render('Finance');
-})->middleware(['auth', 'verified', ProfileCompleted::class])->name('finance');
+
+// Finance (KAS)
+Route::get('/finance', [UserController::class, 'finance'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('finance');
+Route::post('/finance/pay', [UserController::class, 'financePay'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('finance-pay');
+Route::get('/finance/proof/{filename}', [UserController::class, 'viewPaymentProof'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('finance.proof');
+
+// Kas - User Routes
+Route::middleware(['auth', 'verified', ProfileCompleted::class])->group(function () {
+    Route::get('/kas', [UserController::class, 'viewKas'])->name('kas.view');
+    Route::post('/kas/submit-payment', [UserController::class, 'submitPaymentProof'])->name('user.kas.submit-payment');
+    Route::get('/kas/payment-history', [UserController::class, 'viewPaymentHistory'])->name('kas.payment.history');
+});
 
 Route::get('/evaluation', function () {
     return Inertia::render('Evaluation', [
@@ -80,9 +92,7 @@ Route::post('/evaluation/store', function () {
     return redirect()->route('evaluation')->with('success', 'Penilaian berhasil dikirim!');
 })->middleware(['auth', 'verified', ProfileCompleted::class])->name('evaluation.store');
 
-Route::get('/reports', function () {
-    return Inertia::render('Reports');
-})->middleware(['auth', 'verified', ProfileCompleted::class])->name('reports');
+Route::get('/reports', [UserController::class, 'reports'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('reports');
 
 Route::get('/complete-profile', function () {
     return Inertia::render('Auth/CompleteProfile');
@@ -98,7 +108,20 @@ Route::get('/admin/attendance', [AdminController::class, 'attendance'])->name('a
 
 Route::post('/admin/attendance', [AdminController::class, 'storeAttendance'])->name('admin.attendance.store');
 
-Route::get('/admin/kas', [KasController::class, 'index'])->name('admin.kas');
+Route::get('/admin/kas', [AdminController::class, 'kas'])->name('admin.kas');
+Route::get('/admin/kas/bills', [AdminController::class, 'kasBills'])->name('admin.kas.bills');
+
+// Kas - Admin Routes
+Route::prefix('admin/kas')->name('admin.kas.')->group(function () {
+    Route::post('/bill', [AdminController::class, 'createKasBill'])->name('bill.create');
+    Route::delete('/bill/{id}', [AdminController::class, 'deleteKasBill'])->name('bill.delete');
+    Route::get('/bill/{billId}/review', [AdminController::class, 'reviewBillPayments'])->name('bill.review');
+    Route::get('/pending-payments', [AdminController::class, 'viewPendingPayments'])->name('pending');
+    Route::post('/payment/{id}/approve', [AdminController::class, 'approvePayment'])->name('payment.approve');
+    Route::post('/payment/{id}/reject', [AdminController::class, 'rejectPayment'])->name('payment.reject');
+    Route::post('/expense', [AdminController::class, 'addExpense'])->name('expense.add');
+    Route::get('/expense/proof/{filename}', [AdminController::class, 'viewExpenseProof'])->name('expense.proof');
+});
 
 // Route Admin: View & Upload Dokumen (tanpa middleware, asumsi auth di level lain)
 Route::get('/admin/documentation', function () {

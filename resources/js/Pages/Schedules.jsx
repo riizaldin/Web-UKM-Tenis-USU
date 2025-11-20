@@ -198,7 +198,7 @@ export default function Schedules({ auth, schedules }) {
     const filteredSchedules = schedules.filter(schedule => {
         if (viewMode === 'all') return true;
         return schedule.tipe === viewMode;
-    }).sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+    });
 
     const daysInMonth = getDaysInMonth(currentMonth, currentYear);
     const firstDay = getFirstDayOfMonth(currentMonth, currentYear);

@@ -24,7 +24,7 @@ const formatDate = (date) => {
 export default function Absensi({ auth, attendances }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [qrModalOpen, setQrModalOpen] = useState(false);
-  
+  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
   const { 
@@ -49,16 +49,19 @@ export default function Absensi({ auth, attendances }) {
     e.preventDefault();
     if (!validateForm()) return;
 
+    setIsLoading(true);
     router.post(route('admin.attendance.store'), data, {
       onSuccess: (page) => {
         toast.success(page.props?.flash?.message ?? 'Absensi berhasil dibuat!');
         setIsModalOpen(false);
         resetForm();
         setErrors({});
+        setIsLoading(false);
       },
       onError: (errors) => {
         setErrors(errors);
         toast.error('Error membuat absensi! Silakan periksa input.');
+        setIsLoading(false);
       },
     });
   };
@@ -132,6 +135,7 @@ export default function Absensi({ auth, attendances }) {
           onInputChange={handleInputChange}
           onSubmit={handleSubmit}
           errors={errors}
+          isLoading={isLoading}
         />
 
         <QRCodeModal

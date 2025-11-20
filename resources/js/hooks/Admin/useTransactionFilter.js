@@ -1,13 +1,12 @@
 import { useState, useMemo } from 'react';
 
-export default function useTransactionFilter(transactions, type, itemsPerPage = 10) {
+export default function useTransactionFilter(transactions, itemsPerPage = 10) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterMonth, setFilterMonth] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredTransactions = useMemo(() => {
     return transactions
-      .filter(tx => tx.type === type)
       .filter(tx => {
         if (filterMonth !== 'all') {
           const txDate = new Date(tx.date).getMonth() + 1;
@@ -16,7 +15,7 @@ export default function useTransactionFilter(transactions, type, itemsPerPage = 
         return true;
       })
       .filter(tx => tx.description.toLowerCase().includes(searchTerm.toLowerCase()));
-  }, [transactions, type, filterMonth, searchTerm]);
+  }, [transactions, filterMonth, searchTerm]);
 
   const paginatedTransactions = useMemo(() => {
     return filteredTransactions.slice(
