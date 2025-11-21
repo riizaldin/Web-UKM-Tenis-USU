@@ -3,12 +3,14 @@ import { Table, TableHeader, TableHeaderCell, TableBody, TableRow, TableCell } f
 import Badge from './Badge';
 import Button from './Button';
 import { Clock, MapPin, Users, QrCode } from 'lucide-react';
+import { titleCase } from '@/utils/helpers';
 
 export default function AttendanceTable({ attendances, onGenerateQR, getAttendanceStatus }) {
   return (
     <Table>
       <TableHeader>
         <TableHeaderCell>Keterangan Kegiatan</TableHeaderCell>
+        <TableHeaderCell>Tipe Kegiatan</TableHeaderCell>
         <TableHeaderCell>Waktu Absen</TableHeaderCell>
         <TableHeaderCell>Lokasi</TableHeaderCell>
         <TableHeaderCell align="center">Status</TableHeaderCell>
@@ -27,6 +29,11 @@ export default function AttendanceTable({ attendances, onGenerateQR, getAttendan
                   {new Date(attendance.tanggal).toLocaleDateString('id-ID', { 
                     day: 'numeric', month: 'short', year: 'numeric'
                   })}
+                </div>
+              </TableCell>
+              <TableCell className="whitespace-nowrap">
+                <div className="flex items-center gap-1">
+                  <span>{titleCase(attendance.tipe)}</span>                  
                 </div>
               </TableCell>
               <TableCell className="whitespace-nowrap">

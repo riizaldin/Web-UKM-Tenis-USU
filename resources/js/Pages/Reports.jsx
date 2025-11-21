@@ -80,7 +80,7 @@ export default function Reports({ auth, expenses, income}) {
                 <div className="container mx-auto px-4">
                     <h1 className="text-4xl font-bold mb-4">Laporan UKM</h1>
                     <p className="text-lg text-white/90">
-                        Akses dan download berbagai laporan UKM Tenis USU
+                        Akses laporan keuangan UKM Tenis USU
                     </p>
                 </div>
             </div>

@@ -29,13 +29,7 @@ Route::get('/', function () {
 //     ]);
 // })->middleware(['auth', 'verified', ProfileCompleted::class])->name('home');
 
-Route::get('/home', function () {
-    return Inertia::render('Home', [
-        'auth' => [
-            'user' => Auth::user(),
-        ],
-    ]);
-})->middleware('auth')->name('home');
+Route::get('/home', [UserController::class, 'home'])->middleware('auth')->name('home');
 
 // Schedules
 Route::get('/schedules', [UserController::class, 'schedules'])->name('schedules');
@@ -48,28 +42,21 @@ Route::get('/attendance/set', [UserController::class, 'routeAttendance'])->middl
 Route::post('/attendance/set', [UserController::class, 'setAttendance'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('set-attendance');
 
 // Gallery
-Route::get('/gallery', function () {
-    return Inertia::render('Gallery');
-})->middleware(['auth', 'verified', ProfileCompleted::class])->name('gallery');
+Route::get('/gallery', [UserController::class, 'gallery'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('gallery');
 
-Route::get('/gallery/upload', function () {
-    return Inertia::render('GalleryUpload', [
-        'auth' => [
-            'user' => Auth::user(),
-        ],
-    ]);
-})->middleware(['auth', 'verified', ProfileCompleted::class])->name('gallery.upload');
+Route::get('/gallery/upload', [UserController::class, 'galleryUpload'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('gallery.upload');
 
-Route::post('/gallery/store', function () {
-    // Backend implementation untuk menyimpan foto
-    return redirect()->route('gallery')->with('success', 'Foto berhasil diupload!');
-})->middleware(['auth', 'verified', ProfileCompleted::class])->name('gallery.store');
+Route::post('/gallery/store', [UserController::class, 'handleGalleryUpload'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('gallery.store');
 
+Route::post('/gallery/{id}/increment-view', [UserController::class, 'incrementGalleryView'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('gallery.increment-view');
 
+Route::post('/gallery/{id}/toggle-like', [UserController::class, 'toggleGalleryLike'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('gallery.toggle-like');
 
 // Finance (KAS)
 Route::get('/finance', [UserController::class, 'finance'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('finance');
+
 Route::post('/finance/pay', [UserController::class, 'financePay'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('finance-pay');
+
 Route::get('/finance/proof/{filename}', [UserController::class, 'viewPaymentProof'])->middleware(['auth', 'verified', ProfileCompleted::class])->name('finance.proof');
 
 // Kas - User Routes

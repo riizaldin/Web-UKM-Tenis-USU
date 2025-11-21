@@ -7,7 +7,6 @@ import { titleCase } from '@/utils/helpers';
 export default function Finance({ auth, bills, summary, payments_history, total_kas, total_pemasukan_3_bulan }) {
     const [activeTab, setActiveTab] = useState('payment'); // payment, history, report
     const [paymentAmount, setPaymentAmount] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('');
     const [paymentNote, setPaymentNote] = useState('');
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [selectedBill, setSelectedBill] = useState(null); // Single selected bill ID
@@ -17,7 +16,6 @@ export default function Finance({ auth, bills, summary, payments_history, total_
     const [uploadError, setUploadError] = useState('');
     const [showProofModal, setShowProofModal] = useState(false);
     const [selectedProofImage, setSelectedProofImage] = useState(null);
-
 
     // file validation + preview
     const handleProofFile = (file) => {
@@ -97,103 +95,6 @@ export default function Finance({ auth, bills, summary, payments_history, total_
             }
         }
     };
-
-    // Sample user data
-    const user = {
-        name: 'RIZALDI FEBRIANSYAH',
-        nim: '221402126',
-        saldo: 2,
-        tunggakan: 50000
-    };
-
-    // Sample payment methods
-    const paymentMethods = [
-        {
-            id: 'gopay',
-            name: 'GoPay',
-            icon: '💚',
-            fee: 0,
-            description: 'Transfer via GoPay'
-        },
-        {
-            id: 'ovo',
-            name: 'OVO',
-            icon: '💜',
-            fee: 0,
-            description: 'Transfer via OVO'
-        },
-        {
-            id: 'dana',
-            name: 'DANA',
-            icon: '💙',
-            fee: 0,
-            description: 'Transfer via DANA'
-        },
-        {
-            id: 'shopeepay',
-            name: 'ShopeePay',
-            icon: '🧡',
-            fee: 0,
-            description: 'Transfer via ShopeePay'
-        },
-        {
-            id: 'bank_transfer',
-            name: 'Transfer Bank',
-            icon: '🏦',
-            fee: 0,
-            description: 'Transfer via Bank (BCA, Mandiri, BNI, BRI)'
-        },
-        {
-            id: 'qris',
-            name: 'QRIS',
-            icon: '📱',
-            fee: 0,
-            description: 'Scan QRIS untuk pembayaran'
-        }
-    ];
-    // Sample payment history
-    const paymentHistory = [
-        {
-            id: 1,
-            date: '2025-10-01',
-            type: 'Pembayaran Kas',
-            amount: 50000,
-            method: 'GoPay',
-            status: 'Berhasil',
-            invoice: 'INV-2025100001',
-            description: 'Pembayaran kas bulan Oktober 2025'
-        },
-        {
-            id: 2,
-            date: '2025-09-03',
-            type: 'Pembayaran Kas',
-            amount: 50000,
-            method: 'OVO',
-            status: 'Berhasil',
-            invoice: 'INV-2025090015',
-            description: 'Pembayaran kas bulan September 2025'
-        },
-        {
-            id: 3,
-            date: '2025-08-05',
-            type: 'Pembayaran Kas',
-            amount: 50000,
-            method: 'Transfer Bank',
-            status: 'Berhasil',
-            invoice: 'INV-2025080023',
-            description: 'Pembayaran kas bulan Agustus 2025'
-        },
-        {
-            id: 4,
-            date: '2025-07-28',
-            type: 'Pembayaran Kas',
-            amount: 50000,
-            method: 'DANA',
-            status: 'Pending',
-            invoice: 'INV-2025070042',
-            description: 'Pembayaran kas bulan Juli 2025'
-        }
-    ];
 
     // Sample kas report (income/expense)
     const kasReport = {
@@ -372,16 +273,6 @@ export default function Finance({ auth, bills, summary, payments_history, total_
                             }`}
                         >
                             Riwayat Transaksi
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('report')}
-                            className={`py-4 px-2 border-b-2 font-semibold transition-colors ${
-                                activeTab === 'report'
-                                    ? 'border-prismarine text-prismarine'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                            }`}
-                        >
-                            Laporan Keuangan
                         </button>
                     </div>
                 </div>
@@ -679,7 +570,7 @@ export default function Finance({ auth, bills, summary, payments_history, total_
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
-                                    {payments_history.map((transaction) => (
+                                    {payments_history.length !== 0 ? payments_history.map((transaction) => (
                                         <tr key={transaction.id} className="hover:bg-gray-50">
                                             <td className="px-6 py-4">
                                                 <div className="text-sm text-gray-800">{titleCase(transaction.bill_title)}</div>
@@ -725,7 +616,9 @@ export default function Finance({ auth, bills, summary, payments_history, total_
                                                 )}
                                             </td>
                                         </tr>
-                                    ))}
+                                    )) : (<tr className="hover:bg-gray-50 text-center" col-span="7">
+                                        <td colSpan={7} className='py-4'>Tidak ada data pembayaran</td>
+                                    </tr>)}
                                 </tbody>
                             </table>
                         </div>

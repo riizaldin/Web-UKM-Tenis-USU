@@ -5,22 +5,188 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Inertia\Inertia;
 use App\Models\Event;
+use App\Models\User;
+use App\Models\Galeri;
 use App\Models\Absensi;
 use App\Models\KasBill;
 use App\Models\KasExpense;
 use App\Models\KasPayment;
+use App\Models\GaleriPhotos;
+use App\Models\GaleriLike;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+    // Home Dashboard
+    public function home()
+{
+    $user = auth()->user();
+    $tz = 'Asia/Jakarta';
+
+    // Carbon instances in Asia/Jakarta
+    $todayJkt = Carbon::today($tz);
+    $nowJkt = Carbon::now($tz);
+    $startOfMonthJkt = $nowJkt->copy()->startOfMonth();
+    $endOfMonthJkt = $nowJkt->copy()->endOfMonth();
+    $sevenDaysLaterJkt = $todayJkt->copy()->addDays(7)->endOfDay();
+
+    // Statistics
+    $totalMembers = User::count();
+
+    $prevMonth = $nowJkt->copy()->subMonth();
+    $previousMonthMembers = User::whereBetween('created_at', [
+        $prevMonth->copy()->startOfMonth()->toDateTimeString(),
+        $prevMonth->copy()->endOfMonth()->toDateTimeString(),
+    ])->count();
+
+    // Events this month (compare tanggal converted to Asia/Jakarta)
+    $eventsThisMonth = Event::whereRaw(
+        "DATE(CONVERT_TZ(tanggal, '+00:00', '+07:00')) BETWEEN ? AND ?",
+        [$startOfMonthJkt->toDateString(), $endOfMonthJkt->toDateString()]
+    )->count();
+
+    $latihanThisMonth = Event::whereRaw(
+        "DATE(CONVERT_TZ(tanggal, '+00:00', '+07:00')) BETWEEN ? AND ? AND tipe = ?",
+        [$startOfMonthJkt->toDateString(), $endOfMonthJkt->toDateString(), 'latihan']
+    )->count();
+
+    $completedLatihan = Event::whereRaw(
+        "DATE(CONVERT_TZ(tanggal, '+00:00', '+07:00')) BETWEEN ? AND ? AND CONVERT_TZ(tanggal, '+00:00', '+07:00') < ? AND tipe = ?",
+        [$startOfMonthJkt->toDateString(), $endOfMonthJkt->toDateString(), $todayJkt->toDateTimeString(), 'latihan']
+    )->count();
+
+    // Completed events this month (tanggal < today (Asia/Jakarta))
+    $completedEvents = Event::whereRaw(
+        "DATE(CONVERT_TZ(tanggal, '+00:00', '+07:00')) BETWEEN ? AND ? AND CONVERT_TZ(tanggal, '+00:00', '+07:00') < ?",
+        [$startOfMonthJkt->toDateString(), $endOfMonthJkt->toDateString(), $todayJkt->toDateTimeString()]
+    )->count();
+
+    // Attendance rate (attendance for events in this month)
+    $totalAttendances = Absensi::whereHas('event', function ($query) use ($startOfMonthJkt, $endOfMonthJkt) {
+        $query->whereRaw(
+            "DATE(CONVERT_TZ(tanggal, '+00:00', '+07:00')) BETWEEN ? AND ?",
+            [$startOfMonthJkt->toDateString(), $endOfMonthJkt->toDateString()]
+        );
+    })->count();
+
+    $expectedAttendances = $completedEvents * $totalMembers;
+    $attendanceRate = $expectedAttendances > 0 ? round(($totalAttendances / $expectedAttendances) * 100) : 0;
+
+    // Active tournaments (tanggal >= today in Asia/Jakarta)
+    $activeTournaments = Event::whereRaw(
+        "CONVERT_TZ(tanggal, '+00:00', '+07:00') >= ? AND tipe = ?",
+        [$todayJkt->toDateTimeString(), 'turnamen']
+    )->count();
+
+    // Today's events (use between start and end of today in Asia/Jakarta)
+    $todayEvents = Event::whereRaw(
+            "CONVERT_TZ(tanggal, '+00:00', '+07:00') BETWEEN ? AND ?",
+            [$todayJkt->copy()->startOfDay()->toDateTimeString(), $todayJkt->copy()->endOfDay()->toDateTimeString()]
+        )
+        ->with(['attendance' => function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        }])
+        ->get();
+
+    // Upcoming events (next 7 days) - consider date+time compared in Asia/Jakarta
+    // We'll compare the full datetime formed by tanggal + waktu_selesai against current Jakarta datetime
+    $upcomingEvents = Event::whereRaw(
+        // compare tanggal datetime (tanggal + ' ' + waktu_selesai) converted to +07:00
+        "CONCAT(DATE(CONVERT_TZ(tanggal, '+00:00', '+07:00')), ' ', TIME(waktu_selesai)) > ? 
+         AND DATE(CONVERT_TZ(tanggal, '+00:00', '+07:00')) <= ?",
+        [$nowJkt->format('Y-m-d H:i:s'), $sevenDaysLaterJkt->toDateString()]
+    )
+    ->orderByRaw("DATE(CONVERT_TZ(tanggal, '+00:00', '+07:00')) ASC")
+    ->orderBy('waktu_mulai', 'asc')
+    ->limit(5)
+    ->get();
+
+    // Recent activities
+    $recentAttendances = Absensi::with(['user:id,name', 'event:id,nama_event'])
+        ->orderBy('created_at', 'desc')
+        ->limit(3)
+        ->get()
+        ->map(function ($item) {
+            return [
+                'type' => 'attendance',
+                'user_name' => $item->user->name,
+                'description' => 'melakukan absensi latihan',
+                'time' => $item->created_at,
+            ];
+        });
+
+    $recentGallery = Galeri::with('user:id,name')
+        ->orderBy('created_at', 'desc')
+        ->limit(2)
+        ->get()
+        ->map(function ($item) {
+            return [
+                'type' => 'gallery',
+                'user_name' => $item->user->name,
+                'description' => 'mengunggah foto galeri',
+                'time' => $item->created_at,
+            ];
+        });
+
+    $recentPayments = KasPayment::with('user:id,name')
+        ->where('status', 'approved')
+        ->orderBy('verified_at', 'desc')
+        ->limit(2)
+        ->get()
+        ->map(function ($item) {
+            return [
+                'type' => 'payment',
+                'user_name' => $item->user->name,
+                'description' => 'melakukan pembayaran iuran',
+                'time' => $item->verified_at,
+            ];
+        });
+
+    $recentActivities = collect()
+        ->concat($recentAttendances)
+        ->concat($recentGallery)
+        ->concat($recentPayments)
+        ->sortByDesc('time')
+        ->take(6)
+        ->values();
+
+    // All events for calendar display (future and current month) — convert tanggal to Jakarta Date for BETWEEN
+    $allEvents = Event::whereRaw(
+        "DATE(CONVERT_TZ(tanggal, '+00:00', '+07:00')) >= ?",
+        [$todayJkt->copy()->startOfMonth()->toDateString()]
+    )
+    ->select('id', 'tanggal', 'nama_event')
+    ->orderBy('tanggal', 'asc')
+    ->get();
+
+    return Inertia::render('Home', [
+        'auth' => ['user' => $user],
+        'statistics' => [
+            'total_members' => $totalMembers,
+            'new_members_this_month' => $previousMonthMembers,
+            'latihan_this_month' => $latihanThisMonth,
+            'completed_latihan' => $completedLatihan,
+            'events_this_month' => $eventsThisMonth,
+            'completed_events' => $completedEvents,
+            'attendance_rate' => $attendanceRate,
+            'active_tournaments' => $activeTournaments,
+        ],
+        'todayEvents' => $todayEvents,
+        'upcomingEvents' => $upcomingEvents,
+        'recentActivities' => $recentActivities,
+        'allEvents' => $allEvents,
+    ]);
+}
+
+
     // Schedules
     public function schedules(){
         $auth = auth()->user();
         $events = Event::withCount('attendance')->orderBy('tanggal', 'desc')->orderBy('waktu_mulai', 'desc')->get();
 
         return Inertia::render('Schedules', [
-            'auth' => $auth,
+            'auth' => ['user' => $auth],
             'schedules' => $events,
         ]);
     }
@@ -40,7 +206,7 @@ class UserController extends Controller
             ->whereMonth('tanggal', Carbon::now('Asia/Jakarta')->month)
             ->count();
         return Inertia::render('Attendance', [
-            'auth' => $auth,
+            'auth' => ['user' => $auth],
             'attendance' => $attendances,
             'event_count' => $event_count,
             'attended_this_month' => $attendedThisMonth,
@@ -384,4 +550,104 @@ class UserController extends Controller
             'income' => $income,
         ]);
     }
+
+    public function gallery(){
+        $user = auth()->user();
+        $galleryItems = Galeri::with('photos')->with('user:id,name,nim')->withCount('likes')->get()->map(function($item) use ($user) {
+            $item->is_liked = $item->isLikedBy($user->id);
+            $item->like = $item->likes_count; // Add like count from relationship
+            return $item;
+        });
+
+        $totalFoto = GaleriPhotos::count();
+        $totalLikes = GaleriLike::count();
+        $totalViews = Galeri::sum('view');
+
+        return Inertia::render('Gallery', [
+            'auth' => ['user' => $user],
+            'galleryItems' => $galleryItems,
+            'totalFoto' => $totalFoto,
+            'totalLikes' => $totalLikes,
+            'totalViews' => $totalViews,
+        ]);
+    }
+
+    public function galleryUpload(){
+        $user = auth()->user();
+        return Inertia::render('GalleryUpload', [
+            'auth' => ['user' => $user],
+        ]);
+    }
+
+    public function handleGalleryUpload(Request $request){
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'category' => 'required|in:latihan,turnamen,event,prestasi',
+            'location' => 'string|max:255',
+            'event_date' => 'date',
+            'images' => 'required|array',
+            'images.*' => 'required|image|max:10240'
+        ]);
+
+        $galeri = Galeri::create([
+            'judul' => $validated['title'],
+            'deskripsi' => $validated['description'],
+            'kategori' => $validated['category'],
+            'lokasi' => $validated['location'],
+            'tanggal' => $validated['event_date'],
+            'uploaded_by' => auth()->id(),
+        ]); 
+
+        foreach ($request->file('images') as $image) {
+            $path = $image->store('gallery', 'public');
+
+            GaleriPhotos::create([
+                'galeri_id' => $galeri->id,
+                'photo_path' => $path,
+            ]);
+        }
+
+        return redirect()->route('gallery')->with('success', 'Foto galeri berhasil diupload!');
+    }
+
+    public function incrementGalleryView($id)
+{
+    $galeri = Galeri::findOrFail($id);
+    $galeri->increment('view');
+
+    return response()->json([
+        'success' => true,
+        'views'   => $galeri->view,
+    ]);
+}
+
+    public function toggleGalleryLike($id){
+        $user = auth()->user();
+        $galeri = Galeri::findOrFail($id);
+        
+        $existingLike = GaleriLike::where('galeri_id', $id)
+            ->where('user_id', $user->id)
+            ->first();
+        
+        if ($existingLike) {
+            $existingLike->delete();
+            $isLiked = false;
+        } else {
+            GaleriLike::create([
+                'galeri_id' => $id,
+                'user_id' => $user->id,
+            ]);
+            $isLiked = true;
+        }
+        
+        $newLikeCount = GaleriLike::where('galeri_id', $id)->count();
+        
+        return response()->json([
+            'success' => true,
+            'is_liked' => $isLiked,
+            'new_like_count' => $newLikeCount
+        ]);
+    }
+
 }
