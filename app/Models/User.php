@@ -63,4 +63,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\KasTransaction::class);
     }
+
+    // Kas Bills - New System
+    public function kasBills()
+    {
+        return $this->hasMany(\App\Models\KasBill::class);
+    }
+
+    public function kasPayments()
+    {
+        return $this->hasMany(\App\Models\KasPayment::class);
+    }
 }

@@ -10,10 +10,7 @@ export default function useQRCode() {
   const generateQR = async (attendance) => {
     setSelectedAttendance(attendance);
     setIsLoading(true);
-
-    const toHash = `${attendance.id + attendance.kode_absensi + attendance.tanggal + attendance.waktu_mulai + attendance.waktu_selesai}`;
-    const hash = sha256(toHash);
-    const qrData = `${window.location.origin}/attendance/set?id=${hash}`;
+    const qrData = `${window.location.origin}/attendance/set?id=${attendance.kode_absensi}`;
 
     try {
       const qrUrl = await QRCode.toDataURL(qrData, {

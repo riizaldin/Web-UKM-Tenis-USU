@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { router, useForm } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
+import { toast, ToastContainer } from 'react-toastify';
 
 export default function GalleryUpload({ auth }) {
     const [previewImages, setPreviewImages] = useState([]);
@@ -9,17 +10,17 @@ export default function GalleryUpload({ auth }) {
     const { data, setData, post, processing, errors, progress } = useForm({
         title: '',
         description: '',
-        category: 'training',
+        category: 'latihan',
         images: [],
         location: '',
         event_date: new Date().toISOString().split('T')[0]
     });
 
     const categories = [
-        { id: 'training', name: 'Latihan', icon: '🎾', color: 'green' },
-        { id: 'tournament', name: 'Turnamen', icon: '🏆', color: 'purple' },
+        { id: 'latihan', name: 'Latihan', icon: '🎾', color: 'green' },
+        { id: 'turnamen', name: 'Turnamen', icon: '🏆', color: 'purple' },
         { id: 'event', name: 'Event', icon: '🎉', color: 'blue' },
-        { id: 'achievement', name: 'Prestasi', icon: '🏅', color: 'yellow' }
+        { id: 'prestasi', name: 'Prestasi', icon: '🏅', color: 'yellow' }
     ];
 
     const handleImageSelect = (e) => {
@@ -30,14 +31,14 @@ export default function GalleryUpload({ auth }) {
     const handleFiles = (files) => {
         const validFiles = files.filter(file => {
             const isImage = file.type.startsWith('image/');
-            const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB
+            const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB
             
             if (!isImage) {
-                alert(`${file.name} bukan file gambar!`);
+                toast.error(`${file.name} bukan file gambar!`);
                 return false;
             }
             if (!isValidSize) {
-                alert(`${file.name} terlalu besar! Maksimal 5MB`);
+                toast.error(`${file.name} terlalu besar! Maksimal 10MB`);
                 return false;
             }
             return true;
@@ -94,11 +95,14 @@ export default function GalleryUpload({ auth }) {
             return;
         }
 
-        // Simulasi upload (dalam real implementation akan post ke backend)
-        post(route('gallery.store'), {
-            onSuccess: () => {
-                alert('Foto berhasil diupload!');
-                router.visit(route('gallery'));
+        post(route('gallery.store'), data, {
+             onSuccess: (page) => {
+                if (page.props.flash?.error) {
+                    toast.error(page.props.flash.error);
+                } else if (page.props.flash?.success) {
+                    toast.success(page.props.flash.success);
+                }
+                // router.visit(route('gallery'));
             },
             onError: (errors) => {
                 console.error('Upload error:', errors);
@@ -118,7 +122,8 @@ export default function GalleryUpload({ auth }) {
     };
 
     return (
-        <AppLayout title="Upload Galeri">
+        <AppLayout title="Upload Galeri" auth={auth}>
+            <ToastContainer position='top-center' autoClose={1300}></ToastContainer>
             {/* Header Section */}
             <div className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white py-12">
                 <div className="container mx-auto px-4">
@@ -202,7 +207,7 @@ export default function GalleryUpload({ auth }) {
                             {/* Location */}
                             <div className="mb-6">
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                    Lokasi
+                                    Lokasi <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -216,7 +221,7 @@ export default function GalleryUpload({ auth }) {
                             {/* Event Date */}
                             <div className="mb-6">
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                    Tanggal Kegiatan
+                                    Tanggal Kegiatan <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="date"
@@ -261,7 +266,7 @@ export default function GalleryUpload({ auth }) {
                                         />
                                     </label>
                                     <p className="text-xs text-gray-500 mt-4">
-                                        Format: JPG, PNG, GIF | Maksimal 5MB per file
+                                        Format: JPG, PNG, GIF | Maksimal 10MB per file
                                     </p>
                                 </div>
 
@@ -398,7 +403,7 @@ export default function GalleryUpload({ auth }) {
                                         Perhatian
                                     </h4>
                                     <ul className="text-sm text-yellow-800 space-y-1">
-                                        <li>• Maksimal 5MB per foto</li>
+                                        <li>• Maksimal 10MB per foto</li>
                                         <li>• Format: JPG, PNG, GIF</li>
                                         <li>• Foto akan direview admin</li>
                                         <li>• Hindari konten sensitif</li>

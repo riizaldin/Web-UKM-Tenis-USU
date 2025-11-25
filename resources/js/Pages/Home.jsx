@@ -82,11 +82,65 @@ const FeatureCard = ({ title, description, icon, link, color = "blue" }) => {
     );
 };
 
-export default function Home({ auth }) {
+export default function Home({ auth, statistics, todayEvents, upcomingEvents, recentActivities, allEvents}) {
     const [showDropdown, setShowDropdown] = useState(false);
+    const [currentCalendarMonth, setCurrentCalendarMonth] = useState(new Date().getMonth());
+    const [currentCalendarYear, setCurrentCalendarYear] = useState(new Date().getFullYear());
 
     const handleLogout = () => {
         router.post(route('logout'));
+    };
+
+    const monthNames = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+
+    // Get calendar data
+    const getDaysInMonth = (month, year) => {
+        return new Date(year, month + 1, 0).getDate();
+    };
+
+    const getFirstDayOfMonth = (month, year) => {
+        return new Date(year, month, 1).getDay();
+    };
+
+    // Get dates that have events - use allEvents from backend
+    const getEventDates = () => {
+        const eventDates = new Set();
+        if (allEvents && allEvents.length > 0) {
+            allEvents.forEach(event => {
+                const eventDate = new Date(event.tanggal);
+                if (eventDate.getMonth() === currentCalendarMonth && eventDate.getFullYear() === currentCalendarYear) {
+                    eventDates.add(eventDate.getDate());
+                }
+            });
+        }
+        return eventDates;
+    };
+
+    const eventDates = getEventDates();
+    const daysInMonth = getDaysInMonth(currentCalendarMonth, currentCalendarYear);
+    const firstDay = getFirstDayOfMonth(currentCalendarMonth, currentCalendarYear);
+    const today = new Date();
+    const isCurrentMonth = today.getMonth() === currentCalendarMonth && today.getFullYear() === currentCalendarYear;
+
+    const handlePreviousMonth = () => {
+        if (currentCalendarMonth === 0) {
+            setCurrentCalendarMonth(11);
+            setCurrentCalendarYear(currentCalendarYear - 1);
+        } else {
+            setCurrentCalendarMonth(currentCalendarMonth - 1);
+        }
+    };
+
+    const handleNextMonth = () => {
+        if (currentCalendarMonth === 11) {
+            setCurrentCalendarMonth(0);
+            setCurrentCalendarYear(currentCalendarYear + 1);
+        } else {
+            setCurrentCalendarMonth(currentCalendarMonth + 1);
+        }
     };
 
     const features = [
@@ -348,66 +402,72 @@ export default function Home({ auth }) {
                             <h2 className="text-2xl font-bold text-darkgray mb-6">Jadwal Latihan</h2>
 
                             {/* Today's Schedule */}
-                            <div className="bg-cream rounded-lg p-6 shadow-md mb-6">
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-lg font-semibold text-darkgray">Hari Ini</h3>
-                                    <span className="text-sm text-gray-500">3 Oktober 2025</span>
+                            {todayEvents && todayEvents.length > 0 ? (
+                                <div className="bg-cream rounded-lg p-6 shadow-md mb-6">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h3 className="text-lg font-semibold text-darkgray">Hari Ini</h3>
+                                        <span className="text-sm text-gray-500">{new Date(todayEvents[0].tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                                    </div>
+                                    <div className="flex items-center space-x-4">
+                                        <div className="w-16 h-16 bg-prismarine rounded-full flex items-center justify-center">
+                                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-lg font-semibold text-darkgray">{todayEvents[0].nama_event}</h4>
+                                            <p className="text-gray-600">{todayEvents[0].waktu_mulai?.slice(0, 5)} - {todayEvents[0].waktu_selesai?.slice(0, 5)} WIB</p>
+                                            <p className="text-gray-600">{todayEvents[0].lokasi || 'Lapangan Tenis USU'}</p>
+                                        </div>
+                                        <div className="ml-auto">
+                                            <span className="px-4 py-2 bg-[#F4CE14] text-darkgray rounded-full text-sm font-semibold">
+                                                Aktif
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="flex items-center space-x-4">
-                                    <div className="w-16 h-16 bg-prismarine rounded-full flex items-center justify-center">
-                                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
+                            ) : (
+                                <div className="bg-cream rounded-lg p-6 shadow-md mb-6">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h3 className="text-lg font-semibold text-darkgray">Hari Ini</h3>
+                                        <span className="text-sm text-gray-500">{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                                     </div>
-                                    <div>
-                                        <h4 className="text-lg font-semibold text-darkgray">Latihan Rutin</h4>
-                                        <p className="text-gray-600">15:00 - 17:00 WIB</p>
-                                        <p className="text-gray-600">Lapangan Tenis USU</p>
-                                    </div>
-                                    <div className="ml-auto">
-                                        <span className="px-4 py-2 bg-[#F4CE14] text-darkgray rounded-full text-sm font-semibold">
-                                            Aktif
-                                        </span>
-                                    </div>
+                                    <p className="text-gray-600 text-center py-4">Tidak ada jadwal untuk hari ini</p>
                                 </div>
-                            </div>
+                            )}
 
                             {/* Upcoming Schedule */}
                             <h3 className="text-lg font-semibold text-darkgray mb-4">Jadwal Mendatang</h3>
                             <div className="space-y-4">
-                                {/* Schedule Item 1 */}
-                                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="text-center">
-                                                <div className="text-sm font-semibold text-gray-500">SAB</div>
-                                                <div className="text-xl font-bold text-darkgray">5</div>
+                                {upcomingEvents && upcomingEvents.length > 0 ? (
+                                    upcomingEvents.map((event) => {
+                                        const eventDate = new Date(event.tanggal);
+                                        const dayName = eventDate.toLocaleDateString('id-ID', { weekday: 'short' }).toUpperCase();
+                                        const dayNumber = eventDate.getDate();
+                                        
+                                        return (
+                                            <div key={event.id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center space-x-4">
+                                                        <div className="text-center">
+                                                            <div className="text-sm font-semibold text-gray-500">{dayName}</div>
+                                                            <div className="text-xl font-bold text-darkgray">{dayNumber}</div>
+                                                        </div>
+                                                        <div>
+                                                            <h4 className="font-semibold text-darkgray">{event.nama_event}</h4>
+                                                            <p className="text-sm text-gray-600">    {event.waktu_mulai?.slice(0, 5)} - {event.waktu_selesai?.slice(0, 5)} WIB</p>
+                                                        </div>
+                                                    </div>
+                                                    <span className="text-sm text-gray-500">{event.lokasi || 'Lapangan Tenis USU'}</span>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h4 className="font-semibold text-darkgray">Latihan Rutin</h4>
-                                                <p className="text-sm text-gray-600">15:00 - 17:00 WIB</p>
-                                            </div>
-                                        </div>
-                                        <span className="text-sm text-gray-500">Lapangan Tenis USU</span>
+                                        );
+                                    })
+                                ) : (
+                                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                                        <p className="text-gray-600 text-center">Tidak ada jadwal mendatang</p>
                                     </div>
-                                </div>
-
-                                {/* Schedule Item 2 */}
-                                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="text-center">
-                                                <div className="text-sm font-semibold text-gray-500">MIN</div>
-                                                <div className="text-xl font-bold text-darkgray">6</div>
-                                            </div>
-                                            <div>
-                                                <h4 className="font-semibold text-darkgray">Sparing Partner</h4>
-                                                <p className="text-sm text-gray-600">08:00 - 11:00 WIB</p>
-                                            </div>
-                                        </div>
-                                        <span className="text-sm text-gray-500">Lapangan Tenis USU</span>
-                                    </div>
-                                </div>
+                                )}
                             </div>
 
                             {/* View All Link */}
@@ -431,13 +491,21 @@ export default function Home({ auth }) {
 
                                 {/* Calendar Header */}
                                 <div className="flex items-center justify-between mb-4">
-                                    <button className="p-2 hover:bg-gray-200 rounded-full">
+                                    <button 
+                                        onClick={handlePreviousMonth}
+                                        className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+                                    >
                                         <svg className="w-5 h-5 text-darkgray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                                         </svg>
                                     </button>
-                                    <h3 className="text-lg font-semibold text-darkgray">Oktober 2025</h3>
-                                    <button className="p-2 hover:bg-gray-200 rounded-full">
+                                    <h3 className="text-lg font-semibold text-darkgray">
+                                        {monthNames[currentCalendarMonth]} {currentCalendarYear}
+                                    </h3>
+                                    <button 
+                                        onClick={handleNextMonth}
+                                        className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+                                    >
                                         <svg className="w-5 h-5 text-darkgray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                                         </svg>
@@ -457,25 +525,29 @@ export default function Home({ auth }) {
 
                                     {/* Calendar dates */}
                                     <div className="grid grid-cols-7 gap-2">
-                                        {/* Previous month dates */}
-                                        {[28, 29, 30].map((date) => (
-                                            <div key={date} className="text-center py-2 text-gray-400">
-                                                {date}
-                                            </div>
+                                        {/* Empty cells for days before month starts */}
+                                        {Array.from({ length: firstDay }, (_, i) => (
+                                            <div key={`empty-${i}`} className="text-center py-2"></div>
                                         ))}
 
                                         {/* Current month dates */}
-                                        {Array.from({ length: 31 }, (_, i) => i + 1).map((date) => (
-                                            <div
-                                                key={date}
-                                                className={`text-center py-2 rounded-full cursor-pointer hover:bg-prismarine hover:text-white transition-colors
-                    ${date === 3 ? 'bg-prismarine text-white' : ''}
-                    ${[5, 6, 12, 13, 19, 20, 26, 27].includes(date) ? 'border-2 border-prismarine' : ''}
-                  `}
-                                            >
-                                                {date}
-                                            </div>
-                                        ))}
+                                        {Array.from({ length: daysInMonth }, (_, i) => {
+                                            const date = i + 1;
+                                            const isToday = isCurrentMonth && date === today.getDate();
+                                            const hasEvent = eventDates.has(date);
+                                            
+                                            return (
+                                                <div
+                                                    key={date}
+                                                    className={`text-center py-2 rounded-full cursor-pointer hover:bg-prismarine hover:text-white transition-colors
+                                                        ${isToday ? 'bg-prismarine text-white' : ''}
+                                                        ${hasEvent && !isToday ? 'border-2 border-prismarine' : ''}
+                                                    `}
+                                                >
+                                                    {date}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 </div>
 
@@ -488,7 +560,7 @@ export default function Home({ auth }) {
                                         </div>
                                         <div className="flex items-center">
                                             <div className="w-3 h-3 border-2 border-prismarine rounded-full mr-2"></div>
-                                            <span className="text-sm text-gray-600">Jadwal Latihan</span>
+                                            <span className="text-sm text-gray-600">Ada Kegiatan</span>
                                         </div>
                                     </div>
                                 </div>
@@ -519,13 +591,13 @@ export default function Home({ auth }) {
                             </div>
                             <div>
                                 <p className="text-gray-500 text-sm font-semibold uppercase tracking-wide mb-2">Total Anggota</p>
-                                <p className="text-4xl font-bold text-gray-800 mb-2">156</p>
+                                <p className="text-4xl font-bold text-gray-800 mb-2">{statistics.total_members}</p>
                                 <div className="flex items-center text-sm">
                                     <span className="text-green-600 font-semibold flex items-center">
                                         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
                                         </svg>
-                                        +12
+                                        +{statistics.new_members_this_month}
                                     </span>
                                     <span className="text-gray-500 ml-1">dari bulan lalu</span>
                                 </div>
@@ -543,9 +615,9 @@ export default function Home({ auth }) {
                             </div>
                             <div>
                                 <p className="text-gray-500 text-sm font-semibold uppercase tracking-wide mb-2">Latihan Bulan Ini</p>
-                                <p className="text-4xl font-bold text-gray-800 mb-2">18</p>
+                                <p className="text-4xl font-bold text-gray-800 mb-2">{statistics.latihan_this_month}</p>
                                 <p className="text-gray-600 text-sm">
-                                    <span className="font-semibold text-green-600">8 terlaksana</span> • 10 akan datang
+                                    <span className="font-semibold text-green-600">{statistics.completed_latihan} terlaksana</span> • {statistics.latihan_this_month - statistics.completed_latihan} akan datang
                                 </p>
                             </div>
                         </div>
@@ -561,7 +633,7 @@ export default function Home({ auth }) {
                             </div>
                             <div>
                                 <p className="text-gray-500 text-sm font-semibold uppercase tracking-wide mb-2">Tingkat Kehadiran</p>
-                                <p className="text-4xl font-bold text-gray-800 mb-2">87%</p>
+                                <p className="text-4xl font-bold text-gray-800 mb-2">{statistics.attendance_rate}%</p>
                                 <p className="text-gray-600 text-sm">
                                     Rata-rata <span className="font-semibold text-yellow-600">bulan ini</span>
                                 </p>
@@ -579,9 +651,9 @@ export default function Home({ auth }) {
                             </div>
                             <div>
                                 <p className="text-gray-500 text-sm font-semibold uppercase tracking-wide mb-2">Turnamen Aktif</p>
-                                <p className="text-4xl font-bold text-gray-800 mb-2">3</p>
+                                <p className="text-4xl font-bold text-gray-800 mb-2">{statistics.active_tournaments}</p>
                                 <p className="text-gray-600 text-sm">
-                                    <span className="font-semibold text-purple-600">2 internal</span> • 1 eksternal
+                                    Turnamen <span className="font-semibold text-purple-600">yang akan datang</span>
                                 </p>
                             </div>
                         </div>
@@ -685,74 +757,34 @@ export default function Home({ auth }) {
 
                             <div className="bg-cream rounded-lg p-6 shadow-md">
                                 <div className="space-y-6">
-                                    {/* Activity 1 */}
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-prismarine rounded-full mt-2 flex-shrink-0"></div>
-                                        <div className="flex-1">
-                                            <p className="text-sm text-gray-800">
-                                                <span className="font-semibold">Ahmad Zaki</span> melakukan absensi latihan
-                                            </p>
-                                            <p className="text-xs text-gray-500 mt-1">5 menit lalu</p>
+                                    {recentActivities && recentActivities.length > 0 ? (
+                                        recentActivities.map((activity, index) => {
+                                            // Determine color based on activity type
+                                            let colorClass = 'bg-prismarine';
+                                            if (activity.type === 'attendance') colorClass = 'bg-prismarine';
+                                            else if (activity.type === 'gallery') colorClass = 'bg-green-500';
+                                            else if (activity.type === 'payment') colorClass = 'bg-purple-500';
+                                            
+                                            return (
+                                                <div key={index} className="flex items-start space-x-3">
+                                                    <div className={`w-2 h-2 ${colorClass} rounded-full mt-2 flex-shrink-0`}></div>
+                                                    <div className="flex-1">
+                                                        <p className="text-sm text-gray-800">
+                                                            <span className="font-semibold">{activity.user_name}</span> {activity.description}
+                                                        </p>
+                                                        <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <div className="text-center py-4">
+                                            <p className="text-gray-600">Tidak ada aktivitas terkini</p>
                                         </div>
-                                    </div>
-
-                                    {/* Activity 2 */}
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                                        <div className="flex-1">
-                                            <p className="text-sm text-gray-800">
-                                                <span className="font-semibold">Sarah Putri</span> mendaftar turnamen internal
-                                            </p>
-                                            <p className="text-xs text-gray-500 mt-1">15 menit lalu</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Activity 3 */}
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                                        <div className="flex-1">
-                                            <p className="text-sm text-gray-800">
-                                                <span className="font-semibold">Budi Santoso</span> mengunggah foto galeri
-                                            </p>
-                                            <p className="text-xs text-gray-500 mt-1">1 jam lalu</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Activity 4 */}
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2 flex-shrink-0"></div>
-                                        <div className="flex-1">
-                                            <p className="text-sm text-gray-800">
-                                                <span className="font-semibold">Admin</span> membuat jadwal latihan baru
-                                            </p>
-                                            <p className="text-xs text-gray-500 mt-1">2 jam lalu</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Activity 5 */}
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                                        <div className="flex-1">
-                                            <p className="text-sm text-gray-800">
-                                                <span className="font-semibold">Rina Andini</span> melakukan pembayaran iuran
-                                            </p>
-                                            <p className="text-xs text-gray-500 mt-1">3 jam lalu</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Activity 6 */}
-                                    <div className="flex items-start space-x-3">
-                                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                                        <div className="flex-1">
-                                            <p className="text-sm text-gray-800">
-                                                <span className="font-semibold">Dimas Prasetyo</span> menyelesaikan profil
-                                            </p>
-                                            <p className="text-xs text-gray-500 mt-1">5 jam lalu</p>
-                                        </div>
-                                    </div>
+                                    )}
                                 </div>
 
-                                <div className="mt-6 pt-4 border-t border-gray-200 pb-16">
+                                <div className="mt-6 pt-4 border-t border-gray-200">
                                     <Link href="/activities" className="text-prismarine hover:text-prismarine/80 text-sm font-semibold flex items-center justify-center">
                                         Lihat Semua Aktivitas
                                         <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -766,14 +798,6 @@ export default function Home({ auth }) {
                     </div>
                 </div>
             </div>
-
-            
-
-
-
-
-
-
 
         </AppLayout>
     );

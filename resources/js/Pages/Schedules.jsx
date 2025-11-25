@@ -3,9 +3,9 @@ import { Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 
 export default function Schedules({ auth, schedules }) {
-    const [currentMonth, setCurrentMonth] = useState(9); // October (0-indexed)
+    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth()); // October (0-indexed)
     const [currentYear, setCurrentYear] = useState(2025);
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(new Date().getDate());
     const [viewMode, setViewMode] = useState('all'); // all, training, tournament, event
 
     const monthNames = [
@@ -198,7 +198,7 @@ export default function Schedules({ auth, schedules }) {
     const filteredSchedules = schedules.filter(schedule => {
         if (viewMode === 'all') return true;
         return schedule.tipe === viewMode;
-    }).sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+    });
 
     const daysInMonth = getDaysInMonth(currentMonth, currentYear);
     const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
@@ -312,7 +312,7 @@ export default function Schedules({ auth, schedules }) {
                                     {Array.from({ length: daysInMonth }, (_, i) => {
                                         const date = i + 1;
                                         const dateSchedules = getSchedulesForDate(date);
-                                        const isToday = date === 9 && currentMonth === 9 && currentYear === 2025;
+                                        const isToday = date === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
 
                                         return (
                                             <div

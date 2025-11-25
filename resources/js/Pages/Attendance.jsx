@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, router } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import { toast, ToastContainer } from 'react-toastify';
+import { titleCase } from '@/utils/helpers';
+import { Scanner } from '@yudiel/react-qr-scanner';
 
-export default function Attendance({ auth, attendance, event_count }) {
+export default function Attendance({ auth, attendance, event_count, prefillId, attended_this_month, total_events_this_month }) {
     const [activeTab, setActiveTab] = useState('scan');
     const [scanStatus, setScanStatus] = useState(null);
     const [attendanceCode, setAttendanceCode] = useState('');
+
+    useEffect(() => {
+        if (prefillId) {
+            setAttendanceCode(prefillId);
+        }
+    }, [prefillId]);
 
     // Sample user data (akan diganti dengan data real dari backend)
     const user = {
@@ -15,18 +23,43 @@ export default function Attendance({ auth, attendance, event_count }) {
         role: 'KETUA'
     };
 
-    const handleScanQR = () => {
-        setScanStatus('scanning');
+    const handleScanQR = (data) => {
+        if (!data || !data[0] || !data[0].rawValue) {
+            toast.error('Gagal membaca QR Code. Silahkan coba lagi.');
+            setScanStatus(null);
+            return;
+        }
 
-      
-        // // Simulasi scanning QR Code
-        // setTimeout(() => {
-        //     setScanStatus('success');
-        //     setTimeout(() => {
-        //         setScanStatus(null);
-        //     }, 3000);
-        // }, 2000);
+        if (scanStatus === 'scanning') {
+            return;
+        }
+
+        const rawValue = data[0].rawValue;
+        let id = null;
+
+        try {
+            const u = new URL(rawValue);
+            id = u.searchParams.get('id');
+            if (!id && rawValue.includes('id=')) {
+                id = rawValue.split('id=')[1].split('&')[0];
+            }
+        } catch (e) {
+            if (rawValue.includes('id=')) {
+                id = rawValue.split('id=')[1].split('&')[0];
+            }
+        }
+
+        if (!id) {
+            toast.error('QR Code tidak valid!');
+            return;
+        }
+
+        setScanStatus('scanning');
+        setAttendanceCode(id);
+
+        sendAttendanceCodeToBackend(id);
     };
+
 
     const handleManualAttendance = () => {
         if (attendanceCode.trim() === '') {
@@ -34,35 +67,33 @@ export default function Attendance({ auth, attendance, event_count }) {
             return;
         }
         setScanStatus('scanning');
-        router.post(route('set-attendance'), { attendanceCode }, {
+        sendAttendanceCodeToBackend(attendanceCode.trim());
+    };
+
+    const sendAttendanceCodeToBackend = (code) => {
+        router.post(route('set-attendance'), { attendanceCode: code }, {
             onSuccess: (page) => {
                 if (page.props.flash?.error) {
                     setScanStatus('error');
                     toast.error(page.props.flash.error);
                 } else if (page.props.flash?.success) {
                     setScanStatus('success');
-                    console.log('berhasil')
                     toast.success(page.props.flash.success);
-                }else{
-                    console.log(page.props)
-                    console.log('hallo')
                 }
                 setScanStatus(null);
+                setAttendanceCode('');
             },
             onError: (error) => {
                 setScanStatus(null);
-                console.log(error);
                 toast.error('Gagal melakukan absensi. Silahkan coba lagi.');
             }
         });
-    };
+    }
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 'Hadir':
+            case 'hadir':
                 return 'bg-green-100 text-green-700';
-            case 'Terlambat':
-                return 'bg-yellow-100 text-yellow-700';
             case 'Izin':
                 return 'bg-blue-100 text-blue-700';
             case 'Alpa':
@@ -163,7 +194,10 @@ export default function Attendance({ auth, attendance, event_count }) {
 
                             {/* QR Scanner Area */}
                             <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center mb-6 border-4 border-dashed border-gray-300">
-                                {scanStatus === 'scanning' ? (
+                                <div className='h-96'>
+                                    <Scanner onScan={handleScanQR} onError={(error) => console.error(error)} paused={scanStatus === 'scanning'}/>
+                                </div>
+                                {/* {scanStatus === 'scanning' ? (
                                     <div className="text-center">
                                         <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-prismarine mx-auto mb-4"></div>
                                         <p className="text-gray-600 font-semibold">Memproses...</p>
@@ -185,16 +219,15 @@ export default function Attendance({ auth, attendance, event_count }) {
                                         </svg>
                                         <p className="text-gray-500 font-semibold">Arahkan kamera ke QR Code</p>
                                     </div>
-                                )}
+                                )} */}
                             </div>
-
-                            <button
-                                onClick={handleScanQR}
+                            {/* <button
+                                onClick={handleButtonClick}
                                 disabled={scanStatus !== null}
                                 className="w-full py-4 bg-prismarine text-white rounded-lg font-bold text-lg hover:bg-prismarine/90 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
                             >
-                                {scanStatus === 'scanning' ? 'Memproses...' : scanStatus === 'success' ? 'Berhasil!' : 'Mulai Scan QR Code'}
-                            </button>
+                                {scanStatus === 'scanning' ? 'Memproses...' : scanStatus === 'success' ? 'Berhasil!' : 'Upload QR Code'}
+                            </button> */}
 
                             <div className="mt-4 p-4 bg-blue-50 rounded-lg">
                                 <div className="flex items-start space-x-3">
@@ -204,9 +237,7 @@ export default function Attendance({ auth, attendance, event_count }) {
                                     <div className="text-sm text-blue-800">
                                         <p className="font-semibold mb-1">Cara Absensi dengan QR Code:</p>
                                         <ul className="list-disc list-inside space-y-1">
-                                            <li>Klik tombol "Mulai Scan QR Code"</li>
-                                            <li>Arahkan kamera ke QR Code yang ditampilkan</li>
-                                            <li>Tunggu hingga proses selesai</li>
+                                            <li>Scan QR Code yang ditampilkan pengurus</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -247,39 +278,6 @@ export default function Attendance({ auth, attendance, event_count }) {
                             >
                                 Submit Absensi
                             </button>
-
-                            {/* <div className="mt-6 border-t border-gray-200 pt-6">
-                                <h3 className="font-semibold text-gray-800 mb-4">Kegiatan Hari Ini</h3>
-                                <div className="space-y-3">
-                                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                                        <div className="flex items-start justify-between">
-                                            <div className="flex-1">
-                                                <h4 className="font-semibold text-gray-800">Latihan Rutin</h4>
-                                                <p className="text-sm text-gray-600 mt-1">15:00 - 17:00 WIB</p>
-                                                <p className="text-sm text-gray-600">Lapangan Tenis USU</p>
-                                            </div>
-                                            <span className="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded-full">
-                                                Aktif
-                                            </span>
-                                        </div>
-                                        <div className="mt-3 flex items-center space-x-2 text-sm text-gray-600">
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                            </svg>
-                                            <span>42 dari 50 anggota sudah absen</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                                        <div className="text-center text-gray-500">
-                                            <svg className="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <p className="text-sm">Tidak ada kegiatan lain hari ini</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> */}
 
                             <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
                                 <div className="flex items-start space-x-3">
@@ -344,7 +342,7 @@ export default function Attendance({ auth, attendance, event_count }) {
                                                     <tr key={record.id} className="hover:bg-gray-50 transition-colors">
                                                         <td className="px-6 py-4 whitespace-nowrap">
                                                             <div className="text-sm font-semibold text-gray-800">
-                                                                {new Date(record.date).toLocaleDateString('id-ID', {
+                                                                {new Date(record.event.tanggal).toLocaleDateString('id-ID', {
                                                                 day: 'numeric',
                                                                 month: 'short',
                                                                 year: 'numeric'
@@ -352,24 +350,20 @@ export default function Attendance({ auth, attendance, event_count }) {
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4">
-                                                        <div className="text-sm font-semibold text-gray-800">{record.activity}</div>
+                                                        <div className="text-sm font-semibold text-gray-800">{record.event.nama_event}</div>
                                                     </td>
                                                     <td className="px-6 py-4">
-                                                        <div className="text-sm text-gray-600">{record.location}</div>
+                                                        <div className="text-sm text-gray-600">{record.event.lokasi}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div className="text-sm text-gray-800">
-                                                            {record.checkIn ? (
-                                                                <span className="font-mono">{record.checkIn}</span>
-                                                            ) : (
-                                                                <span className="text-gray-400">-</span>
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="text-sm text-gray-800">
-                                                            {record.checkOut ? (
-                                                                <span className="font-mono">{record.checkOut}</span>
+                                                            {record.waktu_absen ? (
+                                                                    <span className="font-mono">{new Date(record.waktu_absen).toLocaleDateString('id-ID', {
+                                                                        hour: '2-digit', 
+                                                                        minute: '2-digit',
+                                                                        // am pm
+                                                                        hour12: true
+                                                                    })}</span>
                                                             ) : (
                                                                 <span className="text-gray-400">-</span>
                                                             )}
@@ -377,7 +371,7 @@ export default function Attendance({ auth, attendance, event_count }) {
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(record.status)}`}>
-                                                            {record.status}
+                                                            {titleCase(record.status)}
                                                         </span>
                                                     </td>
                                                 </tr>
@@ -434,7 +428,7 @@ export default function Attendance({ auth, attendance, event_count }) {
                         </div>
 
                         {/* Summary Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                             <div className="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-lg p-6 shadow-lg">
                                 <div className="flex items-center justify-between">
                                     <div>
@@ -454,27 +448,12 @@ export default function Attendance({ auth, attendance, event_count }) {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm opacity-90 mb-1">Bulan Ini</p>
-                                        <p className="text-3xl font-bold">8 / 10</p>
+                                        <p className="text-3xl font-bold">{attended_this_month} / {total_events_this_month}</p>
                                         <p className="text-sm opacity-90 mt-2">Kegiatan dihadiri</p>
                                     </div>
                                     <div className="bg-white/20 p-3 rounded-full">
                                         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-lg p-6 shadow-lg">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-sm opacity-90 mb-1">Streak</p>
-                                        <p className="text-3xl font-bold">5 hari</p>
-                                        <p className="text-sm opacity-90 mt-2">Kehadiran berturut</p>
-                                    </div>
-                                    <div className="bg-white/20 p-3 rounded-full">
-                                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                                         </svg>
                                     </div>
                                 </div>
