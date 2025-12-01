@@ -3,7 +3,8 @@ import { Link } from "@inertiajs/react";
 import Sidebar from "@/Components/Sidebar";
 import StatsCard from "@/Components/StatsCard";
 import DashboardCalendar from "@/Components/DashboardCalendar";
-import { Users, ClipboardList, DollarSign, FileText, Upload, Image, X, CalendarDays, Camera, Star } from "lucide-react";
+import { Users, ClipboardList, DollarSign, Image, CalendarDays, Camera } from "lucide-react";
+import { Head } from '@inertiajs/react';
 
 const formatDate = (date) => {
   return new Intl.DateTimeFormat('id-ID', {
@@ -21,32 +22,62 @@ const getGreeting = () => {
   return 'Good Evening';
 };
 
-export default function AdminPage({ auth }) {
+const getActivityIcon = (type) => {
+  switch (type) {
+    case 'member':
+      return <Users className="w-5 h-5 text-purple-600" />;
+    case 'event':
+      return <CalendarDays className="w-5 h-5 text-pink-600" />;
+    case 'payment':
+      return <DollarSign className="w-5 h-5 text-yellow-600" />;
+    case 'gallery':
+      return <Camera className="w-5 h-5 text-blue-600" />;
+    default:
+      return <ClipboardList className="w-5 h-5 text-gray-600" />;
+  }
+};
+
+const getActivityBgColor = (type) => {
+  switch (type) {
+    case 'member':
+      return 'bg-purple-100';
+    case 'event':
+      return 'bg-pink-100';
+    case 'payment':
+      return 'bg-yellow-100';
+    case 'gallery':
+      return 'bg-blue-100';
+    default:
+      return 'bg-gray-100';
+  }
+};
+
+const formatTimeAgo = (dateString) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now - date) / 1000);
+  
+  if (diffInSeconds < 60) return 'Baru saja';
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} menit lalu`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} jam lalu`;
+  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} hari lalu`;
+  return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+};
+
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0
+  }).format(amount);
+};
+
+export default function AdminPage({ auth, stats = {}, recent_activities = [], upcoming_events = [] }) {
   const today = new Date();
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const removeImage = () => {
-    setImageFile(null);
-    setImagePreview(null);
-    const input = document.querySelector('input[type="file"]');
-    if (input) input.value = '';
-  };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
+      <Head title="Admin Dashboard" />
       {/* Sidebar */}
       <Sidebar />
 
@@ -66,46 +97,33 @@ export default function AdminPage({ auth }) {
           {/* Left (3/4 width) */}
           <div className="w-3/4">
             {/* Stats Cards Grid */}
-            <div className="grid grid-cols-3 gap-6 pb-6">
+            <div className="grid grid-cols-4 gap-6 pb-6">
               <Link href="/admin/members" className="block">
                 <StatsCard
-                  title="Anggota"
-                  value="150"
+                  title="Total Anggota"
+                  value={stats.total_members || 0}
                   icon={<Users className="text-purple-600 w-6 h-6" />}
                 />
               </Link>
               <Link href="/admin/attendance" className="block">
                 <StatsCard
-                  title="Absensi"
-                  value="45"
+                  title="Total Event"
+                  value={stats.total_events || 0}
                   icon={<ClipboardList className="text-pink-500 w-6 h-6" />}
                 />
               </Link>
               <Link href="/admin/kas" className="block">
                 <StatsCard
-                  title="Kas"
-                  value="Rp 2.500.000"
+                  title="Saldo Kas"
+                  value={formatCurrency(stats.total_kas || 0)}
                   icon={<DollarSign className="text-yellow-500 w-6 h-6" />}
                 />
               </Link>
-              <Link href="/admin/documentation" className="block">
+              <Link href="/admin/gallery" className="block">
                 <StatsCard
-                  title="Dokumentasi"
-                  value="248"
+                  title="Galeri Foto"
+                  value={stats.total_gallery_photos || 0}
                   icon={<Camera className="text-blue-500 w-6 h-6" />}
-                />
-              </Link>
-              <Link href="/admin/penilaian" className="block">
-                <StatsCard
-                  title="Penilaian Pengurus"
-                  value="4.5"
-                  icon={<Star className="text-orange-500 w-6 h-6" />}
-                />
-              </Link>
-              <Link href="/admin/laporan-akhir" className="block">
-                <StatsCard
-                  title="Laporan Akhir"
-                  icon={<FileText className="text-green-500 w-6 h-6" />}
                 />
               </Link>
             </div>
@@ -113,48 +131,26 @@ export default function AdminPage({ auth }) {
             
         {/* Bottom Section: Recent Activity */}
         <div className="bg-white rounded-2xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
+          <h3 className="text-lg font-semibold mb-4">Aktivitas Terbaru</h3>
           <div className="space-y-3">
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                <Users className="w-5 h-5 text-blue-600" />
+            {recent_activities.length > 0 ? (
+              recent_activities.map((activity, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div className={`w-10 h-10 ${getActivityBgColor(activity.type)} rounded-full flex items-center justify-center`}>
+                    {getActivityIcon(activity.type)}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{activity.title}</p>
+                    <p className="text-xs text-gray-500">{activity.description}</p>
+                  </div>
+                  <span className="text-xs text-gray-500">{formatTimeAgo(activity.time)}</span>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p className="text-sm">Belum ada aktivitas terbaru</p>
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium">New Member Added</p>
-                <p className="text-xs text-gray-500">Ade Pratama joined today</p>
-              </div>
-              <span className="text-xs text-gray-500">2 hours ago</span>
-            </div>
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
-                <CalendarDays className="w-5 h-5 text-pink-600" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium">Attendance Closed</p>
-                <p className="text-xs text-gray-500">Rapat Mingguan: 15/20 hadir</p>
-              </div>
-              <span className="text-xs text-gray-500">1 day ago</span>
-            </div>
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-yellow-600" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium">Payment Received</p>
-                <p className="text-xs text-gray-500">Monthly dues collected</p>
-              </div>
-              <span className="text-xs text-gray-500">3 days ago</span>
-            </div>
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                <Star className="w-5 h-5 text-orange-600" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium">New Evaluation Submitted</p>
-                <p className="text-xs text-gray-500">Performance rating for Ahmad Rizki</p>
-              </div>
-              <span className="text-xs text-gray-500">5 days ago</span>
-            </div>
+            )}
           </div>
         </div>
 
@@ -162,7 +158,7 @@ export default function AdminPage({ auth }) {
 
           {/* Right (1/4 width) */}
           <div className="w-1/4 flex flex-col gap-6">
-            <DashboardCalendar />
+            <DashboardCalendar upcomingEvents={upcoming_events} />
           </div>
         </div>
 

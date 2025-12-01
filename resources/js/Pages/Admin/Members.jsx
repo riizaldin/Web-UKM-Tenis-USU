@@ -7,6 +7,7 @@ import MemberTable from "@/Components/Admin/Members/MemberTable";
 import MemberQuickViewModal from "@/Components/Admin/Members/MemberQuickViewModal";
 import useMembers from "@/hooks/Admin/useMembers";
 import { ArrowLeft, Users } from "lucide-react";
+import { Head } from '@inertiajs/react';
 
 const formatDate = (date) => {
   return new Intl.DateTimeFormat('id-ID', {
@@ -36,7 +37,7 @@ export default function AdminMembers({ auth, members = [] }) {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-
+      <Head title="Keanggotaan" />
       <div className="flex-1 p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">

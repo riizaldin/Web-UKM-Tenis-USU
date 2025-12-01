@@ -94,12 +94,24 @@ class KasBill extends Model
 
     /**
      * Scope to get bills for a specific user (including global bills).
+     * Only returns bills created on or after the user's registration date.
      */
     public function scopeForUser($query, $userId)
     {
-        return $query->where(function ($q) use ($userId) {
+        $user = User::find($userId);
+        
+        if (!$user) {
+            return $query->whereRaw('1 = 0'); // Return empty result
+        }
+
+        $userCreatedAt = $user->created_at;
+
+        return $query->where(function ($q) use ($userId, $userCreatedAt) {
             $q->where('user_id', $userId)
-              ->orWhere('is_global', true);
+              ->orWhere(function ($subQuery) use ($userCreatedAt) {
+                  $subQuery->where('is_global', true)
+                           ->where('created_at', '>=', $userCreatedAt);
+              });
         });
     }
 

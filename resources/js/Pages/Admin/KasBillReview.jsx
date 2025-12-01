@@ -3,6 +3,7 @@ import { Link, router } from "@inertiajs/react";
 import Sidebar from "@/Components/Sidebar";
 import { ArrowLeft, Check, X, Eye, User, Calendar, FileText, DollarSign } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
+import { Head } from '@inertiajs/react';
 
 export default function KasBillReview({ auth, bill, pending_payments }) {
   const [showProofModal, setShowProofModal] = useState(false);
@@ -82,6 +83,7 @@ export default function KasBillReview({ auth, bill, pending_payments }) {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
+      <Head title="Review Pembayaran Kas" />
       <ToastContainer position='top-center' autoClose={1300} />
 
       <div className="flex-1 p-6">

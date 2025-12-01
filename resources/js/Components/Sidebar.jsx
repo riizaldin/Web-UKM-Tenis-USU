@@ -60,21 +60,15 @@ export default function Sidebar() {
           collapsed={collapsed}
         />
         <SidebarLink
-          href="/admin/documentation"
-          icon={<Camera size={20} />}
-          text="Dokumentasi"
-          collapsed={collapsed}
-        />
-        <SidebarLink
-          href="/admin/penilaian"
-          icon={<Star size={20} />}
-          text="Penilaian Pengurus"
-          collapsed={collapsed}
-        />
-        <SidebarLink
-          href="/admin/laporan-akhir"
+          href="/admin/heregistration"
           icon={<FileText size={20} />}
-          text="Laporan Akhir"
+          text="Heregistrasi"
+          collapsed={collapsed}
+        />
+        <SidebarLink
+          href="/admin/gallery"
+          icon={<Camera size={20} />}
+          text="Galeri"
           collapsed={collapsed}
         />
       </nav>

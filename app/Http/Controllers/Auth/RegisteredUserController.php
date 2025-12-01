@@ -48,7 +48,7 @@ class RegisteredUserController extends Controller
             'password.min' => 'Kata sandi minimal mempunyai 8 karakter',
             'password.letters' => 'Kata sandi harus mengandung huruf',
             'password.numbers' => 'Kata sandi harus mengandung angka',
-            'password.uncompromised' => 'Kata sandi sudah pernah dibobol, Mohon gunakan kata sandi yang lain!',
+            'password.uncompromised' => 'Kata sandi yang diberikan telah muncul dalam kebocoran data. Silakan pilih kata sandi yang berbeda.',
         ]
     );
 
@@ -94,8 +94,8 @@ class RegisteredUserController extends Controller
             'ktm.max' => 'KTM maksimal 2MB',
         ]
     );
-        $fields['pasfoto'] = $request->pasfoto->store('public/pasfoto');
-        $fields['ktm'] = $request->ktm->store('public/ktm');
+        $fields['pasfoto'] = $request->pasfoto->store('pasfoto', 'public');
+        $fields['ktm'] = $request->ktm->store('ktm', 'public');
         $user = Auth::user();
         $user->update($fields);
 

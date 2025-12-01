@@ -8,6 +8,7 @@ import TransactionFormModal from "@/Components/Admin/Kas/TransactionFormModal";
 import useTransaction from "@/hooks/Admin/useTransaction";
 import useTransactionFilter from "@/hooks/Admin/useTransactionFilter";
 import { ArrowLeft, Download, Plus, Trash2, User, Users } from "lucide-react";
+import { Head } from '@inertiajs/react';
 import { toast, ToastContainer } from "react-toastify";
 
 const formatDate = (date) => {
@@ -153,6 +154,7 @@ export default function AdminKas({ auth, transactions, bills = [], users = [], t
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
+      <Head title="Kas Transaksi" />
       <ToastContainer position='top-center' autoClose={1300}></ToastContainer>
 
       <div className="flex-1 p-6">
@@ -286,6 +288,29 @@ export default function AdminKas({ auth, transactions, bills = [], users = [], t
                       {bill.status === 'paid' ? 'Lunas' : bill.status === 'pending' ? 'Proses' : 'Belum Lunas'}
                     </span>
                   </div>
+
+                  {/* Progress Bar for Global Bills */}
+                  {bill.is_global && (
+                    <div className="mt-3 pt-3 border-t">
+                      <div className="flex justify-between text-xs text-gray-600 mb-1">
+                        <span>Progress Pembayaran</span>
+                        <span className="font-semibold">
+                          {bill.members_paid}/{bill.total_members} anggota
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                        <div
+                          className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${(bill.members_paid / bill.total_members) * 100}%` }}
+                        ></div>
+                      </div>
+                      {bill.members_pending > 0 && (
+                        <div className="text-xs text-yellow-600">
+                          +{bill.members_pending} menunggu verifikasi
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {(bill.pending_count > 0 || bill.approved_count > 0 || bill.rejected_count > 0) && (
                     <div className="mt-3 pt-3 border-t flex gap-2 text-xs">

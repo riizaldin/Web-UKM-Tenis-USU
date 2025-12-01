@@ -11,6 +11,7 @@ import useAttendance from "@/hooks/Admin/useAttendance";
 import useQRCode from "@/hooks/Admin/useQRCode";
 import { Calendar, Plus, ArrowLeft } from "lucide-react";
 import { ToastContainer, toast } from 'react-toastify';
+import { Head } from '@inertiajs/react';
 
 const formatDate = (date) => {
   return new Intl.DateTimeFormat('id-ID', {
@@ -78,7 +79,7 @@ export default function Absensi({ auth, attendances }) {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-
+      <Head title="Absensi" />
       <Sidebar />
 
       <div className="flex-1 p-6">

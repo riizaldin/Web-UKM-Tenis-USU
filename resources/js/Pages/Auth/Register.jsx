@@ -2,6 +2,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import FormHeader from '@/Components/FormHeader';
+import { Head } from '@inertiajs/react';
 import { Link, useForm } from '@inertiajs/react';
 import AuthenticationLayout from '@/Layouts/AuthenticationLayout';
 
@@ -20,6 +21,8 @@ export default function Register() {
 
     return (
         <AuthenticationLayout title='Daftar'>
+            <Head title='Daftar' />
+
             <div className="bg-white rounded-lg shadow-xl p-8">
                 <form onSubmit={submit} noValidate>
                     <div className="space-y-4">
