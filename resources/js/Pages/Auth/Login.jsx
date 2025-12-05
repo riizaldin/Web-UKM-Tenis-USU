@@ -2,6 +2,7 @@ import TextInput from '@/Components/TextInput';
 import FormHeader from '@/Components/FormHeader';
 import { Link, useForm } from '@inertiajs/react';
 import {useRef, useEffect, useState} from 'react';
+import { Head } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import InputError from '@/Components/InputError';
 import AuthenticationLayout from '@/Layouts/AuthenticationLayout';
@@ -37,6 +38,7 @@ export default function Login({ status }){
 
     return (
         <AuthenticationLayout title='Login'>
+            <Head title='Login' />
             <div className="bg-white rounded-lg shadow-xl p-8">
                 <form onSubmit={submit} noValidate>
                     {showStatus && status && (

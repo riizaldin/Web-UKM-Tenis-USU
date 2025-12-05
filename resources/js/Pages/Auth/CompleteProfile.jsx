@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
 import PrimaryButton from "@/Components/PrimaryButton";
 import FileInput from "@/Components/FileInput";
+import { Head } from '@inertiajs/react';
 import InputError from "@/Components/InputError";
 
 export default function CompleteProfile(){
@@ -26,8 +27,9 @@ export default function CompleteProfile(){
         post(route('user.complete-profile'));
     };
 
-    return(
-            <section className="py-12 px-6  bg-gray-100 min-h-screen flex items-center">
+    return (
+        <section className="py-12 px-6  bg-gray-100 min-h-screen flex items-center">
+                <Head title="Lengkapi Profil" />
                 <div className='bg-white rounded-2xl shadow-2xl overflow-hidden max-w-4xl mx-auto'>
                 {/* Header Section with Gradient */}
                 <div className="bg-gradient-to-r from-[#43CEA2] to-[#185A9D] p-8 text-white">

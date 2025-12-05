@@ -13,6 +13,8 @@ use App\Models\KasExpense;
 use App\Models\KasPayment;
 use App\Models\GaleriPhotos;
 use App\Models\GaleriLike;
+use App\Models\Heregistration;
+use App\Models\HeregistrationPayment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -360,10 +362,18 @@ class UserController extends Controller
         $totalPending = $bills->sum('pending_amount');
         $totalPaid = $bills->sum('paid_amount');
 
-        $totalKas = KasPayment::where('status', 'approved')->sum('amount');
-        $totalPemasukan3Bulan = KasPayment::where('status', 'approved')
+        // Include both kas payments and heregistration payments in total
+        $kasPaymentsTotal = KasPayment::where('status', 'approved')->sum('amount');
+        $heregistrationPaymentsTotal = HeregistrationPayment::where('status', 'approved')->sum('amount');
+        $totalKas = $kasPaymentsTotal + $heregistrationPaymentsTotal;
+        
+        $kasPayments3Bulan = KasPayment::where('status', 'approved')
             ->whereBetween('verified_at', [now()->subMonths(3), now()])
             ->sum('amount');
+        $heregPayments3Bulan = HeregistrationPayment::where('status', 'approved')
+            ->whereBetween('verified_at', [now()->subMonths(3), now()])
+            ->sum('amount');
+        $totalPemasukan3Bulan = $kasPayments3Bulan + $heregPayments3Bulan;
 
         // get the kas bill of each payment as well
         $payments = KasPayment::where('user_id', $user->id)
@@ -648,6 +658,149 @@ class UserController extends Controller
             'is_liked' => $isLiked,
             'new_like_count' => $newLikeCount
         ]);
+    }
+
+    // ==================== HEREGISTRATION METHODS ====================
+
+    public function heregistration()
+    {
+        $user = auth()->user();
+        
+        // Get active heregistration period
+        $activePeriod = Heregistration::where('is_active', true)->first();
+        
+        if (!$activePeriod) {
+            return Inertia::render('Heregistration', [
+                'active_period' => null,
+                'payment' => null,
+                'auth' => $user,
+            ]);
+        }
+
+        // Check if user has already registered/paid (only pending or approved, not rejected)
+        $payment = HeregistrationPayment::where('heregistration_id', $activePeriod->id)
+            ->where('user_id', $user->id)
+            ->whereIn('status', ['pending', 'approved'])
+            ->first();
+
+        // Get rejected payment info if exists
+        $rejectedPayment = HeregistrationPayment::where('heregistration_id', $activePeriod->id)
+            ->where('user_id', $user->id)
+            ->where('status', 'rejected')
+            ->latest()
+            ->first();
+
+        $activePeriodData = [
+            'id' => $activePeriod->id,
+            'semester' => $activePeriod->semester,
+            'academic_year' => $activePeriod->academic_year,
+            'fee_amount' => $activePeriod->fee_amount,
+            'start_date' => $activePeriod->start_date->format('Y-m-d'),
+            'end_date' => $activePeriod->end_date->format('Y-m-d'),
+            'description' => $activePeriod->description,
+        ];
+
+        $paymentData = null;
+        if ($payment) {
+            $paymentData = [
+                'id' => $payment->id,
+                'amount' => $payment->amount,
+                'status' => $payment->status,
+                'payment_notes' => $payment->payment_notes,
+                'admin_notes' => $payment->admin_notes,
+                'submitted_at' => $payment->submitted_at->format('Y-m-d H:i'),
+                'verified_at' => $payment->verified_at?->format('Y-m-d H:i'),
+                'proof' => basename($payment->proof_image),
+            ];
+        }
+
+        $rejectedPaymentData = null;
+        if ($rejectedPayment) {
+            $rejectedPaymentData = [
+                'admin_notes' => $rejectedPayment->admin_notes,
+                'submitted_at' => $rejectedPayment->submitted_at->format('Y-m-d H:i'),
+                'amount' => $rejectedPayment->amount,
+            ];
+        }
+
+        return Inertia::render('Heregistration', [
+            'active_period' => $activePeriodData,
+            'payment' => $paymentData,
+            'rejected_payment' => $rejectedPaymentData,
+            'auth' => $user,
+        ]);
+    }
+
+    public function heregistrationPay(Request $request)
+    {
+        $user = auth()->user();
+        
+        $request->validate([
+            'heregistration_id' => 'required|exists:heregistrations,id',
+            'amount' => 'required|numeric|min:0',
+            'note' => 'nullable|string',
+            'proof' => 'required|image|max:5120',
+        ]);
+
+        // Check if already registered
+        $existingPayment = HeregistrationPayment::where('heregistration_id', $request->heregistration_id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if ($existingPayment) {
+            // If payment was rejected, delete it and allow resubmission
+            if ($existingPayment->status === 'rejected') {
+                // Delete old proof image
+                if (Storage::disk('public')->exists($existingPayment->proof_image)) {
+                    Storage::disk('public')->delete($existingPayment->proof_image);
+                }
+                $existingPayment->delete();
+            } else {
+                return back()->with('error', 'Anda sudah melakukan pembayaran heregistrasi untuk periode ini!');
+            }
+        }
+
+        // Handle file upload
+        $path = $request->file('proof')->store('heregistration_payments', 'public');
+
+        // Create payment record
+        HeregistrationPayment::create([
+            'heregistration_id' => $request->heregistration_id,
+            'user_id' => $user->id,
+            'amount' => $request->amount,
+            'proof_image' => $path,
+            'payment_notes' => $request->note,
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('heregistration')->with('success', 'Pembayaran heregistrasi berhasil dikirim! Menunggu verifikasi admin.');
+    }
+
+    public function viewHeregistrationProof($filename)
+    {
+        $user = auth()->user();
+        
+        $path = 'heregistration_payments/' . $filename;
+        
+        if (!Storage::disk('public')->exists($path)) {
+            abort(404, 'File not found');
+        }
+
+        // Verify user owns this payment proof
+        $payment = HeregistrationPayment::where('proof_image', $path)
+            ->where('user_id', $user->id)
+            ->first();
+        
+        if (!$payment && $user->role !== 'admin') {
+            abort(403, 'Unauthorized to view this proof');
+        }
+
+        $file = Storage::disk('public')->get($path);
+        $mimeType = Storage::disk('public')->mimeType($path);
+        
+        return response($file)
+            ->header('Content-Type', $mimeType)
+            ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
     }
 
 }
