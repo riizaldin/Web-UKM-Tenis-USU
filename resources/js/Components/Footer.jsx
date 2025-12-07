@@ -7,7 +7,7 @@ export default function Footer() {
         social: [
             {
                 name: 'Instagram',
-                href: '#',
+                href: 'https://www.instagram.com/tennis_usu/',
                 icon: (props) => (
                     <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
                         <path
@@ -19,15 +19,11 @@ export default function Footer() {
                 ),
             },
             {
-                name: 'YouTube',
-                href: '#',
+                name: 'TikTok',
+                href: 'https://www.tiktok.com/@tennis_usu?_r=1&_t=ZS-91yaq2nWS3R',
                 icon: (props) => (
                     <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-                        <path
-                            fillRule="evenodd"
-                            d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z"
-                            clipRule="evenodd"
-                        />
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
                     </svg>
                 ),
             },
@@ -51,12 +47,8 @@ export default function Footer() {
                     {/* Kolom 1: About/Logo Section */}
                     <div className="space-y-6">
                         <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
-                                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                            </div>
-                            <h3 className="text-2xl font-bold text-white">UKM Tenis USU</h3>
+                            
+                            <h3 className="text-2xl font-bold text-white">UKM Tenis Lapangan USU</h3>
                         </div>
                         <p className="text-sm leading-relaxed text-white/80">
                             Unit Kegiatan Mahasiswa Universitas Sumatera Utara yang berkomitmen mengembangkan talenta mahasiswa dalam olahraga tenis melalui latihan rutin dan kompetisi.
@@ -84,7 +76,7 @@ export default function Footer() {
                                 </svg>
                                 <div>
                                     <div className="text-xs text-white/60 mb-1">Email</div>
-                                    <a href="mailto:ukmtenis@usu.ac.id" className="font-semibold">ukmtenis@usu.ac.id</a>
+                                    <a href="mailto:tenislapanganusu@gmail.com" className="font-semibold">tenislapanganusu@gmail.com</a>
                                 </div>
                             </li>
                             <li className="flex items-start space-x-3 text-sm text-white/80 hover:text-white transition-colors group">
@@ -93,7 +85,7 @@ export default function Footer() {
                                 </svg>
                                 <div>
                                     <div className="text-xs text-white/60 mb-1">Telepon</div>
-                                    <a href="tel:+62618219641" className="font-semibold">+62 61 8219641</a>
+                                    <a href="tel:+62618219641" className="font-semibold">+62 81375427895</a>
                                 </div>
                             </li>
                             <li className="flex items-start space-x-3 text-sm text-white/80 hover:text-white transition-colors group">
@@ -103,7 +95,7 @@ export default function Footer() {
                                 </svg>
                                 <div>
                                     <div className="text-xs text-white/60 mb-1">Alamat</div>
-                                    <span className="font-semibold">Gedung UKM USU<br/>Kampus USU, Medan</span>
+                                    <span className="font-semibold">Jl. Tri Dharma No.5, Padang Bulan, Kec. Medan Baru, Kota Medan, Sumatera Utara 20153</span>
                                 </div>
                             </li>
                         </ul>
@@ -144,18 +136,9 @@ export default function Footer() {
                 <div className="border-t border-white/20 pt-8">
                     <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
                         <p className="text-sm text-white/70">
-                            &copy; {new Date().getFullYear()} <span className="font-semibold text-white">UKM Tenis USU</span>. All rights reserved.
+                            &copy; {new Date().getFullYear()} <span className="font-semibold text-white">UKM Tenis Lapangan USU</span>
                         </p>
-                        <div className="flex items-center space-x-6 text-sm text-white/70">
-                            <span className="flex items-center space-x-2">
-                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                                </svg>
-                                <span>Made with love by @handari.co</span>
-                            </span>
-                            <span className="hidden md:inline">•</span>
-                            <span>Powered by Laravel & React</span>
-                        </div>
+                
                     </div>
                 </div>
             </div>

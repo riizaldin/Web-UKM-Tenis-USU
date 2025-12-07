@@ -27,7 +27,7 @@ const TestimonialCard = ({ name, role, image, quote }) => (
                 <p className="text-gray-600">{role}</p>
             </div>
         </div>
-        <p className="text-gray-700 italic">"{quote}"</p>
+        <p className="text-gray-700 italic text-justify">"{quote}"</p>
     </div>
 );
 
@@ -473,9 +473,9 @@ export default function LandingPage({auth}) {
                         <GalleryImage src="/images/LatihanRutin.jpg" alt="Latihan Rutin" />
                         <GalleryImage src="/images/TurnamenInternal.jpg" alt="Turnamen Internal" />
                         <GalleryImage src="/images/TennisVisit.jpg" alt="Tennis Visit" />
-                        <GalleryImage src="/images/LatihanRutin.jpg" alt="Latihan Rutin" />
-                        <GalleryImage src="/images/TurnamenInternal.jpg" alt="Turnamen Internal" />
-                        <GalleryImage src="/images/TennisVisit.jpg" alt="Tennis Visit" />
+                        <GalleryImage src="/images/berbagiMakanan.jpg" alt="Berbagi Makanan di Bulan Puasa" />
+                        <GalleryImage src="/images/bukaPuasa.jpg" alt="Buka Puasa Bersama " />
+                        <GalleryImage src="/images/tennisVacay.jpg" alt="Tennis Vacation" />
                     </div>
                     <div className="text-center mt-8">
                         <Link href="/gallery" className="inline-flex items-center space-x-2 text-[#185A9D] hover:text-[#43CEA2] transition-colors">
@@ -501,34 +501,34 @@ export default function LandingPage({auth}) {
                             name="Rizaldi Febriansyah"
                             role="Ketua UKM Periode 2024/2025"
                             image="/images/rizaldi.jpg"
-                            quote="UKM Tenis memberikan wadah bagi mahasiswa untuk mengembangkan passion dalam tenis."
+                            quote="follow ig @padel_usu"
                         />
                         <TestimonialCard
-                            name="Sarah Nabila"
+                            name="Muhammad Ridho Syahputra"
+                            role="Ketua UKM Periode 2020-2023"
+                            image="/images/testimoniRidho.jpg"
+                            quote="UKM tenis USU merupakan wadah untuk pemersatu mahasiswa USU yang ingin berorganisasi, mencari relasi, dan prestasi dalam olahraga tenis lapangan"
+                        />
+                        <TestimonialCard
+                            name="dr. Muhammad Hasian Muda Siregar"
+                            role="Ketua UKM Periode 2023/2024"
+                            image="/images/testimoniHasian.jpg"
+                            quote="UKM TENIS USU JAYA SELALU"
+                        />
+                        <TestimonialCard
+                            name="Emia Timentha"
+                            role="Anggota UKM Periode 2025/2026"
+                            image="/images/testimoniEmia.jpg"
+                            quote="Tiap latihan seru banget apalagi waktu di coaching sama pak hakim"
+                        />
+                        <TestimonialCard
+                            name="-"
                             role="Anggota Aktif"
-                            image="/images/testimonial-2.jpg"
+                            image="/images/testimonial-.jpg"
                             quote="Selain berlatih tenis, kita juga belajar berorganisasi dan menjalin persaudaraan."
                         />
                         <TestimonialCard
-                            name="Michael Sembiring"
-                            role="Alumni"
-                            image="/images/testimonial-3.jpg"
-                            quote="Pengalaman berharga yang tak terlupakan selama bergabung dengan UKM Tenis USU."
-                        />
-                        <TestimonialCard
-                            name="Rizaldi Febriansyah"
-                            role="Ketua UKM Periode 2024/2025"
-                            image="/images/rizaldi.jpg"
-                            quote="UKM Tenis memberikan wadah bagi mahasiswa untuk mengembangkan passion dalam tenis."
-                        />
-                        <TestimonialCard
-                            name="Sarah Nabila"
-                            role="Anggota Aktif"
-                            image="/images/testimonial-2.jpg"
-                            quote="Selain berlatih tenis, kita juga belajar berorganisasi dan menjalin persaudaraan."
-                        />
-                        <TestimonialCard
-                            name="Michael Sembiring"
+                            name="-"
                             role="Alumni"
                             image="/images/testimonial-3.jpg"
                             quote="Pengalaman berharga yang tak terlupakan selama bergabung dengan UKM Tenis USU."

@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -29,15 +30,35 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $user->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        // Handle photo deletion
+        if ($request->has('delete_photo') && $request->delete_photo) {
+            if ($user->pasfoto && Storage::disk('public')->exists($user->pasfoto)) {
+                Storage::disk('public')->delete($user->pasfoto);
+            }
+            $user->pasfoto = null;
+        }
+        // Handle photo upload
+        elseif ($request->hasFile('photo')) {
+            // Delete old photo if exists
+            if ($user->pasfoto && Storage::disk('public')->exists($user->pasfoto)) {
+                Storage::disk('public')->delete($user->pasfoto);
+            }
 
-        return Redirect::route('profile.edit');
+            // Store new photo
+            $path = $request->file('photo')->store('pasfoto', 'public');
+            $user->pasfoto = $path;
+        }
+
+        $user->save();
+
+        return Redirect::route('profile.edit')->with('success', 'Profil berhasil diperbarui');
     }
 
     /**

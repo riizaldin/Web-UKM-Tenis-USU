@@ -40,7 +40,7 @@ export default function CompleteProfile(){
                             </svg>
                         </div>
                         <h1 className="text-3xl md:text-4xl font-extrabold mb-2">
-                            Halo, {firstName.charAt(0).toUpperCase() + firstName.slice(1)}! 👋
+                            Halo, {firstName.charAt(0).toUpperCase() + firstName.slice(1)}! 
                         </h1>
                         <p className="text-lg md:text-xl text-white/90">
                             Sebelum memulai, lengkapi data diri kamu terlebih dahulu
@@ -51,20 +51,7 @@ export default function CompleteProfile(){
                 {/* Form Section */}
                 <div className="p-8 md:p-10">
                     <form noValidate onSubmit={submit}>
-                        {/* Progress Indicator */}
-                        <div className="mb-8">
-                            <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
-                                <span className="flex items-center space-x-1">
-                                    <span className="w-8 h-8 rounded-full bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white flex items-center justify-center font-semibold">1</span>
-                                    <span>Data Akademik</span>
-                                </span>
-                                <div className="w-12 h-1 bg-gradient-to-r from-[#43CEA2] to-[#185A9D]"></div>
-                                <span className="flex items-center space-x-1">
-                                    <span className="w-8 h-8 rounded-full bg-gradient-to-r from-[#43CEA2] to-[#185A9D] text-white flex items-center justify-center font-semibold">2</span>
-                                    <span>Dokumen</span>
-                                </span>
-                            </div>
-                        </div>
+                       
 
                         {/* Data Akademik Section */}
                         <div className="mb-8">

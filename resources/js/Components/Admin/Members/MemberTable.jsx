@@ -3,9 +3,9 @@ import { Link } from '@inertiajs/react';
 import Badge from '@/Components/Admin/Absensi/Badge';
 import Button from '@/Components/Admin/Absensi/Button';
 import EmptyState from '@/Components/Admin/Absensi/EmptyState';
-import { Users, Eye } from 'lucide-react';
+import { Users, Eye, Trash2 } from 'lucide-react';
 
-export default function MemberTable({ members, onViewDetail }) {
+export default function MemberTable({ members, onViewDetail, onDelete }) {
   if (members.length === 0) {
     return (
       <EmptyState
@@ -52,14 +52,17 @@ export default function MemberTable({ members, onViewDetail }) {
                         className="h-10 w-10 rounded-full object-cover"
                         src={member.profile_photo_url}
                         alt={member.name}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
                       />
-                    ) : (
-                      <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
-                        <span className="text-purple-600 font-medium text-sm">
-                          {member.name.charAt(0)}
-                        </span>
-                      </div>
-                    )}
+                    ) : null}
+                    <div className={`h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shadow-md ${member.profile_photo_url ? 'hidden' : ''}`}>
+                      <span className="text-white font-bold text-sm">
+                        {member.name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase()}
+                      </span>
+                    </div>
                   </div>
                   <div className="ml-4">
                     <div className="text-sm font-medium text-gray-900">{member.name}</div>
@@ -95,6 +98,13 @@ export default function MemberTable({ members, onViewDetail }) {
                       Profil Lengkap
                     </Button>
                   </Link>
+                  <button
+                    onClick={() => onDelete(member)}
+                    className="px-3 py-1.5 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors text-sm font-semibold flex items-center gap-1"
+                    title="Hapus anggota"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </td>
             </tr>

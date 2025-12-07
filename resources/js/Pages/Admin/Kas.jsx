@@ -94,8 +94,11 @@ export default function AdminKas({ auth, transactions, bills = [], users = [], t
   // };
 
   const handleExport = () => {
-    console.log('Export data');
-    alert('Export PDF/CSV - Fitur ini akan diimplementasi di backend!');
+    const today = new Date();
+    const filename = `Laporan_Keuangan_${today.getFullYear()}_${(today.getMonth() + 1).toString().padStart(2, '0')}_${today.getDate().toString().padStart(2, '0')}.pdf`;
+    
+    window.location.href = route('admin.kas.export') + `?filename=${filename}`;
+    toast.success('Laporan keuangan PDF sedang diunduh...');
   };
 
   const handleBillSubmit = (e) => {
@@ -169,13 +172,6 @@ export default function AdminKas({ auth, transactions, bills = [], users = [], t
               <h1 className="text-3xl font-semibold mt-1">Kas Transaksi</h1>
             </div>
           </div>
-          <Button
-            variant="secondary"
-            icon={<Download className="w-4 h-4" />}
-            onClick={handleExport}
-          >
-            Export Laporan
-          </Button>
         </div>
 
         {/* Overview Saldo */}

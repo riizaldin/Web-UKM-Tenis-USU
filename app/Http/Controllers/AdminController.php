@@ -235,6 +235,34 @@ class AdminController extends Controller
         ]);
     }
 
+    public function deleteMember($id)
+    {
+        $user = User::findOrFail($id);
+        
+        // Hapus foto profile jika ada
+        if ($user->pasfoto && Storage::disk('public')->exists($user->pasfoto)) {
+            Storage::disk('public')->delete($user->pasfoto);
+        }
+        
+        // Hapus KTM jika ada
+        if ($user->ktm && Storage::disk('public')->exists($user->ktm)) {
+            Storage::disk('public')->delete($user->ktm);
+        }
+        
+        // Hapus semua kas payment proofs
+        $kasPayments = $user->kasPayments;
+        foreach ($kasPayments as $payment) {
+            if ($payment->proof_image && Storage::disk('public')->exists($payment->proof_image)) {
+                Storage::disk('public')->delete($payment->proof_image);
+            }
+        }
+        
+        // Hapus user (cascade akan menghapus relasi lainnya)
+        $user->delete();
+        
+        return redirect()->route('admin.members')->with('success', 'Anggota berhasil dihapus');
+    }
+
     public function attendance(){
 
         $attendances = Event::withCount('attendance')->orderBy('tanggal', 'desc')->orderBy('waktu_mulai', 'desc')->get();
@@ -261,9 +289,12 @@ class AdminController extends Controller
 
         $kodeAbsensi = $this->generateUniqueKodeAbsen();
 
+        // Parse date to ensure it's stored correctly in Asia/Jakarta timezone
+        $tanggal = \Carbon\Carbon::parse($request->input('date'), 'Asia/Jakarta');
+
         // Simpan data absensi ke database
         Event::create([
-            'tanggal' => $request->input('date'),
+            'tanggal' => $tanggal->toDateString(),
             'waktu_mulai' => $request->input('start_time'),
             'waktu_selesai' => $request->input('end_time'),
             'nama_event' => $request->input('name'),
@@ -740,6 +771,35 @@ class AdminController extends Controller
         return redirect()->route('admin.heregistration.index')->with('success', 'Mode heregistrasi diaktifkan untuk periode ' . $period->semester . ' ' . $period->academic_year);
     }
 
+    public function deactivateHeregistration($id)
+    {
+        $period = Heregistration::findOrFail($id);
+        $period->update(['is_active' => false]);
+
+        return redirect()->route('admin.heregistration.index')->with('success', 'Periode heregistrasi berhasil di-nonaktifkan');
+    }
+
+    public function deleteHeregistration($id)
+    {
+        $period = Heregistration::findOrFail($id);
+        
+        // Delete all payment proofs from storage
+        $payments = HeregistrationPayment::where('heregistration_id', $id)->get();
+        foreach ($payments as $payment) {
+            if ($payment->proof_image && Storage::disk('public')->exists($payment->proof_image)) {
+                Storage::disk('public')->delete($payment->proof_image);
+            }
+        }
+        
+        // Delete all payments
+        HeregistrationPayment::where('heregistration_id', $id)->delete();
+        
+        // Delete the period
+        $period->delete();
+
+        return redirect()->route('admin.heregistration.index')->with('success', 'Periode heregistrasi berhasil dihapus');
+    }
+
     public function viewHeregistrationPayments($id)
     {
         $period = Heregistration::findOrFail($id);
@@ -940,5 +1000,66 @@ class AdminController extends Controller
         }
 
         return back()->with('success', 'Foto berhasil dihapus!');
+    }
+
+    // Struktur Organisasi
+    public function strukturOrganisasi()
+    {
+        $jabatanOrder = [
+            'ketua' => 1,
+            'wakil_ketua' => 2,
+            'bendahara' => 3,
+            'wakil_bendahara' => 4,
+            'sekretaris' => 5,
+            'wakil_sekretaris' => 6,
+            'koordinator_kepelatihan' => 7,
+            'koordinator_medinfo' => 8,
+            'koordinator_keperalatan' => 9,
+            'anggota' => 10
+        ];
+
+        $pengurus = User::whereIn('jabatan', [
+            'ketua',
+            'wakil_ketua',
+            'bendahara',
+            'wakil_bendahara',
+            'sekretaris',
+            'wakil_sekretaris',
+            'koordinator_kepelatihan',
+            'koordinator_medinfo',
+            'koordinator_keperalatan'
+        ])->get()->sortBy(function($user) use ($jabatanOrder) {
+            return $jabatanOrder[$user->jabatan] ?? 999;
+        })->values();
+
+        $anggota = User::where('jabatan', 'anggota')
+            ->where('role', '!=', 'admin')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        return Inertia::render('Admin/StrukturOrganisasi', [
+            'pengurus' => $pengurus,
+            'anggota' => $anggota,
+        ]);
+    }
+
+    public function updateJabatan(Request $request, $id)
+    {
+        $request->validate([
+            'jabatan' => 'required|in:ketua,wakil_ketua,bendahara,wakil_bendahara,sekretaris,wakil_sekretaris,koordinator_kepelatihan,koordinator_medinfo,koordinator_keperalatan,anggota'
+        ]);
+
+        $user = User::findOrFail($id);
+        
+        // Jika ada yang sudah menjabat posisi yang sama (kecuali anggota), ganti ke anggota
+        if ($request->jabatan !== 'anggota') {
+            User::where('jabatan', $request->jabatan)
+                ->where('id', '!=', $id)
+                ->update(['jabatan' => 'anggota']);
+        }
+
+        $user->update(['jabatan' => $request->jabatan]);
+
+        return back()->with('success', 'Jabatan berhasil diperbarui!');
     }
 }

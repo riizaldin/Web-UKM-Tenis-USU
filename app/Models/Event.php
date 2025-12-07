@@ -21,6 +21,10 @@ class Event extends Model
         'kode_absensi',
     ];
 
+    protected $casts = [
+        'tanggal' => 'date',
+    ];
+
     public function attendance()
     {
         return $this->hasMany(Absensi::class, 'event_id');

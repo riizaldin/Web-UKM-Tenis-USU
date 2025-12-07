@@ -52,6 +52,9 @@ Route::middleware(['auth'])->group(function (){
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('complete-profile', [RegisteredUserController::class, 'showCompleteProfile'])
+                ->name('complete-profile');
+    
     Route::post('complete-profile', [RegisteredUserController::class, 'completeProfile'])
                 ->name('user.complete-profile');
 

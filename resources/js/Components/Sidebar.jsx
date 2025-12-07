@@ -11,6 +11,7 @@ import {
   Star,
   Camera,
   LogOut,
+  Shield,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -69,6 +70,12 @@ export default function Sidebar() {
           href="/admin/gallery"
           icon={<Camera size={20} />}
           text="Galeri"
+          collapsed={collapsed}
+        />
+        <SidebarLink
+          href="/admin/struktur"
+          icon={<Shield size={20} />}
+          text="Struktur Organisasi"
           collapsed={collapsed}
         />
       </nav>

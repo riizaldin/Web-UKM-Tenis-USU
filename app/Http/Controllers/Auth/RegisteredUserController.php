@@ -62,7 +62,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('home', absolute: false));
+        return redirect(route('verification.notice'));
     }
 
     public function completeProfile(Request $request){
@@ -101,5 +101,13 @@ class RegisteredUserController extends Controller
 
         return redirect(route('home'));
 
+    }
+
+    /**
+     * Display the complete profile form.
+     */
+    public function showCompleteProfile(): Response
+    {
+        return Inertia::render('Auth/CompleteProfile');
     }
 }

@@ -50,17 +50,51 @@ export default function AdminHeregistration({ auth, periods = [] }) {
     });
   };
 
+  const [confirmModal, setConfirmModal] = useState({ show: false, periodId: null });
+  const [deactivateModal, setDeactivateModal] = useState({ show: false, periodId: null });
+  const [deleteModal, setDeleteModal] = useState({ show: false, periodId: null, periodName: '' });
+
   const handleActivate = (periodId) => {
-    if (confirm('Apakah Anda yakin ingin mengaktifkan mode heregistrasi untuk periode ini? Semua anggota harus melakukan heregistrasi ulang.')) {
-      router.post(route('admin.heregistration.activate', periodId), {}, {
-        onSuccess: () => {
-          toast.success('Mode heregistrasi berhasil diaktifkan!');
-        },
-        onError: () => {
-          toast.error('Gagal mengaktifkan mode heregistrasi.');
-        },
-      });
-    }
+    setConfirmModal({ show: true, periodId });
+  };
+
+  const confirmActivate = () => {
+    router.post(route('admin.heregistration.activate', confirmModal.periodId), {}, {
+      onSuccess: () => {
+        toast.success('Mode heregistrasi berhasil diaktifkan!');
+        setConfirmModal({ show: false, periodId: null });
+      },
+      onError: () => {
+        toast.error('Gagal mengaktifkan mode heregistrasi.');
+        setConfirmModal({ show: false, periodId: null });
+      },
+    });
+  };
+
+  const confirmDeactivate = () => {
+    router.post(route('admin.heregistration.deactivate', deactivateModal.periodId), {}, {
+      onSuccess: () => {
+        toast.success('Heregistrasi berhasil di-nonaktifkan!');
+        setDeactivateModal({ show: false, periodId: null });
+      },
+      onError: () => {
+        toast.error('Gagal menonaktifkan heregistrasi.');
+        setDeactivateModal({ show: false, periodId: null });
+      },
+    });
+  };
+
+  const confirmDelete = () => {
+    router.delete(route('admin.heregistration.delete', deleteModal.periodId), {
+      onSuccess: () => {
+        toast.success('Periode heregistrasi berhasil dihapus!');
+        setDeleteModal({ show: false, periodId: null, periodName: '' });
+      },
+      onError: () => {
+        toast.error('Gagal menghapus periode heregistrasi.');
+        setDeleteModal({ show: false, periodId: null, periodName: '' });
+      },
+    });
   };
 
   const getStatusColor = (isActive) => {
@@ -204,22 +238,41 @@ export default function AdminHeregistration({ auth, periods = [] }) {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex gap-2">
-                    <Link
-                      href={route('admin.heregistration.payments', period.id)}
-                      className="flex-1 py-2 px-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-center text-sm font-semibold"
-                    >
-                      Lihat Pembayaran
-                    </Link>
-                    {!period.is_active && (
-                      <button
-                        onClick={() => handleActivate(period.id)}
-                        className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold"
-                        title="Aktifkan mode heregistrasi"
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <Link
+                        href={route('admin.heregistration.payments', period.id)}
+                        className="flex-1 py-2 px-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-center text-sm font-semibold"
                       >
-                        <Power className="w-4 h-4" />
-                      </button>
-                    )}
+                        Lihat Pembayaran
+                      </Link>
+                      {!period.is_active ? (
+                        <button
+                          onClick={() => handleActivate(period.id)}
+                          className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold"
+                          title="Aktifkan mode heregistrasi"
+                        >
+                          <Power className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => setDeactivateModal({ show: true, periodId: period.id })}
+                          className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-semibold"
+                          title="Non-aktifkan heregistrasi"
+                        >
+                          <Power className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => setDeleteModal({ show: true, periodId: period.id, periodName: `${period.semester} ${period.academic_year}` })}
+                      className="w-full py-2 px-3 bg-gray-100 text-red-600 rounded-lg hover:bg-red-50 border border-red-200 transition-colors text-sm font-semibold flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Hapus Periode
+                    </button>
                   </div>
                 </div>
               ))}
@@ -360,6 +413,147 @@ export default function AdminHeregistration({ auth, periods = [] }) {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* Confirmation Modal */}
+        {confirmModal.show && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full transform animate-scale-in">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-yellow-400 to-orange-500 p-6 rounded-t-2xl">
+                <div className="flex items-center justify-center">
+                  <div className="bg-white rounded-full p-3">
+                    <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-3 text-center">
+                  Konfirmasi Aktivasi Heregistrasi
+                </h3>
+                <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-lg mb-6">
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    Apakah Anda yakin ingin mengaktifkan mode heregistrasi untuk periode ini? 
+                    <span className="font-semibold block mt-2">Semua anggota harus melakukan heregistrasi ulang.</span>
+                  </p>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setConfirmModal({ show: false, periodId: null })}
+                    className="flex-1 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-200"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={confirmActivate}
+                    className="flex-1 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                  >
+                    Ya, Aktifkan
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Deactivate Modal */}
+        {deactivateModal.show && (
+          <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-fade-in-scale">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-red-500 to-red-600 p-4 text-white">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm flex-shrink-0">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-bold">
+                    Non-aktifkan Heregistrasi
+                  </h3>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg mb-6">
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    Periode heregistrasi akan di-nonaktifkan. 
+                    <span className="font-semibold block mt-2">Data pembayaran tidak akan dihapus.</span>
+                  </p>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setDeactivateModal({ show: false, periodId: null })}
+                    className="flex-1 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-200"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={confirmDeactivate}
+                    className="flex-1 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                  >
+                    Ya, Non-aktifkan
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Modal */}
+        {deleteModal.show && (
+          <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-fade-in-scale">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-red-600 to-red-700 p-4 text-white">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm flex-shrink-0">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-bold">
+                    Hapus Periode Heregistrasi
+                  </h3>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                <div className="bg-red-50 border-l-4 border-red-600 p-4 rounded-lg mb-6">
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    Anda akan menghapus periode <span className="font-bold">{deleteModal.periodName}</span>.
+                    <span className="font-semibold block mt-2 text-red-700">Semua data pembayaran dan bukti transfer akan dihapus permanen!</span>
+                  </p>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setDeleteModal({ show: false, periodId: null, periodName: '' })}
+                    className="flex-1 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-200"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="flex-1 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                  >
+                    Ya, Hapus Permanen
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}

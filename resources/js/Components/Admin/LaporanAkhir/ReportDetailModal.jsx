@@ -56,7 +56,7 @@ export default function ReportDetailModal({ isOpen, onClose, report }) {
           </h4>
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <p className="text-xs text-gray-500 mb-1">Total Pemasukan</p>
+              <p className="text-xs text-gray-500 mb-1">Total Pemasukan </p>
               <p className="text-lg font-bold text-green-600">
                 {formatCurrency(report.total_income)}
               </p>

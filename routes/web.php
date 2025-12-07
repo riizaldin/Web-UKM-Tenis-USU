@@ -15,9 +15,29 @@ use App\Http\Controllers\User\ScheduleController;
 
 // Landing Page (publik, default)
 Route::get('/', function () {
+    $user = Auth::user();
+    
+    if ($user) {
+        // Check if email is verified
+        if (!$user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
+        }
+        
+        // Check if profile is completed
+        $fields = ['nim', 'fakultas', 'jurusan', 'angkatan', 'no_whatsapp', 'ktm', 'pasfoto'];
+        foreach ($fields as $field) {
+            if (is_null($user->$field)) {
+                return redirect()->route('complete-profile');
+            }
+        }
+        
+        // If verified and profile completed, redirect to home
+        return redirect()->route('home');
+    }
+    
     return Inertia::render('LandingPage', [
         'auth' => [
-            'user' => Auth::user(),
+            'user' => null,
         ],
     ]);
 })->name('landing');
@@ -42,6 +62,8 @@ Route::get('/attendance/set', [UserController::class, 'routeAttendance'])->middl
 
 Route::post('/attendance/set', [UserController::class, 'setAttendance'])->middleware(['auth', 'verified', 'user', ProfileCompleted::class, CheckHeregistration::class])->name('set-attendance');
 
+Route::get('/attendance/export', [UserController::class, 'exportAttendance'])->middleware(['auth', 'verified', 'user', ProfileCompleted::class, CheckHeregistration::class])->name('attendance.export');
+
 // Gallery
 Route::get('/gallery', [UserController::class, 'gallery'])->middleware(['auth', 'verified', 'user', ProfileCompleted::class, CheckHeregistration::class])->name('gallery');
 
@@ -58,6 +80,12 @@ Route::get('/finance', [UserController::class, 'finance'])->middleware(['auth', 
 
 Route::post('/finance/pay', [UserController::class, 'financePay'])->middleware(['auth', 'verified', 'user', ProfileCompleted::class, CheckHeregistration::class])->name('finance-pay');
 
+// Struktur Organisasi (User)
+Route::get('/struktur', [UserController::class, 'strukturOrganisasi'])->middleware(['auth', 'verified', 'user', ProfileCompleted::class, CheckHeregistration::class])->name('struktur');
+
+// Reports (User)
+Route::get('/reports', [UserController::class, 'reports'])->middleware(['auth', 'verified', 'user', ProfileCompleted::class, CheckHeregistration::class])->name('reports');
+
 Route::get('/finance/proof/{filename}', [UserController::class, 'viewPaymentProof'])->middleware(['auth', 'verified', 'user', ProfileCompleted::class, CheckHeregistration::class])->name('finance.proof');
 // Kas - User Routes
 Route::middleware(['auth', 'verified', 'user', ProfileCompleted::class, CheckHeregistration::class])->group(function () {
@@ -66,15 +94,13 @@ Route::middleware(['auth', 'verified', 'user', ProfileCompleted::class, CheckHer
     Route::get('/kas/payment-history', [UserController::class, 'viewPaymentHistory'])->name('kas.payment.history');
 });
 
-Route::get('/complete-profile', function () {
-    return Inertia::render('Auth/CompleteProfile');
-})->middleware(['auth', 'verified'])->name('complete-profile');
-
 Route::get('/admin', [AdminController::class, 'index'])->middleware(['auth', 'verified', 'admin'])->name('admin');
 
 Route::get('/admin/members', [AdminController::class, 'member'])->middleware(['auth', 'verified', 'admin'])->name('admin.members');
 
 Route::get('/admin/members/{id}', [AdminController::class, 'showMembers'])->middleware(['auth', 'verified', 'admin'])->name('admin.members.detail');
+
+Route::delete('/admin/members/{id}/delete', [AdminController::class, 'deleteMember'])->middleware(['auth', 'verified', 'admin'])->name('admin.members.delete');
 
 Route::get('/admin/attendance', [AdminController::class, 'attendance'])->middleware(['auth', 'verified', 'admin'])->name('admin.attendance');
 
@@ -82,6 +108,10 @@ Route::post('/admin/attendance', [AdminController::class, 'storeAttendance'])->m
 
 Route::get('/admin/kas', [AdminController::class, 'kas'])->middleware(['auth', 'verified', 'admin'])->name('admin.kas');
 Route::get('/admin/kas/bills', [AdminController::class, 'kasBills'])->middleware(['auth', 'verified', 'admin'])->name('admin.kas.bills');
+
+// Struktur Organisasi
+Route::get('/admin/struktur', [AdminController::class, 'strukturOrganisasi'])->middleware(['auth', 'verified', 'admin'])->name('admin.struktur');
+Route::post('/admin/struktur/{id}/update', [AdminController::class, 'updateJabatan'])->middleware(['auth', 'verified', 'admin'])->name('admin.struktur.update');
 
 // Kas - Admin Routes
 Route::prefix('admin/kas')->middleware(['auth', 'verified', 'admin'])->name('admin.kas.')->group(function () {
@@ -100,6 +130,8 @@ Route::prefix('admin/heregistration')->middleware(['auth', 'verified', 'admin'])
     Route::get('/', [AdminController::class, 'heregistration'])->name('index');
     Route::post('/create', [AdminController::class, 'createHeregistration'])->name('create');
     Route::post('/{id}/activate', [AdminController::class, 'activateHeregistration'])->name('activate');
+    Route::post('/{id}/deactivate', [AdminController::class, 'deactivateHeregistration'])->name('deactivate');
+    Route::delete('/{id}/delete', [AdminController::class, 'deleteHeregistration'])->name('delete');
     Route::get('/{id}/payments', [AdminController::class, 'viewHeregistrationPayments'])->name('payments');
     Route::post('/payment/{id}/approve', [AdminController::class, 'approveHeregistrationPayment'])->name('payment.approve');
     Route::post('/payment/{id}/reject', [AdminController::class, 'rejectHeregistrationPayment'])->name('payment.reject');

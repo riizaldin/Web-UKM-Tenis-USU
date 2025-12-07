@@ -299,7 +299,10 @@ export default function Attendance({ auth, attendance, event_count, prefillId, a
                             <div className="p-6 border-b border-gray-200">
                                 <div className="flex items-center justify-between">
                                     <h2 className="text-2xl font-bold text-gray-800">Riwayat Kehadiran</h2>
-                                    <button className="px-4 py-2 border border-prismarine text-prismarine rounded-lg hover:bg-prismarine/10 transition-colors font-semibold">
+                                    <button 
+                                        onClick={() => window.location.href = route('attendance.export')}
+                                        className="px-4 py-2 border border-prismarine text-prismarine rounded-lg hover:bg-prismarine/10 transition-colors font-semibold"
+                                    >
                                         <svg className="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                         </svg>
@@ -432,7 +435,7 @@ export default function Attendance({ auth, attendance, event_count, prefillId, a
                             <div className="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-lg p-6 shadow-lg">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm opacity-90 mb-1">Kehadiran Terbaik</p>
+                                        <p className="text-sm opacity-90 mb-1">Persentase Kehadiran</p>
                                         <p className="text-3xl font-bold">{totalHadir || event_count ? (totalHadir / event_count * 100).toFixed(2) : '0'}%</p>
                                         <p className="text-sm opacity-90 mt-2">{totalHadir} dari {event_count} kegiatan</p>
                                     </div>

@@ -181,10 +181,10 @@ export default function Home({ auth, statistics, todayEvents, upcomingEvents, re
             link: '/gallery'
         },
         {
-            title: 'Penilaian Pengurus',
-            description: 'Sistem evaluasi kinerja pengurus',
-            icon: <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>,
-            link: '/evaluation'
+            title: 'Struktur Organisasi',
+            description: 'Kenali pengurus dan anggota UKM',
+            icon: <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>,
+            link: '/struktur'
         },
     ];
 
@@ -202,65 +202,29 @@ export default function Home({ auth, statistics, todayEvents, upcomingEvents, re
                         <div className="bg-white text-darkgray p-8 rounded-2xl shadow-2xl w-full max-w-8xl backdrop-blur-lg border border-gray-100 hover:shadow-3xl transition-shadow duration-300">
                             <div className="flex items-start space-x-6">
                                 <div className="flex-shrink-0">
-                                    <div className="w-20 h-20 bg-gradient-to-br from-prismarine to-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg hover:scale-105 transition-transform duration-300">
-                                        {getFirstLettersFromName(auth.user.name)}
+                                    <div className="w-20 h-20 rounded-2xl overflow-hidden border-4 border-white shadow-lg hover:scale-105 transition-transform duration-300">
+                                        <img 
+                                            src={auth.user.pasfoto ? `/storage/${auth.user.pasfoto}` : '/images/no_image_placeholder.png'} 
+                                            alt={auth.user.name}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => { e.target.src = '/images/no_image_placeholder.png'; }}
+                                        />
                                     </div>
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex items-center justify-between mb-3">
                                         <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">{titleCase(auth.user.name)}</h3>
-                                        <div className="flex items-center space-x-2">
-                                            <span className="px-4 py-1.5 bg-gradient-to-r from-prismarine to-teal-600 text-white text-sm rounded-full font-semibold shadow-md">KETUA</span>
-
-                                            {/* Logout Dropdown */}
-                                            <div className="relative">
-                                                <button
-                                                    onClick={() => setShowDropdown(!showDropdown)}
-                                                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                                                    aria-label="Menu"
-                                                >
-                                                    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                                    </svg>
-                                                </button>
-
-                                                {showDropdown && (
-                                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
-                                                        <div className="py-2">
-                                                            <Link
-                                                                href="/profile"
-                                                                className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
-                                                            >
-                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                                </svg>
-                                                                <span>Profil</span>
-                                                            </Link>
-                                                            <Link
-                                                                href="/settings"
-                                                                className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
-                                                            >
-                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                                </svg>
-                                                                <span>Pengaturan</span>
-                                                            </Link>
-                                                            <div className="border-t border-gray-200 my-2"></div>
-                                                            <button
-                                                                onClick={handleLogout}
-                                                                className="flex items-center space-x-2 px-4 py-2 text-red-600 hover:bg-red-50 transition-colors w-full text-left"
-                                                            >
-                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                                                </svg>
-                                                                <span>Logout</span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                )}
+                                        {auth.user.jabatan && (
+                                            <div className="flex items-center space-x-2">
+                                                <span className={`px-4 py-1.5 text-white text-sm rounded-full font-semibold shadow-md uppercase ${
+                                                    auth.user.jabatan === 'anggota' 
+                                                        ? 'bg-gradient-to-r from-gray-500 to-gray-600' 
+                                                        : 'bg-gradient-to-r from-prismarine to-teal-600'
+                                                }`}>
+                                                    {auth.user.jabatan.replace(/_/g, ' ')}
+                                                </span>
                                             </div>
-                                        </div>
+                                        )}
                                     </div>
                                     <div className="space-y-3">
                                         <div className="flex items-center space-x-2">
@@ -282,12 +246,12 @@ export default function Home({ auth, statistics, todayEvents, upcomingEvents, re
                                             </div>
                                         </div>
                                         <div className="pt-3 flex items-center space-x-3">
-                                            <button className="px-5 py-2.5 bg-gradient-to-r from-prismarine to-teal-600 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm font-semibold">
-                                                Lihat Profil
-                                            </button>
-                                            <button className="px-5 py-2.5 border-2 border-prismarine text-prismarine rounded-xl hover:bg-prismarine/5 hover:scale-105 transition-all duration-300 text-sm font-semibold">
+                                            <Link
+                                                href="/profile"
+                                                className="px-5 py-2.5 bg-gradient-to-r from-prismarine to-teal-600 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm font-semibold"
+                                            >
                                                 Edit Profil
-                                            </button>
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>
@@ -354,14 +318,14 @@ export default function Home({ auth, statistics, todayEvents, upcomingEvents, re
                         />
 
                         <FeatureCard
-                            title="Penilaian Pengurus"
-                            description="Sistem evaluasi kinerja pengurus yang objektif dan terstruktur"
+                            title="Struktur Organisasi"
+                            description="Kenali pengurus dan anggota UKM Tenis USU"
                             icon={
                                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
                             }
-                            link="/evaluation"
+                            link="/struktur"
                             color="yellow"
                         />
 

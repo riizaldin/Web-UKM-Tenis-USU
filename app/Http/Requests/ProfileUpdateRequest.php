@@ -18,6 +18,16 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'photo.max' => 'Ukuran foto terlalu besar! Maksimal ukuran file adalah 2MB.',
+            'photo.image' => 'File yang diupload harus berupa gambar.',
+            'photo.mimes' => 'Format foto harus jpeg, png, jpg, atau gif.',
         ];
     }
 }

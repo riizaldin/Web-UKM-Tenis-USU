@@ -83,7 +83,7 @@ export default function GalleryManagement({ auth, galleries = [] }) {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Head title="Manajemen Galeri" />
-      <Sidebar />
+      <Sidebar/>
       <ToastContainer position="top-center" autoClose={1300} />
 
       <div className="flex-1 p-6">

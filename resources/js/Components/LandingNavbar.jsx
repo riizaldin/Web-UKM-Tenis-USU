@@ -5,12 +5,32 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 export default function LandingNavbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [activeSection, setActiveSection] = useState('home');
 
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 50);
+            
+            // Detect active section
+            const sections = ['home', 'about', 'schedule', 'gallery', 'testimonials'];
+            const scrollPosition = window.scrollY + 100; // offset for navbar
+            
+            for (const sectionId of sections) {
+                const element = document.getElementById(sectionId);
+                if (element) {
+                    const offsetTop = element.offsetTop;
+                    const offsetBottom = offsetTop + element.offsetHeight;
+                    
+                    if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
+                        setActiveSection(sectionId);
+                        break;
+                    }
+                }
+            }
         };
+        
         window.addEventListener('scroll', handleScroll);
+        handleScroll(); // Check on mount
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -58,7 +78,11 @@ export default function LandingNavbar() {
                             <button
                                 key={item.name}
                                 onClick={() => scrollToSection(item.sectionId)}
-                                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-prismarine hover:bg-prismarine/5 rounded-lg transition-colors duration-200"
+                                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                                    activeSection === item.sectionId
+                                        ? 'text-[#2d8a5f] bg-[#2d8a5f]/10 font-semibold'
+                                        : 'text-gray-700 hover:text-prismarine hover:bg-prismarine/5'
+                                }`}
                             >
                                 {item.name}
                             </button>
@@ -111,7 +135,11 @@ export default function LandingNavbar() {
                         <button
                             key={item.name}
                             onClick={() => scrollToSection(item.sectionId)}
-                            className="block w-full text-left px-4 py-3 text-base font-medium text-gray-700 hover:text-prismarine hover:bg-prismarine/5 rounded-lg transition-colors"
+                            className={`block w-full text-left px-4 py-3 text-base font-medium rounded-lg transition-colors ${
+                                activeSection === item.sectionId
+                                    ? 'text-[#2d8a5f] bg-[#2d8a5f]/10 font-semibold'
+                                    : 'text-gray-700 hover:text-prismarine hover:bg-prismarine/5'
+                            }`}
                         >
                             {item.name}
                         </button>

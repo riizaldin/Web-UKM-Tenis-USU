@@ -8,6 +8,7 @@ import { Transition } from '@headlessui/react';
 export default function UpdateProfileInformationForm({ mustVerifyEmail, status, className = '' }) {
     const user = usePage().props.auth.user;
     const [photoPreview, setPhotoPreview] = useState(null);
+    const [fileSizeError, setFileSizeError] = useState(null);
     const photoInputRef = useRef(null);
 
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
@@ -15,6 +16,7 @@ export default function UpdateProfileInformationForm({ mustVerifyEmail, status, 
         name: user.name,
         email: user.email,
         photo: null,
+        delete_photo: false,
     });
 
     const getInitials = (name) => {
@@ -27,6 +29,20 @@ export default function UpdateProfileInformationForm({ mustVerifyEmail, status, 
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            // Check file size (max 2MB)
+            const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+            if (file.size > maxSize) {
+                const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                setFileSizeError(`Ukuran foto terlalu besar! Maksimal ukuran file adalah 2MB. Ukuran file Anda: ${fileSizeMB}MB`);
+                // Clear the input
+                if (photoInputRef.current) {
+                    photoInputRef.current.value = '';
+                }
+                return;
+            }
+
+            // Clear any previous error
+            setFileSizeError(null);
             setData('photo', file);
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -37,10 +53,30 @@ export default function UpdateProfileInformationForm({ mustVerifyEmail, status, 
     };
 
     const removePhoto = () => {
-        setData('photo', null);
+        // Clear preview and photo immediately
         setPhotoPreview(null);
+        setData('photo', null);
         if (photoInputRef.current) {
             photoInputRef.current.value = '';
+        }
+        
+        if (user.pasfoto) {
+            // If user has existing photo, submit form to delete it from server
+            post(route('profile.update'), {
+                forceFormData: true,
+                preserveScroll: true,
+                data: {
+                    _method: 'patch',
+                    name: data.name,
+                    email: data.email,
+                    delete_photo: '1',
+                },
+                onSuccess: () => {
+                    setData('delete_photo', false);
+                    // Force update user data to null
+                    user.pasfoto = null;
+                },
+            });
         }
     };
 
@@ -49,6 +85,14 @@ export default function UpdateProfileInformationForm({ mustVerifyEmail, status, 
         post(route('profile.update'), {
             forceFormData: true,
             preserveScroll: true,
+            onSuccess: () => {
+                setPhotoPreview(null);
+                setData('photo', null);
+                setData('delete_photo', false);
+                if (photoInputRef.current) {
+                    photoInputRef.current.value = '';
+                }
+            },
         });
     };
 
@@ -58,19 +102,12 @@ export default function UpdateProfileInformationForm({ mustVerifyEmail, status, 
                 <div className="flex flex-col items-center space-y-4">
                     <div className="relative group">
                         <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl">
-                            {photoPreview || user.profile_photo_path ? (
-                                <img
-                                    src={photoPreview || `/storage/${user.profile_photo_path}`}
-                                    alt="Profile"
-                                    className="w-full h-full object-cover"
-                                />
-                            ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-prismarine to-blue-600 flex items-center justify-center">
-                                    <span className="text-white text-4xl font-bold">
-                                        {getInitials(data.name)}
-                                    </span>
-                                </div>
-                            )}
+                            <img
+                                src={photoPreview || (user.pasfoto ? `/storage/${user.pasfoto}` : '/images/no_image_placeholder.png')}
+                                alt="Profile"
+                                className="w-full h-full object-cover"
+                                onError={(e) => { e.target.src = '/images/no_image_placeholder.png'; }}
+                            />
                         </div>
                         <button
                             type="button"
@@ -90,24 +127,41 @@ export default function UpdateProfileInformationForm({ mustVerifyEmail, status, 
                         accept="image/*"
                         onChange={handlePhotoChange}
                     />
-                    <div className="flex space-x-2">
-                        <button
-                            type="button"
-                            onClick={() => photoInputRef.current?.click()}
-                            className="px-4 py-2 bg-gradient-to-r from-prismarine to-blue-600 text-white rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200"
-                        >
-                            Ganti Foto
-                        </button>
-                        {(photoPreview || user.profile_photo_path) && (
-                            <button
-                                type="button"
-                                onClick={removePhoto}
-                                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
-                            >
-                                Hapus Foto
-                            </button>
-                        )}
-                    </div>
+                    <button
+                        type="button"
+                        onClick={() => photoInputRef.current?.click()}
+                        className="px-4 py-2 bg-gradient-to-r from-prismarine to-blue-600 text-white rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                    >
+                        Ganti Foto
+                    </button>
+                    
+                    {/* File Size Warning Box */}
+                    {fileSizeError && (
+                        <div className="w-full max-w-md bg-red-50 border-l-4 border-red-500 p-4 rounded-lg shadow-md">
+                            <div className="flex items-start">
+                                <div className="flex-shrink-0">
+                                    <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div className="ml-3 flex-1">
+                                    <p className="text-sm font-medium text-red-800">
+                                        {fileSizeError}
+                                    </p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setFileSizeError(null)}
+                                    className="ml-3 flex-shrink-0 text-red-500 hover:text-red-700 transition-colors"
+                                >
+                                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    
                     <InputError message={errors.photo} className="mt-2" />
                 </div>
 
@@ -186,7 +240,7 @@ export default function UpdateProfileInformationForm({ mustVerifyEmail, status, 
                     </div>
                 )}
 
-                <div className="flex items-center gap-4">
+                <div className="space-y-4">
                     <button
                         type="submit"
                         disabled={processing}
@@ -195,14 +249,29 @@ export default function UpdateProfileInformationForm({ mustVerifyEmail, status, 
                         Simpan Perubahan
                     </button>
 
+                    {/* Success Notification Box */}
                     <Transition
                         show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
+                        enter="transition ease-in-out duration-300"
+                        enterFrom="opacity-0 transform translate-y-2"
+                        enterTo="opacity-100 transform translate-y-0"
+                        leave="transition ease-in-out duration-300"
+                        leaveTo="opacity-0 transform translate-y-2"
                     >
-                        <p className="text-sm text-green-600 font-medium">Tersimpan!</p>
+                        <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg shadow-md">
+                            <div className="flex items-center">
+                                <div className="flex-shrink-0">
+                                    <svg className="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div className="ml-3">
+                                    <p className="text-sm font-medium text-green-800">
+                                        Profil berhasil diperbarui!
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </Transition>
                 </div>
             </form>

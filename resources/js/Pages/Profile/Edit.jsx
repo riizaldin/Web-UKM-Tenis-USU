@@ -53,26 +53,6 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
                             />
                         </div>
                     </div>
-
-                    {/* Delete Account Card */}
-                    <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-red-200">
-                        <div className="bg-gradient-to-r from-red-500/10 to-red-600/10 px-6 py-4 border-b border-red-200">
-                            <div className="flex items-center space-x-3">
-                                <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
-                                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h2 className="text-xl font-bold text-gray-900">Zona Berbahaya</h2>
-                                    <p className="text-sm text-gray-600">Hapus akun Anda secara permanen</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="p-6">
-                            <DeleteUserForm className="max-w-full" />
-                        </div>
-                    </div>
                 </div>
             </div>
         </AppLayout>

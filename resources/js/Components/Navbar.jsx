@@ -27,7 +27,7 @@ export default function Navbar({ auth }) {
         { name: 'Jadwal', href: '/schedules', pattern: /^\/schedules/ },
         { name: 'Absensi', href: '/attendance', pattern: /^\/attendance/ },
         { name: 'Keuangan', href: '/finance', pattern: /^\/finance/ },
-        { name: 'Penilaian', href: '/evaluation', pattern: /^\/evaluation/ },
+        { name: 'Struktur', href: '/struktur', pattern: /^\/struktur(?!\/|-)/ },
         { name: 'Laporan', href: '/reports', pattern: /^\/reports/ },
         { name: 'Galeri', href: '/gallery', pattern: /^\/gallery/ },
     ];
@@ -93,13 +93,18 @@ export default function Navbar({ auth }) {
                                     className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-prismarine"
                                 >
                                     {/* Profile Photo */}
-                                    <div className="w-10 h-10 bg-gradient-to-br from-prismarine to-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-md">
-                                        {getInitials(auth.user.name)}
+                                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-prismarine shadow-md flex-shrink-0">
+                                        <img 
+                                            src={auth.user.pasfoto ? `/storage/${auth.user.pasfoto}` : '/images/no_image_placeholder.png'} 
+                                            alt={auth.user.name}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => { e.target.src = '/images/no_image_placeholder.png'; }}
+                                        />
                                     </div>
                                     {/* Name */}
                                     <div className="text-left">
                                         <div className="text-sm font-semibold text-gray-800">{auth.user.name}</div>
-                                        <div className="text-xs text-gray-500">Anggota</div>
+                                        <div className="text-xs text-gray-500 capitalize">{auth.user.jabatan?.replace(/_/g, ' ') || 'Anggota'}</div>
                                     </div>
                                     {/* Dropdown Arrow */}
                                     <svg
@@ -118,12 +123,17 @@ export default function Navbar({ auth }) {
                                         {/* User Info Header */}
                                         <div className="px-4 py-3 border-b border-gray-200">
                                             <div className="flex items-center space-x-3">
-                                                <div className="w-12 h-12 bg-gradient-to-br from-prismarine to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                                                    {getInitials(auth.user.name)}
+                                                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-prismarine shadow-md flex-shrink-0">
+                                                    <img 
+                                                        src={auth.user.pasfoto ? `/storage/${auth.user.pasfoto}` : '/images/no_image_placeholder.png'} 
+                                                        alt={auth.user.name}
+                                                        className="w-full h-full object-cover"
+                                                        onError={(e) => { e.target.src = '/images/no_image_placeholder.png'; }}
+                                                    />
                                                 </div>
-                                                <div>
-                                                    <div className="text-sm font-semibold text-gray-800">{auth.user.name}</div>
-                                                    <div className="text-xs text-gray-500">{auth.user.email}</div>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="text-sm font-semibold text-gray-800 truncate">{auth.user.name}</div>
+                                                    <div className="text-xs text-gray-500 truncate">{auth.user.email}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -135,12 +145,12 @@ export default function Navbar({ auth }) {
                                                 className="flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-prismarine/5 hover:text-prismarine transition-colors"
                                                 onClick={() => setShowDropdown(false)}
                                             >
-                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                 </svg>
-                                                <div>
-                                                    <div className="font-medium">Edit Profil</div>
-                                                    <div className="text-xs text-gray-500">Kelola informasi akun</div>
+                                                <div className="min-w-0 flex-1 text-left">
+                                                    <div className="font-medium truncate">Edit Profil</div>
+                                                    <div className="text-xs text-gray-500 truncate">Kelola informasi akun</div>
                                                 </div>
                                             </Link>
 
@@ -149,14 +159,14 @@ export default function Navbar({ auth }) {
                                                     setShowDropdown(false);
                                                     setShowLogoutModal(true);
                                                 }}
-                                                className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                                                className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
                                             >
-                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                                 </svg>
-                                                <div>
-                                                    <div className="font-medium">Keluar</div>
-                                                    <div className="text-xs text-red-500">Logout dari akun</div>
+                                                <div className="min-w-0 flex-1 text-left">
+                                                    <div className="font-medium truncate">Keluar</div>
+                                                    <div className="text-xs text-red-500 truncate">Logout dari akun</div>
                                                 </div>
                                             </button>
                                         </div>
@@ -223,8 +233,13 @@ export default function Navbar({ auth }) {
                         <div className="pt-4 pb-3 border-t border-gray-200">
                             <div className="flex items-center px-4 mb-3">
                                 <div className="flex-shrink-0">
-                                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-prismarine to-blue-600 text-white flex items-center justify-center text-lg font-bold">
-                                        {getInitials(auth.user.name)}
+                                    <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-prismarine shadow-md">
+                                        <img 
+                                            src={auth.user.pasfoto ? `/storage/${auth.user.pasfoto}` : '/images/no_image_placeholder.png'} 
+                                            alt={auth.user.name}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => { e.target.src = '/images/no_image_placeholder.png'; }}
+                                        />
                                     </div>
                                 </div>
                                 <div className="ml-3">

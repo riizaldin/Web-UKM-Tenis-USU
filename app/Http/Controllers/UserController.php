@@ -197,7 +197,28 @@ class UserController extends Controller
     public function attendance(){
         $auth = auth()->user();
 
-        $attendances = Absensi::with('event:id,nama_event')->where('user_id', auth()->id())->get();
+        $attendances = Absensi::with('event:id,nama_event,tanggal,lokasi,waktu_mulai,waktu_selesai')
+            ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($attendance) {
+                return [
+                    'id' => $attendance->id,
+                    'waktu_absen' => Carbon::parse($attendance->waktu_absen)->timezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
+                    'status' => $attendance->status,
+                    'event' => [
+                        'id' => $attendance->event->id,
+                        'nama_event' => $attendance->event->nama_event,
+                        'tanggal' => $attendance->event->tanggal instanceof Carbon 
+                            ? $attendance->event->tanggal->format('Y-m-d')
+                            : $attendance->event->tanggal,
+                        'lokasi' => $attendance->event->lokasi,
+                        'waktu_mulai' => $attendance->event->waktu_mulai,
+                        'waktu_selesai' => $attendance->event->waktu_selesai,
+                    ]
+                ];
+            });
+            
         $attendedThisMonth = Absensi::where('user_id', auth()->id())
             ->whereHas('event', function ($query) {
                 $query->whereYear('tanggal', Carbon::now('Asia/Jakarta')->year)
@@ -239,33 +260,34 @@ class UserController extends Controller
             return redirect()->route('attendance')->with('error', 'Anda sudah melakukan absensi untuk event ini.');
         }
 
-        $today = Carbon::today()->toDateString();
-        if ($event->tanggal !== $today) {
+        // Get current date/time in Asia/Jakarta
+        $now = Carbon::now('Asia/Jakarta');
+        $today = $now->toDateString();
+        
+        // Get event date (already stored as date, compare as string)
+        $eventDate = $event->tanggal instanceof Carbon ? $event->tanggal->toDateString() : $event->tanggal;
+        
+        // Check if today matches event date
+        if ($eventDate !== $today) {
             return redirect()->route('attendance')->with('error', 'Absensi hanya bisa dilakukan pada hari kegiatan');
         }
 
+        // Build start time from event date and time
         try {
-            $start = Carbon::createFromFormat(
-                'Y-m-d H:i:s', 
-                "{$event->tanggal} {$event->waktu_mulai}", 
-                'Asia/Jakarta'
-            );
+            $start = Carbon::parse($eventDate . ' ' . $event->waktu_mulai, 'Asia/Jakarta');
         } catch (\Exception $e) {
             return redirect()->route('attendance')->with('error', 'Waktu kegiatan tidak valid');
         }
 
-        $now = Carbon::now('Asia/Jakarta');
+        // Check time constraints
         if ($event->waktu_selesai) {
             try {
-                $end = Carbon::createFromFormat(
-                    'Y-m-d H:i:s', 
-                    "{$event->tanggal} {$event->waktu_selesai}", 
-                    'Asia/Jakarta'
-                );
+                $end = Carbon::parse($eventDate . ' ' . $event->waktu_selesai, 'Asia/Jakarta');
             } catch (\Exception $e) {
                 return redirect()->route('attendance')->with('error', 'Format waktu event tidak valid.');
             }
             
+            // If event ends after midnight, add one day
             if ($end->lessThanOrEqualTo($start)) {
                 $end->addDay();
             }
@@ -274,6 +296,7 @@ class UserController extends Controller
                 return redirect()->route('attendance')->with('error', 'Absensi hanya bisa dilakukan saat kegiatan berlangsung!');
             }
         } else {
+            // If no end time, check if now is same day and after start
             if (!$now->isSameDay($start) || $now->lessThan($start)) {
                 return redirect()->route('attendance')->with('error', 'Absensi hanya bisa dilakukan setelah kegiatan dimulai!');
             }
@@ -287,6 +310,34 @@ class UserController extends Controller
         ]);
 
         return redirect()->route('attendance')->with('success', 'Absensi berhasil dicatat!');
+    }
+
+    public function exportAttendance()
+    {
+        $user = auth()->user();
+        
+        // Get all attendance records with event details
+        $attendances = Absensi::with('event')
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $data = [
+            'title' => 'LAPORAN RIWAYAT KEHADIRAN',
+            'user' => $user,
+            'date' => now('Asia/Jakarta')->format('d F Y'),
+            'attendances' => $attendances,
+            'totalHadir' => $attendances->where('status', 'hadir')->count(),
+            'totalIzin' => $attendances->where('status', 'izin')->count(),
+            'totalAlpa' => $attendances->where('status', 'alpa')->count(),
+        ];
+
+        $pdf = \PDF::loadView('pdf.attendance-report', $data)
+            ->setPaper('a4', 'portrait');
+        
+        $filename = 'Riwayat_Kehadiran_' . $user->name . '_' . now('Asia/Jakarta')->format('Y_m_d') . '.pdf';
+        
+        return $pdf->download($filename);
     }
 
     public function finance(){
@@ -374,6 +425,9 @@ class UserController extends Controller
             ->whereBetween('verified_at', [now()->subMonths(3), now()])
             ->sum('amount');
         $totalPemasukan3Bulan = $kasPayments3Bulan + $heregPayments3Bulan;
+        
+        $totalPengeluaran3Bulan = KasExpense::whereBetween('date', [now()->subMonths(3), now()])
+            ->sum('amount');
 
         // get the kas bill of each payment as well
         $payments = KasPayment::where('user_id', $user->id)
@@ -404,7 +458,8 @@ class UserController extends Controller
                 'total_paid' => $totalPaid,
             ],
             'total_kas' => $totalKas,
-            'total_pemasukan_3_bulan' => $totalPemasukan3Bulan,            
+            'total_pemasukan_3_bulan' => $totalPemasukan3Bulan,
+            'total_pengeluaran_3_bulan' => $totalPengeluaran3Bulan,
             'payments_history' => $payments,
         ]);
     }
@@ -801,6 +856,47 @@ class UserController extends Controller
         return response($file)
             ->header('Content-Type', $mimeType)
             ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
+    }
+
+    // Struktur Organisasi
+    public function strukturOrganisasi()
+    {
+        $jabatanOrder = [
+            'ketua' => 1,
+            'wakil_ketua' => 2,
+            'bendahara' => 3,
+            'wakil_bendahara' => 4,
+            'sekretaris' => 5,
+            'wakil_sekretaris' => 6,
+            'koordinator_kepelatihan' => 7,
+            'koordinator_medinfo' => 8,
+            'koordinator_keperalatan' => 9,
+            'anggota' => 10
+        ];
+
+        $pengurus = User::whereIn('jabatan', [
+            'ketua',
+            'wakil_ketua',
+            'bendahara',
+            'wakil_bendahara',
+            'sekretaris',
+            'wakil_sekretaris',
+            'koordinator_kepelatihan',
+            'koordinator_medinfo',
+            'koordinator_keperalatan'
+        ])->get()->sortBy(function($user) use ($jabatanOrder) {
+            return $jabatanOrder[$user->jabatan] ?? 999;
+        })->values();
+
+        $anggota = User::where('jabatan', 'anggota')
+            ->where('role', '!=', 'admin')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        return Inertia::render('StrukturOrganisasi', [
+            'pengurus' => $pengurus,
+            'anggota' => $anggota,
+        ]);
     }
 
 }

@@ -4,7 +4,7 @@ import AppLayout from '@/Layouts/AppLayout';
 import { toast, ToastContainer } from 'react-toastify';
 import { titleCase } from '@/utils/helpers';
 
-export default function Finance({ auth, bills, summary, payments_history, total_kas, total_pemasukan_3_bulan }) {
+export default function Finance({ auth, bills, summary, payments_history, total_kas, total_pemasukan_3_bulan, total_pengeluaran_3_bulan }) {
     const [activeTab, setActiveTab] = useState('payment'); // payment, history, report
     const [paymentAmount, setPaymentAmount] = useState('');
     const [paymentNote, setPaymentNote] = useState('');
@@ -196,7 +196,7 @@ export default function Finance({ auth, bills, summary, payments_history, total_
             {/* Balance Cards */}
             <div className="bg-white border-b border-gray-200">
                 <div className="container mx-auto px-4 py-8">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
                         {/* Saldo Card */}
                         <div className="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-lg p-6 shadow-lg">
                             <div className="flex items-center justify-between mb-2">
@@ -226,12 +226,24 @@ export default function Finance({ auth, bills, summary, payments_history, total_
                         {/* Total Pemasukan Card */}
                         <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-lg p-6 shadow-lg">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm opacity-90">Total Pemasukan</span>
+                                <span className="text-sm opacity-90">Total Pemasukan Kas</span>
                                 <svg className="w-6 h-6 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
                                 </svg>
                             </div>
                             <div className="text-3xl font-bold mb-1">{formatCurrency(total_pemasukan_3_bulan)}</div>
+                            <div className="text-xs opacity-75">3 bulan terakhir</div>
+                        </div>
+
+                        {/* Total Pengeluaran Card */}
+                        <div className="bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-lg p-6 shadow-lg">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm opacity-90">Total Pengeluaran Kas</span>
+                                <svg className="w-6 h-6 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                                </svg>
+                            </div>
+                            <div className="text-3xl font-bold mb-1">{formatCurrency(total_pengeluaran_3_bulan)}</div>
                             <div className="text-xs opacity-75">3 bulan terakhir</div>
                         </div>
 
@@ -341,9 +353,9 @@ export default function Finance({ auth, bills, summary, payments_history, total_
                                                                         {bill.title}
                                                                     </div>
                                                                     <div className='text-sm text-gray-600 mt-1'>
-                                                                        {bill.description.length > 100
+                                                                        {bill.description && bill.description.length > 100
                                                                             ? bill.description.substring(0, 100) + "..."
-                                                                            : bill.description}
+                                                                            : bill.description || '-'}
                                                                     </div>
                                                                     <div className="text-sm text-gray-600 mt-1">
                                                                         {bill.due_date && (
