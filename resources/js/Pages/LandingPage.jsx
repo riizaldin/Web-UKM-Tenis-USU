@@ -294,7 +294,7 @@ export default function LandingPage({auth}) {
                             </svg>}
                         />
                         <StatCard
-                            number="4"
+                            number="3"
                             label="Lapangan"
                             icon={<svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -501,7 +501,7 @@ export default function LandingPage({auth}) {
                             name="Rizaldi Febriansyah"
                             role="Ketua UKM Periode 2024/2025"
                             image="/images/rizaldi.jpg"
-                            quote="follow ig @padel_usu"
+                            quote="UKM tenis USU adalah rumah kedua bagi saya di kampus. Di sini, saya tidak hanya belajar teknik tenis, tetapi juga membangun persahabatan yang kuat dan mendapatkan pengalaman berorganisasi yang berharga. Ayo gabung sekarang dan kita hantam yang namanya fadlan afrizal dewangga"
                         />
                         <TestimonialCard
                             name="Muhammad Ridho Syahputra"
@@ -522,16 +522,16 @@ export default function LandingPage({auth}) {
                             quote="Tiap latihan seru banget apalagi waktu di coaching sama pak hakim"
                         />
                         <TestimonialCard
-                            name="-"
-                            role="Anggota Aktif"
-                            image="/images/testimonial-.jpg"
-                            quote="Selain berlatih tenis, kita juga belajar berorganisasi dan menjalin persaudaraan."
+                            name="Fadlan Afrizal Dewangga"
+                            role="Koordinator Kepelatihan 2024/2025"
+                            image="/images/testimoniFadlan.jpg"
+                            quote="UKM tenis USU adalah sebuah organisasi olahraga yang sangat hits di lingkungan universitas di seluruh Indonesia. Sudah banyak atlet tennis medan yang go internasional setelah menimba ilmu di UKM tennis USU ini. Jadi ayoo tunggu apalagi mari bergabung dan kita pukuli kepala rizaldi"
                         />
                         <TestimonialCard
-                            name="-"
-                            role="Alumni"
-                            image="/images/testimonial-3.jpg"
-                            quote="Pengalaman berharga yang tak terlupakan selama bergabung dengan UKM Tenis USU."
+                            name="Raden Ratu Nindiaputri Kusumaalayna"
+                            role="Bendahara UKM Periode 2025/2026"
+                            image="/images/testimoniRatu.png"
+                            quote="UKM Tenis Lapangan USU adalah tempat terbaik untuk mahasiswa dalam mengasah kemampuan bermain tenis lapangan serta menambah relasi dengan mahasiswa seluruh fakultas."
                         />
                     </div>
                 </div>
@@ -554,12 +554,7 @@ export default function LandingPage({auth}) {
                             >
                                 Daftar Sekarang
                             </Link>
-                            <Link
-                                href="/contact"
-                                className="px-8 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-[#185A9D] transition"
-                            >
-                                Hubungi Kami
-                            </Link>
+                          
                         </div>
                     </div>
                 </div>
